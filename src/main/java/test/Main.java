@@ -21,22 +21,24 @@ public class Main {
         ProductService prods = new ProductService();
         PostService posts = new PostService();
         CommentService coms = new CommentService();
+        UserService us = new UserService();
 
         boolean running = true;
         while (running) {
             System.out.println("\n=================================");
             System.out.println("       MENU INTERACTIF");
             System.out.println("=================================");
-            System.out.println("1) Gérer les Demandes de Partenariat");
-            System.out.println("2) Gérer les Collaborations");
-            System.out.println("3) Gérer les Referral Hits");
-            System.out.println("4) Gérer les Événements");
-            System.out.println("5) Gérer les Réservations");
-            System.out.println("6) Gérer les Catégories (Shop)");
-            System.out.println("7) Gérer les Produits (Shop)");
-            System.out.println("8) Gérer les Posts (Forum)");
-            System.out.println("9) Gérer les Commentaires (Forum)");
-            System.out.println("0) Quitter");
+            System.out.println("1)  Gérer les Demandes de Partenariat");
+            System.out.println("2)  Gérer les Collaborations");
+            System.out.println("3)  Gérer les Referral Hits");
+            System.out.println("4)  Gérer les Événements");
+            System.out.println("5)  Gérer les Réservations");
+            System.out.println("6)  Gérer les Catégories (Shop)");
+            System.out.println("7)  Gérer les Produits (Shop)");
+            System.out.println("8)  Gérer les Posts (Forum)");
+            System.out.println("9)  Gérer les Commentaires (Forum)");
+            System.out.println("10) Gérer les Utilisateurs");
+            System.out.println("0)  Quitter");
             System.out.print("Veuillez choisir une option : ");
 
             String choixStr = scanner.nextLine();
@@ -58,6 +60,7 @@ public class Main {
                 case 7: menuProduct(prods); break;
                 case 8: menuPost(posts); break;
                 case 9: menuComment(coms); break;
+                case 10: menuUser(us); break;
                 case 0:
                     running = false;
                     System.out.println("Au revoir !");
@@ -140,24 +143,18 @@ public class Main {
                         break;
                     case "5":
                         System.out.print("Nom à rechercher : ");
-                        String sNom = scanner.nextLine();
-                        prs.rechercherParNom(sNom).forEach(System.out::println);
+                        prs.rechercherParNom(scanner.nextLine()).forEach(System.out::println);
                         break;
                     case "6":
                         System.out.print("Status à rechercher : ");
-                        String sSt = scanner.nextLine();
-                        prs.rechercherParStatus(sSt).forEach(System.out::println);
+                        prs.rechercherParStatus(scanner.nextLine()).forEach(System.out::println);
                         break;
                     case "7":
                         System.out.print("Entreprise à rechercher : ");
-                        String sCo = scanner.nextLine();
-                        prs.rechercherParCompany(sCo).forEach(System.out::println);
+                        prs.rechercherParCompany(scanner.nextLine()).forEach(System.out::println);
                         break;
-                    case "0":
-                        back = true;
-                        break;
-                    default:
-                        System.out.println("Choix invalide.");
+                    case "0": back = true; break;
+                    default: System.out.println("Choix invalide.");
                 }
             } catch (Exception e) {
                 System.out.println("Erreur : " + e.getMessage());
@@ -232,24 +229,18 @@ public class Main {
                         break;
                     case "5":
                         System.out.print("Titre à rechercher : ");
-                        String sT = scanner.nextLine();
-                        cs.rechercherParTitre(sT).forEach(System.out::println);
+                        cs.rechercherParTitre(scanner.nextLine()).forEach(System.out::println);
                         break;
                     case "6":
                         System.out.print("Status à rechercher : ");
-                        String sSt = scanner.nextLine();
-                        cs.rechercherParStatus(sSt).forEach(System.out::println);
+                        cs.rechercherParStatus(scanner.nextLine()).forEach(System.out::println);
                         break;
                     case "7":
                         System.out.print("Type à rechercher : ");
-                        String sTy = scanner.nextLine();
-                        cs.rechercherParType(sTy).forEach(System.out::println);
+                        cs.rechercherParType(scanner.nextLine()).forEach(System.out::println);
                         break;
-                    case "0":
-                        back = true;
-                        break;
-                    default:
-                        System.out.println("Choix invalide.");
+                    case "0": back = true; break;
+                    default: System.out.println("Choix invalide.");
                 }
             } catch (Exception e) {
                 System.out.println("Erreur : " + e.getMessage());
@@ -295,11 +286,8 @@ public class Main {
                         rhs.supprimer(id);
                         System.out.println("=> Referral Hit " + id + " supprimé avec succès !");
                         break;
-                    case "0":
-                        back = true;
-                        break;
-                    default:
-                        System.out.println("Choix invalide.");
+                    case "0": back = true; break;
+                    default: System.out.println("Choix invalide.");
                 }
             } catch (Exception e) {
                 System.out.println("Erreur : " + e.getMessage());
@@ -393,24 +381,18 @@ public class Main {
                         break;
                     case "5":
                         System.out.print("Titre à rechercher : ");
-                        String st = scanner.nextLine();
-                        es.rechercherParTitre(st).forEach(System.out::println);
+                        es.rechercherParTitre(scanner.nextLine()).forEach(System.out::println);
                         break;
                     case "6":
                         System.out.print("Statut à rechercher : ");
-                        String ss = scanner.nextLine();
-                        es.rechercherParStatut(ss).forEach(System.out::println);
+                        es.rechercherParStatut(scanner.nextLine()).forEach(System.out::println);
                         break;
                     case "7":
                         System.out.print("Venue à rechercher : ");
-                        String sv = scanner.nextLine();
-                        es.rechercherParVenue(sv).forEach(System.out::println);
+                        es.rechercherParVenue(scanner.nextLine()).forEach(System.out::println);
                         break;
-                    case "0":
-                        back = true;
-                        break;
-                    default:
-                        System.out.println("Choix invalide.");
+                    case "0": back = true; break;
+                    default: System.out.println("Choix invalide.");
                 }
             } catch (Exception e) {
                 System.out.println("Erreur : " + e.getMessage());
@@ -480,24 +462,18 @@ public class Main {
                         break;
                     case "5":
                         System.out.print("Statut à rechercher : ");
-                        String ss = scanner.nextLine();
-                        rs.rechercherParStatut(ss).forEach(System.out::println);
+                        rs.rechercherParStatut(scanner.nextLine()).forEach(System.out::println);
                         break;
                     case "6":
                         System.out.print("Event ID à rechercher : ");
-                        int sei = Integer.parseInt(scanner.nextLine());
-                        rs.rechercherParEvent(sei).forEach(System.out::println);
+                        rs.rechercherParEvent(Integer.parseInt(scanner.nextLine())).forEach(System.out::println);
                         break;
                     case "7":
                         System.out.print("User ID à rechercher : ");
-                        int sui = Integer.parseInt(scanner.nextLine());
-                        rs.rechercherParUser(sui).forEach(System.out::println);
+                        rs.rechercherParUser(Integer.parseInt(scanner.nextLine())).forEach(System.out::println);
                         break;
-                    case "0":
-                        back = true;
-                        break;
-                    default:
-                        System.out.println("Choix invalide.");
+                    case "0": back = true; break;
+                    default: System.out.println("Choix invalide.");
                 }
             } catch (Exception e) {
                 System.out.println("Erreur : " + e.getMessage());
@@ -553,14 +529,10 @@ public class Main {
                         break;
                     case "5":
                         System.out.print("Nom à rechercher : ");
-                        String sn = scanner.nextLine();
-                        cs.rechercherParNom(sn).forEach(System.out::println);
+                        cs.rechercherParNom(scanner.nextLine()).forEach(System.out::println);
                         break;
-                    case "0":
-                        back = true;
-                        break;
-                    default:
-                        System.out.println("Choix invalide.");
+                    case "0": back = true; break;
+                    default: System.out.println("Choix invalide.");
                 }
             } catch (Exception e) {
                 System.out.println("Erreur : " + e.getMessage());
@@ -644,13 +616,11 @@ public class Main {
                         break;
                     case "5":
                         System.out.print("Nom à rechercher : ");
-                        String sn = scanner.nextLine();
-                        ps.rechercherParNom(sn).forEach(System.out::println);
+                        ps.rechercherParNom(scanner.nextLine()).forEach(System.out::println);
                         break;
                     case "6":
                         System.out.print("Artiste à rechercher : ");
-                        String sa = scanner.nextLine();
-                        ps.rechercherParArtiste(sa).forEach(System.out::println);
+                        ps.rechercherParArtiste(scanner.nextLine()).forEach(System.out::println);
                         break;
                     case "7":
                         System.out.println("Produits disponibles :");
@@ -658,14 +628,10 @@ public class Main {
                         break;
                     case "8":
                         System.out.print("Category ID : ");
-                        int sci = Integer.parseInt(scanner.nextLine());
-                        ps.rechercherParCategorie(sci).forEach(System.out::println);
+                        ps.rechercherParCategorie(Integer.parseInt(scanner.nextLine())).forEach(System.out::println);
                         break;
-                    case "0":
-                        back = true;
-                        break;
-                    default:
-                        System.out.println("Choix invalide.");
+                    case "0": back = true; break;
+                    default: System.out.println("Choix invalide.");
                 }
             } catch (Exception e) {
                 System.out.println("Erreur : " + e.getMessage());
@@ -714,12 +680,12 @@ public class Main {
                         String nt = scanner.nextLine();
                         System.out.print("Nouveau contenu : ");
                         String nc = scanner.nextLine();
-                        Post pu = new Post();
-                        pu.setId(pid);
-                        pu.setTitle(nt);
-                        pu.setSlug(nt.toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", ""));
-                        pu.setContent(nc);
-                        ps.modifier(pu);
+                        Post postU = new Post();
+                        postU.setId(pid);
+                        postU.setTitle(nt);
+                        postU.setSlug(nt.toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", ""));
+                        postU.setContent(nc);
+                        ps.modifier(postU);
                         System.out.println("=> Post modifié avec succès !");
                         break;
                     case "4":
@@ -730,24 +696,18 @@ public class Main {
                         break;
                     case "5":
                         System.out.print("Titre à rechercher : ");
-                        String st = scanner.nextLine();
-                        ps.rechercherParTitre(st).forEach(System.out::println);
+                        ps.rechercherParTitre(scanner.nextLine()).forEach(System.out::println);
                         break;
                     case "6":
                         System.out.print("Contenu à rechercher : ");
-                        String sc = scanner.nextLine();
-                        ps.rechercherParContenu(sc).forEach(System.out::println);
+                        ps.rechercherParContenu(scanner.nextLine()).forEach(System.out::println);
                         break;
                     case "7":
                         System.out.print("Author ID : ");
-                        int sai = Integer.parseInt(scanner.nextLine());
-                        ps.rechercherParAuteur(sai).forEach(System.out::println);
+                        ps.rechercherParAuteur(Integer.parseInt(scanner.nextLine())).forEach(System.out::println);
                         break;
-                    case "0":
-                        back = true;
-                        break;
-                    default:
-                        System.out.println("Choix invalide.");
+                    case "0": back = true; break;
+                    default: System.out.println("Choix invalide.");
                 }
             } catch (Exception e) {
                 System.out.println("Erreur : " + e.getMessage());
@@ -794,10 +754,10 @@ public class Main {
                         int cid = Integer.parseInt(scanner.nextLine());
                         System.out.print("Nouveau contenu : ");
                         String nc = scanner.nextLine();
-                        Comment cu = new Comment();
-                        cu.setId(cid);
-                        cu.setContent(nc);
-                        coms.modifier(cu);
+                        Comment comU = new Comment();
+                        comU.setId(cid);
+                        comU.setContent(nc);
+                        coms.modifier(comU);
                         System.out.println("=> Commentaire modifié avec succès !");
                         break;
                     case "4":
@@ -808,24 +768,116 @@ public class Main {
                         break;
                     case "5":
                         System.out.print("Contenu à rechercher : ");
-                        String sc = scanner.nextLine();
-                        coms.rechercherParContenu(sc).forEach(System.out::println);
+                        coms.rechercherParContenu(scanner.nextLine()).forEach(System.out::println);
                         break;
                     case "6":
                         System.out.print("Post ID : ");
-                        int spi = Integer.parseInt(scanner.nextLine());
-                        coms.rechercherParPost(spi).forEach(System.out::println);
+                        coms.rechercherParPost(Integer.parseInt(scanner.nextLine())).forEach(System.out::println);
                         break;
                     case "7":
                         System.out.print("Author ID : ");
-                        int sai = Integer.parseInt(scanner.nextLine());
-                        coms.rechercherParAuteur(sai).forEach(System.out::println);
+                        coms.rechercherParAuteur(Integer.parseInt(scanner.nextLine())).forEach(System.out::println);
                         break;
-                    case "0":
-                        back = true;
+                    case "0": back = true; break;
+                    default: System.out.println("Choix invalide.");
+                }
+            } catch (Exception e) {
+                System.out.println("Erreur : " + e.getMessage());
+            }
+        }
+    }
+
+    // ==========================================
+    // 10) UTILISATEUR
+    // ==========================================
+    private static void menuUser(UserService us) {
+        boolean back = false;
+        while (!back) {
+            System.out.println("\n--- MENU UTILISATEUR ---");
+            System.out.println("1) Ajouter un utilisateur");
+            System.out.println("2) Afficher tous les utilisateurs");
+            System.out.println("3) Modifier un utilisateur");
+            System.out.println("4) Supprimer un utilisateur");
+            System.out.println("5) Rechercher par nom (Stream)");
+            System.out.println("6) Rechercher par email (Stream)");
+            System.out.println("7) Rechercher par localisation (Stream)");
+            System.out.println("0) Retour au menu principal");
+            System.out.print("Choix : ");
+            String choix = scanner.nextLine();
+
+            try {
+                switch (choix) {
+                    case "1":
+                        System.out.print("Nom : ");
+                        String nom = scanner.nextLine();
+                        System.out.print("Prénom : ");
+                        String prenom = scanner.nextLine();
+                        System.out.print("Email : ");
+                        String email = scanner.nextLine();
+                        System.out.print("Téléphone (8 chiffres) : ");
+                        String tel = scanner.nextLine();
+                        System.out.print("Mot de passe : ");
+                        String pwd = scanner.nextLine();
+                        User u = new User(nom, prenom, email, tel, pwd);
+                        System.out.print("Date de naissance (AAAA-MM-JJ, Entrée pour passer) : ");
+                        String dn = scanner.nextLine();
+                        if (!dn.isEmpty()) u.setDateNaissance(LocalDate.parse(dn));
+                        System.out.print("Localisation (optionnel, Entrée pour passer) : ");
+                        String loc = scanner.nextLine();
+                        if (!loc.isEmpty()) u.setLocalisation(loc);
+                        us.ajouter(u);
+                        System.out.println("=> Utilisateur ajouté avec succès !");
                         break;
-                    default:
-                        System.out.println("Choix invalide.");
+                    case "2":
+                        System.out.println("Liste des utilisateurs :");
+                        us.recuperer().forEach(System.out::println);
+                        break;
+                    case "3":
+                        System.out.print("ID à modifier : ");
+                        int uid = Integer.parseInt(scanner.nextLine());
+                        System.out.print("Nouveau nom : ");
+                        String nn = scanner.nextLine();
+                        System.out.print("Nouveau prénom : ");
+                        String np = scanner.nextLine();
+                        System.out.print("Nouvel email : ");
+                        String ne = scanner.nextLine();
+                        System.out.print("Nouveau téléphone : ");
+                        String nt = scanner.nextLine();
+                        System.out.print("Date de naissance (AAAA-MM-JJ, Entrée pour passer) : ");
+                        String ndn = scanner.nextLine();
+                        System.out.print("Localisation (optionnel) : ");
+                        String nloc = scanner.nextLine();
+                        User uu = new User();
+                        uu.setId(uid);
+                        uu.setNom(nn);
+                        uu.setPrenom(np);
+                        uu.setEmail(ne);
+                        uu.setNumTelephone(nt);
+                        if (!ndn.isEmpty()) uu.setDateNaissance(LocalDate.parse(ndn));
+                        if (!nloc.isEmpty()) uu.setLocalisation(nloc);
+                        us.modifier(uu);
+                        System.out.println("=> Utilisateur modifié avec succès !");
+                        break;
+                    case "4":
+                        System.out.print("Entrez l'ID à supprimer : ");
+                        int did = Integer.parseInt(scanner.nextLine());
+                        us.supprimer(did);
+                        System.out.println("=> Utilisateur " + did + " supprimé avec succès !");
+                        break;
+                    case "5":
+                        System.out.print("Nom à rechercher : ");
+                        us.rechercherParNom(scanner.nextLine()).forEach(System.out::println);
+                        break;
+                    case "6":
+                        System.out.print("Email à rechercher : ");
+                        us.rechercherParEmail(scanner.nextLine()).forEach(System.out::println);
+                        break;
+                    case "7":
+                        System.out.print("Localisation à rechercher : ");
+                        us.rechercherParLocalisation(scanner.nextLine()).forEach(System.out::println);
+                        break;
+                    case "0": back = true; break;
+                    default: System.out.println("Choix invalide.");
                 }
             } catch (Exception e) {
                 System.out.println("Erreur : " + e.getMessage());
