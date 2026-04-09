@@ -1,9 +1,9 @@
 package test;
 
-import model.Category;
-import model.Product;
-import service.CategoryService;
-import service.ProductService;
+import model.Comment;
+import model.Post;
+import service.CommentService;
+import service.PostService;
 
 import java.sql.SQLException;
 
@@ -12,96 +12,97 @@ public class Main {
     public static void main(String[] args) {
 
         // ==========================================
-        // 1) CATEGORY — CRUD + SEARCH
+        // 1) POST — CRUD + SEARCH
         // ==========================================
-        CategoryService cs = new CategoryService();
+        PostService ps = new PostService();
 
         // --- AJOUTER ---
         try {
-            cs.ajouter(new Category("T-Shirts", "T-shirts de concerts et événements"));
-            cs.ajouter(new Category("Posters", "Affiches et posters d'artistes"));
-            System.out.println("Categories ajoutées !");
+            Post post = new Post(1, "Mon premier post", "Ceci est le contenu de mon premier post sur le forum");
+            ps.ajouter(post);
+            System.out.println("Post ajouté !");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
         // --- RECUPERER ---
         try {
-            System.out.println("=== Toutes les catégories ===");
-            cs.recuperer().forEach(System.out::println);
+            System.out.println("=== Tous les posts ===");
+            ps.recuperer().forEach(System.out::println);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
         // --- MODIFIER (adapte l'id) ---
         try {
-            Category toUpdate = new Category(1, "T-Shirts Updated", "Nouvelle description");
-            cs.modifier(toUpdate);
-            System.out.println("Category modifiée !");
+            Post toUpdate = new Post();
+            toUpdate.setId(1);  // <-- adapte cet ID
+            toUpdate.setTitle("Post modifié");
+            toUpdate.setSlug("post-modifie");
+            toUpdate.setContent("Contenu modifié du post");
+            ps.modifier(toUpdate);
+            System.out.println("Post modifié !");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
         // --- SEARCH avec STREAM ---
         try {
-            System.out.println("=== Recherche catégorie 'shirt' ===");
-            cs.rechercherParNom("shirt").forEach(System.out::println);
+            System.out.println("=== Recherche par titre 'post' ===");
+            ps.rechercherParTitre("post").forEach(System.out::println);
+
+            System.out.println("=== Recherche par contenu 'contenu' ===");
+            ps.rechercherParContenu("contenu").forEach(System.out::println);
+
+            System.out.println("=== Recherche par auteur id=1 ===");
+            ps.rechercherParAuteur(1).forEach(System.out::println);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
         // ==========================================
-        // 2) PRODUCT — CRUD + SEARCH
+        // 2) COMMENT — CRUD + SEARCH
         // ==========================================
-        ProductService ps = new ProductService();
+        CommentService coms = new CommentService();
 
-        // --- AJOUTER (category_id doit exister) ---
+        // --- AJOUTER (post_id et author_id doivent exister) ---
         try {
-            Product prod = new Product("T-Shirt Rock Festival", "T-shirt officiel du festival", 29.99, 100, "Festival Store", 1);
-            ps.ajouter(prod);
-            System.out.println("Product ajouté !");
+            Comment com = new Comment(1, 1, "Super post, merci pour le partage !");
+            coms.ajouter(com);
+            System.out.println("Comment ajouté !");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
         // --- RECUPERER ---
         try {
-            System.out.println("=== Tous les produits ===");
-            ps.recuperer().forEach(System.out::println);
+            System.out.println("=== Tous les commentaires ===");
+            coms.recuperer().forEach(System.out::println);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
         // --- MODIFIER ---
         try {
-            Product toUpdate = new Product();
+            Comment toUpdate = new Comment();
             toUpdate.setId(1);  // <-- adapte cet ID
-            toUpdate.setCategoryId(1);
-            toUpdate.setName("T-Shirt Rock UPDATED");
-            toUpdate.setDescription("Description modifiée");
-            toUpdate.setPrice(34.99);
-            toUpdate.setStock(50);
-            toUpdate.setArtistName("Festival Store");
-            toUpdate.setAvailable(true);
-            ps.modifier(toUpdate);
-            System.out.println("Product modifié !");
+            toUpdate.setContent("Commentaire modifié !");
+            coms.modifier(toUpdate);
+            System.out.println("Comment modifié !");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
 
         // --- SEARCH avec STREAM ---
         try {
-            System.out.println("=== Recherche produit 'rock' ===");
-            ps.rechercherParNom("rock").forEach(System.out::println);
+            System.out.println("=== Recherche commentaire 'super' ===");
+            coms.rechercherParContenu("super").forEach(System.out::println);
 
-            System.out.println("=== Recherche par artiste 'festival' ===");
-            ps.rechercherParArtiste("festival").forEach(System.out::println);
+            System.out.println("=== Recherche par post_id=1 ===");
+            coms.rechercherParPost(1).forEach(System.out::println);
 
-            System.out.println("=== Recherche produits disponibles ===");
-            ps.rechercherDisponibles().forEach(System.out::println);
-
-            System.out.println("=== Recherche par catégorie id=1 ===");
-            ps.rechercherParCategorie(1).forEach(System.out::println);
+            System.out.println("=== Recherche par auteur id=1 ===");
+            coms.rechercherParAuteur(1).forEach(System.out::println);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
