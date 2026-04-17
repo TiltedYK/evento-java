@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.ProductListController"
+      spacing="18">
+
+    <VBox spacing="2">
+        <Label text="Products" styleClass="page-title"/>
+        <Label text="Merchandise, albums, and artist goods" styleClass="page-subtitle"/>
+    </VBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Search by name or artist..."
+                   styleClass="search-field" prefWidth="280"/>
+        <ComboBox fx:id="categoryFilter" promptText="All categories" prefWidth="180"/>
+        <ComboBox fx:id="availabilityFilter" promptText="All states" prefWidth="150"/>
+        <Button text="Reset" styleClass="btn-ghost" onAction="#onReset"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="+ New Product" styleClass="btn-success" onAction="#onAdd"/>
+    </HBox>
+
+    <TableView fx:id="table" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="55"/>
+            <TableColumn fx:id="colName" text="NAME" prefWidth="180"/>
+            <TableColumn fx:id="colArtist" text="ARTIST" prefWidth="140"/>
+            <TableColumn fx:id="colCategory" text="CATEGORY" prefWidth="130"/>
+            <TableColumn fx:id="colPrice" text="PRICE" prefWidth="95"/>
+            <TableColumn fx:id="colStock" text="STOCK" prefWidth="95"/>
+            <TableColumn fx:id="colAvailable" text="AVAILABILITY" prefWidth="120"/>
+            <TableColumn fx:id="colActions" text="ACTIONS" prefWidth="170"/>
+        </columns>
+    </TableView>
+
+</VBox>

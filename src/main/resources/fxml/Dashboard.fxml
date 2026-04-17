@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.DashboardController"
+            prefWidth="1200" prefHeight="720">
+
+    <left>
+        <VBox styleClass="sidebar" prefWidth="230">
+            <children>
+                <Label text="Evento" styleClass="sidebar-title"/>
+                <Label text="Event Management" styleClass="sidebar-subtitle"/>
+
+                <Button fx:id="btnEvents" text="Events" styleClass="nav-button" onAction="#openEvents"/>
+                <Button fx:id="btnReservations" text="Reservations" styleClass="nav-button" onAction="#openReservations"/>
+                <Button fx:id="btnUsers" text="Users" styleClass="nav-button" onAction="#openUsers"/>
+
+                <Separator/>
+
+                <Button fx:id="btnProducts" text="Products" styleClass="nav-button" onAction="#openProducts"/>
+                <Button fx:id="btnCategories" text="Categories" styleClass="nav-button" onAction="#openCategories"/>
+
+                <Region VBox.vgrow="ALWAYS"/>
+
+                <Label text="v1.0.0" styleClass="sidebar-subtitle"/>
+            </children>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area"/>
+    </center>
+
+</BorderPane>

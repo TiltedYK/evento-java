@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.EventListController"
+      spacing="18">
+
+    <!-- Header -->
+    <VBox spacing="2">
+        <Label text="Events" styleClass="page-title"/>
+        <Label text="Manage all your musical events" styleClass="page-subtitle"/>
+    </VBox>
+
+    <!-- Toolbar -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Search by title..."
+                   styleClass="search-field" prefWidth="280"/>
+        <ComboBox fx:id="statusFilter" promptText="All statuses" prefWidth="160"/>
+        <Button text="Reset" styleClass="btn-ghost" onAction="#onReset"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="+ New Event" styleClass="btn-success" onAction="#onAdd"/>
+    </HBox>
+
+    <!-- Table -->
+    <TableView fx:id="eventsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+            <TableColumn fx:id="colTitre" text="TITLE" prefWidth="180"/>
+            <TableColumn fx:id="colDate" text="DATE" prefWidth="140"/>
+            <TableColumn fx:id="colVenue" text="VENUE" prefWidth="140"/>
+            <TableColumn fx:id="colGenre" text="GENRE" prefWidth="110"/>
+            <TableColumn fx:id="colCapacite" text="CAPACITY" prefWidth="90"/>
+            <TableColumn fx:id="colStatut" text="STATUS" prefWidth="110"/>
+            <TableColumn fx:id="colActions" text="ACTIONS" prefWidth="170"/>
+        </columns>
+    </TableView>
+
+</VBox>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.CommentListController"
+      spacing="18">
+
+    <VBox spacing="2">
+        <Label text="Comments" styleClass="page-title"/>
+        <Label text="Moderate user comments on posts" styleClass="page-subtitle"/>
+    </VBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Search content, post id, author id..."
+                   styleClass="search-field" prefWidth="320"/>
+        <ComboBox fx:id="stateFilter" promptText="All comments" prefWidth="160"/>
+        <Button text="Reset" styleClass="btn-ghost" onAction="#onReset"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="+ New Comment" styleClass="btn-success" onAction="#onAdd"/>
+    </HBox>
+
+    <TableView fx:id="table" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="55"/>
+            <TableColumn fx:id="colPost" text="POST ID" prefWidth="80"/>
+            <TableColumn fx:id="colAuthor" text="AUTHOR ID" prefWidth="90"/>
+            <TableColumn fx:id="colContent" text="CONTENT" prefWidth="340"/>
+            <TableColumn fx:id="colCreated" text="CREATED" prefWidth="140"/>
+            <TableColumn fx:id="colState" text="STATE" prefWidth="100"/>
+            <TableColumn fx:id="colActions" text="ACTIONS" prefWidth="180"/>
+        </columns>
+    </TableView>
+
+</VBox>

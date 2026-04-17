@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.ProductFormController"
+      styleClass="content-area"
+      prefWidth="680" spacing="16">
+    <padding><Insets top="26" right="28" bottom="26" left="28"/></padding>
+
+    <VBox spacing="2">
+        <Label fx:id="formTitle" text="New Product" styleClass="form-title"/>
+        <Label text="Fill in the product details below." styleClass="page-subtitle"/>
+    </VBox>
+
+    <VBox styleClass="card" spacing="14">
+
+        <GridPane hgap="14" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/>
+                <ColumnConstraints percentWidth="50"/>
+            </columnConstraints>
+
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
+                <Label text="NAME" styleClass="field-label"/>
+                <TextField fx:id="nameField" promptText="e.g. Album Vinyl - Live at Carthage"/>
+            </VBox>
+
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label text="ARTIST" styleClass="field-label"/>
+                <TextField fx:id="artistField" promptText="e.g. Anouar Brahem"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label text="CATEGORY" styleClass="field-label"/>
+                <ComboBox fx:id="categoryCombo" maxWidth="Infinity" promptText="Select a category"/>
+            </VBox>
+
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                <Label text="PRICE (DT)" styleClass="field-label"/>
+                <TextField fx:id="priceField" promptText="e.g. 59.90"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <Label text="STOCK" styleClass="field-label"/>
+                <Spinner fx:id="stockSpinner" editable="true" maxWidth="Infinity"/>
+            </VBox>
+
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                <Label text="BARCODE" styleClass="field-label"/>
+                <TextField fx:id="barcodeField" promptText="Optional"/>
+            </VBox>
+            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <Label text="IMAGE (filename)" styleClass="field-label"/>
+                <TextField fx:id="imageField" promptText="e.g. vinyl_cover.jpg"/>
+            </VBox>
+
+            <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2">
+                <Label text="DESCRIPTION" styleClass="field-label"/>
+                <TextArea fx:id="descriptionArea" promptText="Describe the product..." prefRowCount="4" wrapText="true"/>
+            </VBox>
+
+            <HBox GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2">
+                <CheckBox fx:id="availableCheck" text="Available for sale" selected="true"/>
+            </HBox>
+        </GridPane>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Cancel" styleClass="btn-ghost" onAction="#onCancel"/>
+            <Button fx:id="saveButton" text="Save product" styleClass="btn-success" onAction="#onSave"/>
+        </HBox>
+    </VBox>
+</VBox>
