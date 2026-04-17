@@ -11,13 +11,13 @@
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controller.DashboardController"
-            prefWidth="1200" prefHeight="720">
+            prefWidth="1280" prefHeight="780">
 
     <left>
-        <VBox styleClass="sidebar" prefWidth="230">
+        <VBox styleClass="sidebar" prefWidth="234">
             <children>
                 <Label text="Evento" styleClass="sidebar-title"/>
-                <Label text="Event Management" styleClass="sidebar-subtitle"/>
+                <Label text="EVENT MANAGEMENT" styleClass="sidebar-subtitle"/>
 
                 <Button fx:id="btnEvents" text="Events" styleClass="nav-button" onAction="#openEvents"/>
                 <Button fx:id="btnReservations" text="Reservations" styleClass="nav-button" onAction="#openReservations"/>
@@ -28,9 +28,18 @@
                 <Button fx:id="btnProducts" text="Products" styleClass="nav-button" onAction="#openProducts"/>
                 <Button fx:id="btnCategories" text="Categories" styleClass="nav-button" onAction="#openCategories"/>
 
+                <Separator/>
+
+                <Button fx:id="btnPosts" text="Posts" styleClass="nav-button" onAction="#openPosts"/>
+                <Button fx:id="btnComments" text="Comments" styleClass="nav-button" onAction="#openComments"/>
+                <Separator/>
+
+                <Button fx:id="btnCollaborations" text="Collaborations" styleClass="nav-button" onAction="#openCollaborations"/>
+                <Button fx:id="btnPartnerships" text="Partnerships" styleClass="nav-button" onAction="#openPartnerships"/>
+                <Button fx:id="btnReferrals" text="Referral Hits" styleClass="nav-button" onAction="#openReferrals"/>
                 <Region VBox.vgrow="ALWAYS"/>
 
-                <Label text="v1.0.0" styleClass="sidebar-subtitle"/>
+                <Label text="v2.0.0 — PREMIUM" styleClass="sidebar-subtitle"/>
             </children>
         </VBox>
     </left>

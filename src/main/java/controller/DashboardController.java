@@ -1,13 +1,14 @@
 package controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
+import util.Router;
 
 public class DashboardController {
-
+    @FXML private Button btnCollaborations;
+    @FXML private Button btnPartnerships;
+    @FXML private Button btnReferrals;
     @FXML private StackPane contentArea;
     @FXML private Button btnEvents;
     @FXML private Button btnReservations;
@@ -19,28 +20,22 @@ public class DashboardController {
 
     @FXML
     public void initialize() {
+        Router.setContentArea(contentArea);
         openEvents();
     }
 
-    @FXML public void openEvents()       { loadView("/fxml/EventList.fxml");       setActive(btnEvents); }
-    @FXML public void openReservations() { loadView("/fxml/ReservationList.fxml"); setActive(btnReservations); }
-    @FXML public void openUsers()        { loadView("/fxml/UserList.fxml");        setActive(btnUsers); }
-    @FXML public void openProducts()     { loadView("/fxml/ProductList.fxml");     setActive(btnProducts); }
-    @FXML public void openCategories()   { loadView("/fxml/CategoryList.fxml");    setActive(btnCategories); }
-    @FXML public void openPosts()        { loadView("/fxml/PostList.fxml");        setActive(btnPosts); }
-    @FXML public void openComments()     { loadView("/fxml/CommentList.fxml");     setActive(btnComments); }
-
-    private void loadView(String fxmlPath) {
-        try {
-            Parent view = FXMLLoader.load(getClass().getResource(fxmlPath));
-            contentArea.getChildren().setAll(view);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
+    @FXML public void openEvents()       { Router.navigate("/fxml/EventList.fxml");       setActive(btnEvents); }
+    @FXML public void openReservations() { Router.navigate("/fxml/ReservationList.fxml"); setActive(btnReservations); }
+    @FXML public void openUsers()        { Router.navigate("/fxml/UserList.fxml");        setActive(btnUsers); }
+    @FXML public void openProducts()     { Router.navigate("/fxml/ProductList.fxml");     setActive(btnProducts); }
+    @FXML public void openCategories()   { Router.navigate("/fxml/CategoryList.fxml");    setActive(btnCategories); }
+    @FXML public void openPosts()        { Router.navigate("/fxml/PostList.fxml");        setActive(btnPosts); }
+    @FXML public void openComments()     { Router.navigate("/fxml/CommentList.fxml");     setActive(btnComments); }
+    @FXML public void openCollaborations() { Router.navigate("/fxml/CollaborationView.fxml");     setActive(btnCollaborations); }
+    @FXML public void openPartnerships()   { Router.navigate("/fxml/PartnershipRequestView.fxml"); setActive(btnPartnerships); }
+    @FXML public void openReferrals()      { Router.navigate("/fxml/ReferralHitView.fxml");        setActive(btnReferrals); }
     private void setActive(Button active) {
-        for (Button b : new Button[]{btnEvents, btnReservations, btnUsers, btnProducts, btnCategories, btnPosts, btnComments}) {
+        for (Button b : new Button[]{btnEvents, btnReservations, btnUsers, btnProducts, btnCategories, btnPosts, btnComments, btnCollaborations, btnPartnerships, btnReferrals}) {
             b.getStyleClass().remove("active");
         }
         if (!active.getStyleClass().contains("active")) {

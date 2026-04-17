@@ -13,23 +13,19 @@
 <VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controller.UserListController"
-      spacing="18">
-
-    <VBox spacing="2">
+      spacing="22">
+    <VBox spacing="3">
         <Label text="Users" styleClass="page-title"/>
         <Label text="Manage accounts and access" styleClass="page-subtitle"/>
     </VBox>
-
     <HBox spacing="10" alignment="CENTER_LEFT">
-        <TextField fx:id="searchField" promptText="Search by name, email..."
-                   styleClass="search-field" prefWidth="300"/>
+        <TextField fx:id="searchField" promptText="🔍 Search by name, email..." styleClass="search-field" prefWidth="320"/>
         <ComboBox fx:id="roleFilter" promptText="All roles" prefWidth="160"/>
         <ComboBox fx:id="stateFilter" promptText="All states" prefWidth="160"/>
         <Button text="Reset" styleClass="btn-ghost" onAction="#onReset"/>
         <Region HBox.hgrow="ALWAYS"/>
         <Button text="+ New User" styleClass="btn-success" onAction="#onAdd"/>
     </HBox>
-
     <TableView fx:id="table" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="colId" text="ID" prefWidth="55"/>
@@ -39,8 +35,7 @@
             <TableColumn fx:id="colTel" text="PHONE" prefWidth="120"/>
             <TableColumn fx:id="colRole" text="ROLE" prefWidth="100"/>
             <TableColumn fx:id="colState" text="STATE" prefWidth="100"/>
-            <TableColumn fx:id="colActions" text="ACTIONS" prefWidth="210"/>
+            <TableColumn fx:id="colActions" text="ACTIONS" prefWidth="220"/>
         </columns>
     </TableView>
-
 </VBox>

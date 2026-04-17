@@ -6,17 +6,13 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import model.Category;
 import model.Product;
 import service.CategoryService;
 import service.ProductService;
+import util.Router;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +38,8 @@ public class ProductListController {
     private final ObservableList<Product> data = FXCollections.observableArrayList();
     private final Map<Integer, String> categoryNames = new HashMap<>();
 
+    public static Product pendingEdit;
+
     @FXML
     public void initialize() {
         loadCategoryNames();
@@ -66,7 +64,7 @@ public class ProductListController {
         formatPriceColumn();
         setupStockColoring();
         setupAvailabilityPill();
-        setupActionsColumn();
+        setupActions();
 
         searchField.textProperty().addListener((o, a, b) -> applyFilters());
         categoryFilter.valueProperty().addListener((o, a, b) -> applyFilters());
@@ -82,7 +80,7 @@ public class ProductListController {
             for (Category c : categoryService.recuperer()) {
                 categoryNames.put(c.getId(), c.getName());
             }
-        } catch (Exception e) { /* silent, categories may be empty */ }
+        } catch (Exception e) { /* silent */ }
     }
 
     private void formatPriceColumn() {
@@ -104,8 +102,8 @@ public class ProductListController {
                 int stock = item.intValue();
                 setText(String.valueOf(stock));
                 if (stock == 0)       setStyle("-fx-text-fill: #D28994; -fx-font-weight: bold;");
-                else if (stock < 5)   setStyle("-fx-text-fill: #D9BC85; -fx-font-weight: bold;");
-                else                  setStyle("-fx-text-fill: #E4E7EC;");
+                else if (stock < 5)   setStyle("-fx-text-fill: #DEBC87; -fx-font-weight: bold;");
+                else                  setStyle("-fx-text-fill: #E8ECF2;");
             }
         });
     }
@@ -120,23 +118,20 @@ public class ProductListController {
                     Label pill = new Label(item);
                     pill.getStyleClass().add("status-pill");
                     pill.getStyleClass().add(item.equals("available") ? "status-confirmed" : "status-cancelled");
-                    setGraphic(pill);
-                    setText(null);
+                    setGraphic(pill); setText(null);
                 }
             }
         });
     }
 
-    private void setupActionsColumn() {
+    private void setupActions() {
         colActions.setCellFactory(col -> new TableCell<>() {
             private final Button btnEdit = new Button("Edit");
             private final Button btnDelete = new Button("Delete");
             private final HBox box = new HBox(6, btnEdit, btnDelete);
             {
-                btnEdit.getStyleClass().addAll("button", "btn-primary");
-                btnDelete.getStyleClass().addAll("button", "btn-danger");
-                btnEdit.setStyle("-fx-font-size: 11px; -fx-padding: 5 12;");
-                btnDelete.setStyle("-fx-font-size: 11px; -fx-padding: 5 12;");
+                btnEdit.getStyleClass().addAll("button", "btn-primary", "btn-action");
+                btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
                 btnEdit.setOnAction(e -> openForm(getTableView().getItems().get(getIndex())));
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
             }
@@ -153,7 +148,7 @@ public class ProductListController {
             loadCategoryNames();
             data.setAll(productService.recuperer());
             applyFilters();
-        } catch (Exception e) { showError("Failed to load products", e.getMessage()); }
+        } catch (Exception e) { error("Failed to load products: " + e.getMessage()); }
     }
 
     private void applyFilters() {
@@ -174,7 +169,7 @@ public class ProductListController {
                             || (av.equals("unavailable") && !p.isAvailable()))
                     .toList();
             data.setAll(filtered);
-        } catch (Exception e) { showError("Filter failed", e.getMessage()); }
+        } catch (Exception e) { error("Filter failed: " + e.getMessage()); }
     }
 
     @FXML public void onReset() {
@@ -194,39 +189,20 @@ public class ProductListController {
         a.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
                 try { productService.supprimer(p.getId()); refresh(); }
-                catch (Exception e) { showError("Delete failed", e.getMessage()); }
+                catch (Exception e) { error("Delete failed: " + e.getMessage()); }
             }
         });
     }
 
     private void openForm(Product p) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProductForm.fxml"));
-            Parent root = loader.load();
-            ProductFormController ctrl = loader.getController();
-            ctrl.setProduct(p);
-
-            Stage st = new Stage();
-            st.initModality(Modality.APPLICATION_MODAL);
-            st.setTitle(p == null ? "New Product" : "Edit Product");
-            Scene sc = new Scene(root);
-            sc.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-            st.setScene(sc);
-            st.showAndWait();
-            refresh();
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Could not open form", e.getMessage());
-        }
+        pendingEdit = p;
+        Router.navigate("/fxml/ProductForm.fxml");
     }
 
-    private void showError(String header, String msg) {
+    private void error(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Error");
-        a.setHeaderText(header);
-        a.setContentText(msg);
-        styleAlert(a);
-        a.showAndWait();
+        a.setTitle("Error"); a.setHeaderText(null); a.setContentText(msg);
+        styleAlert(a); a.showAndWait();
     }
 
     private void styleAlert(Alert a) {

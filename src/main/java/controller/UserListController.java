@@ -5,15 +5,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import model.User;
 import service.UserService;
+import util.Router;
 
 import java.util.List;
 
@@ -35,6 +31,8 @@ public class UserListController {
     private final UserService service = new UserService();
     private final ObservableList<User> data = FXCollections.observableArrayList();
 
+    public static User pendingEdit;
+
     @FXML
     public void initialize() {
         roleFilter.getItems().addAll("all", "ROLE_USER", "ROLE_ADMIN", "ROLE_ARTIST");
@@ -50,8 +48,8 @@ public class UserListController {
         colRole.setCellValueFactory(c -> new SimpleStringProperty(shortRole(c.getValue().getRoles())));
         colState.setCellValueFactory(c -> new SimpleStringProperty(userState(c.getValue())));
 
-        setupStatePillColumn();
-        setupActionsColumn();
+        setupStatePill();
+        setupActions();
 
         searchField.textProperty().addListener((o, a, b) -> applyFilters());
         roleFilter.valueProperty().addListener((o, a, b) -> applyFilters());
@@ -74,7 +72,7 @@ public class UserListController {
         return "active";
     }
 
-    private void setupStatePillColumn() {
+    private void setupStatePill() {
         colState.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -89,27 +87,22 @@ public class UserListController {
                         case "deleted" -> pill.getStyleClass().add("status-pending");
                         default        -> pill.getStyleClass().add("status-draft");
                     }
-                    setGraphic(pill);
-                    setText(null);
+                    setGraphic(pill); setText(null);
                 }
             }
         });
     }
 
-    private void setupActionsColumn() {
+    private void setupActions() {
         colActions.setCellFactory(col -> new TableCell<>() {
             private final Button btnEdit = new Button("Edit");
             private final Button btnBan = new Button("Ban");
             private final Button btnDelete = new Button("Delete");
             private final HBox box = new HBox(6, btnEdit, btnBan, btnDelete);
             {
-                btnEdit.getStyleClass().addAll("button", "btn-primary");
-                btnBan.getStyleClass().addAll("button", "btn-ghost");
-                btnDelete.getStyleClass().addAll("button", "btn-danger");
-                btnEdit.setStyle("-fx-font-size: 11px; -fx-padding: 5 10;");
-                btnBan.setStyle("-fx-font-size: 11px; -fx-padding: 5 10;");
-                btnDelete.setStyle("-fx-font-size: 11px; -fx-padding: 5 10;");
-
+                btnEdit.getStyleClass().addAll("button", "btn-primary", "btn-action");
+                btnBan.getStyleClass().addAll("button", "btn-ghost", "btn-action");
+                btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
                 btnEdit.setOnAction(e -> openForm(getTableView().getItems().get(getIndex())));
                 btnBan.setOnAction(e -> onToggleBan(getTableView().getItems().get(getIndex())));
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
@@ -126,10 +119,8 @@ public class UserListController {
     }
 
     private void refresh() {
-        try {
-            data.setAll(service.recuperer());
-            applyFilters();
-        } catch (Exception e) { showError("Failed to load users", e.getMessage()); }
+        try { data.setAll(service.recuperer()); applyFilters(); }
+        catch (Exception e) { error("Failed to load users: " + e.getMessage()); }
     }
 
     private void applyFilters() {
@@ -150,13 +141,11 @@ public class UserListController {
                     .filter(u -> state == null || state.equals("all") || userState(u).equals(state))
                     .toList();
             data.setAll(filtered);
-        } catch (Exception e) { showError("Filter failed", e.getMessage()); }
+        } catch (Exception e) { error("Filter failed: " + e.getMessage()); }
     }
 
     @FXML public void onReset() {
-        searchField.clear();
-        roleFilter.setValue("all");
-        stateFilter.setValue("all");
+        searchField.clear(); roleFilter.setValue("all"); stateFilter.setValue("all");
     }
 
     @FXML public void onAdd() { openForm(null); }
@@ -170,7 +159,7 @@ public class UserListController {
         a.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
                 try { service.supprimer(u.getId()); refresh(); }
-                catch (Exception e) { showError("Delete failed", e.getMessage()); }
+                catch (Exception e) { error("Delete failed: " + e.getMessage()); }
             }
         });
     }
@@ -180,37 +169,18 @@ public class UserListController {
             u.setBanned(u.getBanned() == 1 ? 0 : 1);
             service.modifier(u);
             refresh();
-        } catch (Exception e) { showError("Update failed", e.getMessage()); }
+        } catch (Exception e) { error("Update failed: " + e.getMessage()); }
     }
 
     private void openForm(User u) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UserForm.fxml"));
-            Parent root = loader.load();
-            UserFormController ctrl = loader.getController();
-            ctrl.setUser(u);
-
-            Stage st = new Stage();
-            st.initModality(Modality.APPLICATION_MODAL);
-            st.setTitle(u == null ? "New User" : "Edit User");
-            Scene sc = new Scene(root);
-            sc.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-            st.setScene(sc);
-            st.showAndWait();
-            refresh();
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Could not open form", e.getMessage());
-        }
+        pendingEdit = u;
+        Router.navigate("/fxml/UserForm.fxml");
     }
 
-    private void showError(String header, String msg) {
+    private void error(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Error");
-        a.setHeaderText(header);
-        a.setContentText(msg);
-        styleAlert(a);
-        a.showAndWait();
+        a.setTitle("Error"); a.setHeaderText(null); a.setContentText(msg);
+        styleAlert(a); a.showAndWait();
     }
 
     private void styleAlert(Alert a) {

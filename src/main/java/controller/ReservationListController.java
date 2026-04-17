@@ -5,15 +5,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import model.Reservation;
 import service.ReservationService;
+import util.Router;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -35,6 +31,8 @@ public class ReservationListController {
     private final ObservableList<Reservation> data = FXCollections.observableArrayList();
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    public static Reservation pendingEdit;
+
     @FXML
     public void initialize() {
         statusFilter.getItems().addAll("all", "pending", "confirmed", "cancelled");
@@ -51,8 +49,8 @@ public class ReservationListController {
         setupStatusPillColumn();
         setupActionsColumn();
 
-        searchField.textProperty().addListener((obs, o, n) -> applyFilters());
-        statusFilter.valueProperty().addListener((obs, o, n) -> applyFilters());
+        searchField.textProperty().addListener((o, a, b) -> applyFilters());
+        statusFilter.valueProperty().addListener((o, a, b) -> applyFilters());
 
         table.setItems(data);
         refresh();
@@ -63,9 +61,8 @@ public class ReservationListController {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null); setText(null);
-                } else {
+                if (empty || item == null) { setGraphic(null); setText(null); }
+                else {
                     Label pill = new Label(item);
                     pill.getStyleClass().add("status-pill");
                     switch (item.toLowerCase()) {
@@ -74,8 +71,7 @@ public class ReservationListController {
                         case "pending"   -> pill.getStyleClass().add("status-pending");
                         default          -> pill.getStyleClass().add("status-draft");
                     }
-                    setGraphic(pill);
-                    setText(null);
+                    setGraphic(pill); setText(null);
                 }
             }
         });
@@ -87,10 +83,8 @@ public class ReservationListController {
             private final Button btnDelete = new Button("Delete");
             private final HBox box = new HBox(6, btnEdit, btnDelete);
             {
-                btnEdit.getStyleClass().addAll("button", "btn-primary");
-                btnDelete.getStyleClass().addAll("button", "btn-danger");
-                btnEdit.setStyle("-fx-font-size: 11px; -fx-padding: 5 12;");
-                btnDelete.setStyle("-fx-font-size: 11px; -fx-padding: 5 12;");
+                btnEdit.getStyleClass().addAll("button", "btn-primary", "btn-action");
+                btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
                 btnEdit.setOnAction(e -> openForm(getTableView().getItems().get(getIndex())));
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
             }
@@ -103,10 +97,8 @@ public class ReservationListController {
     }
 
     private void refresh() {
-        try {
-            data.setAll(service.recuperer());
-            applyFilters();
-        } catch (Exception e) { showError("Failed to load reservations", e.getMessage()); }
+        try { data.setAll(service.recuperer()); applyFilters(); }
+        catch (Exception e) { error("Failed to load reservations: " + e.getMessage()); }
     }
 
     private void applyFilters() {
@@ -124,14 +116,10 @@ public class ReservationListController {
                             || (r.getStatut() != null && r.getStatut().equalsIgnoreCase(st)))
                     .toList();
             data.setAll(filtered);
-        } catch (Exception e) { showError("Filter failed", e.getMessage()); }
+        } catch (Exception e) { error("Filter failed: " + e.getMessage()); }
     }
 
-    @FXML public void onReset() {
-        searchField.clear();
-        statusFilter.setValue("all");
-    }
-
+    @FXML public void onReset() { searchField.clear(); statusFilter.setValue("all"); }
     @FXML public void onAdd() { openForm(null); }
 
     private void onDelete(Reservation r) {
@@ -139,42 +127,27 @@ public class ReservationListController {
         a.setTitle("Confirm deletion");
         a.setHeaderText("Delete reservation #" + r.getId() + "?");
         a.setContentText("This action cannot be undone.");
-        a.getDialogPane().getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+        styleAlert(a);
         a.showAndWait().ifPresent(res -> {
             if (res == ButtonType.OK) {
                 try { service.supprimer(r.getId()); refresh(); }
-                catch (Exception e) { showError("Delete failed", e.getMessage()); }
+                catch (Exception e) { error("Delete failed: " + e.getMessage()); }
             }
         });
     }
 
     private void openForm(Reservation r) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ReservationForm.fxml"));
-            Parent root = loader.load();
-            ReservationFormController ctrl = loader.getController();
-            ctrl.setReservation(r);
-
-            Stage st = new Stage();
-            st.initModality(Modality.APPLICATION_MODAL);
-            st.setTitle(r == null ? "New Reservation" : "Edit Reservation");
-            Scene sc = new Scene(root);
-            sc.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-            st.setScene(sc);
-            st.showAndWait();
-            refresh();
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Could not open form", e.getMessage());
-        }
+        pendingEdit = r;
+        Router.navigate("/fxml/ReservationForm.fxml");
     }
 
-    private void showError(String header, String msg) {
+    private void error(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Error");
-        a.setHeaderText(header);
-        a.setContentText(msg);
+        a.setTitle("Error"); a.setHeaderText(null); a.setContentText(msg);
+        styleAlert(a); a.showAndWait();
+    }
+
+    private void styleAlert(Alert a) {
         a.getDialogPane().getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-        a.showAndWait();
     }
 }

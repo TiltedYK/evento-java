@@ -2,9 +2,9 @@ package controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import model.Event;
 import service.EventService;
+import util.Router;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,29 +35,29 @@ public class EventFormController {
         statutCombo.setValue("draft");
         datePicker.setValue(LocalDate.now());
         timeField.setText("20:00");
-    }
 
-    public void setEvent(Event ev) {
-        this.editing = ev;
-        if (ev == null) {
+        this.editing = EventListController.pendingEdit;
+        EventListController.pendingEdit = null;
+
+        if (editing == null) {
             formTitle.setText("New Event");
             saveButton.setText("Create event");
-            return;
-        }
-        formTitle.setText("Edit Event #" + ev.getId());
-        saveButton.setText("Save changes");
+        } else {
+            formTitle.setText("Edit Event #" + editing.getId());
+            saveButton.setText("Save changes");
 
-        titreField.setText(ev.getTitre());
-        if (ev.getDateHeure() != null) {
-            datePicker.setValue(ev.getDateHeure().toLocalDate());
-            timeField.setText(ev.getDateHeure().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+            titreField.setText(editing.getTitre());
+            if (editing.getDateHeure() != null) {
+                datePicker.setValue(editing.getDateHeure().toLocalDate());
+                timeField.setText(editing.getDateHeure().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+            }
+            capaciteSpinner.getValueFactory().setValue(editing.getCapacite());
+            if (editing.getStatut() != null) statutCombo.setValue(editing.getStatut());
+            venueField.setText(editing.getVenue());
+            genreField.setText(editing.getGenre());
+            locationField.setText(editing.getLocation());
+            descriptionArea.setText(editing.getDescription());
         }
-        capaciteSpinner.getValueFactory().setValue(ev.getCapacite());
-        if (ev.getStatut() != null) statutCombo.setValue(ev.getStatut());
-        venueField.setText(ev.getVenue());
-        genreField.setText(ev.getGenre());
-        locationField.setText(ev.getLocation());
-        descriptionArea.setText(ev.getDescription());
     }
 
     @FXML
@@ -65,15 +65,15 @@ public class EventFormController {
         String titre = safe(titreField.getText());
         String venue = safe(venueField.getText());
 
-        if (titre.isEmpty()) { showError("Title is required."); return; }
-        if (venue.isEmpty()) { showError("Venue is required."); return; }
-        if (datePicker.getValue() == null) { showError("Please pick a date."); return; }
+        if (titre.isEmpty()) { error("Title is required."); return; }
+        if (venue.isEmpty()) { error("Venue is required."); return; }
+        if (datePicker.getValue() == null) { error("Please pick a date."); return; }
 
         LocalTime time;
         try {
             time = LocalTime.parse(safe(timeField.getText()), DateTimeFormatter.ofPattern("HH:mm"));
         } catch (Exception e) {
-            showError("Invalid time. Use HH:mm (e.g. 20:30).");
+            error("Invalid time. Use HH:mm (e.g. 20:30).");
             return;
         }
         LocalDateTime dt = LocalDateTime.of(datePicker.getValue(), time);
@@ -91,28 +91,21 @@ public class EventFormController {
         try {
             if (editing == null) service.ajouter(target);
             else service.modifier(target);
-            close();
+            onCancel(); // back to list
         } catch (Exception e) {
-            showError("Save failed: " + e.getMessage());
+            error("Save failed: " + e.getMessage());
         }
     }
 
-    @FXML
-    public void onCancel() {
-        close();
-    }
-
-    private void close() {
-        ((Stage) titreField.getScene().getWindow()).close();
+    @FXML public void onCancel() {
+        Router.navigate("/fxml/EventList.fxml");
     }
 
     private String safe(String s) { return s == null ? "" : s.trim(); }
 
-    private void showError(String msg) {
+    private void error(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Validation");
-        a.setHeaderText(null);
-        a.setContentText(msg);
+        a.setTitle("Validation"); a.setHeaderText(null); a.setContentText(msg);
         a.getDialogPane().getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
         a.showAndWait();
     }

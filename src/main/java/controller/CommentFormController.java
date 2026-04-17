@@ -2,9 +2,9 @@ package controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import model.Comment;
 import service.CommentService;
+import util.Router;
 
 import java.time.LocalDateTime;
 
@@ -19,27 +19,29 @@ public class CommentFormController {
     private final CommentService service = new CommentService();
     private Comment editing;
 
-    public void setComment(Comment c) {
-        this.editing = c;
-        if (c == null) {
+    @FXML
+    public void initialize() {
+        this.editing = CommentListController.pendingEdit;
+        CommentListController.pendingEdit = null;
+
+        if (editing == null) {
             formTitle.setText("New Comment");
             saveButton.setText("Post comment");
-            return;
+        } else {
+            formTitle.setText("Edit Comment #" + editing.getId());
+            saveButton.setText("Save changes");
+            postIdField.setText(String.valueOf(editing.getPostId()));
+            authorIdField.setText(String.valueOf(editing.getAuthorId()));
+            contentArea.setText(editing.getContent());
         }
-        formTitle.setText("Edit Comment #" + c.getId());
-        saveButton.setText("Save changes");
-
-        postIdField.setText(String.valueOf(c.getPostId()));
-        authorIdField.setText(String.valueOf(c.getAuthorId()));
-        contentArea.setText(c.getContent());
     }
 
     @FXML
     public void onSave() {
         String content = safe(contentArea.getText());
-        if (content.isEmpty())  { showError("Content is required."); return; }
-        if (content.length() < 2) { showError("Comment is too short."); return; }
-        if (content.length() > 5000) { showError("Comment is too long (max 5000 characters)."); return; }
+        if (content.isEmpty())      { error("Content is required."); return; }
+        if (content.length() < 2)   { error("Comment is too short."); return; }
+        if (content.length() > 5000){ error("Comment is too long (max 5000 characters)."); return; }
 
         int postId, authorId;
         try {
@@ -47,41 +49,30 @@ public class CommentFormController {
             authorId = Integer.parseInt(authorIdField.getText().trim());
             if (postId <= 0 || authorId <= 0) throw new NumberFormatException();
         } catch (Exception e) {
-            showError("Post ID and Author ID must be positive numbers.");
-            return;
+            error("Post ID and Author ID must be positive numbers."); return;
         }
 
         Comment target = editing != null ? editing : new Comment();
         target.setPostId(postId);
         target.setAuthorId(authorId);
         target.setContent(content);
-
-        if (editing == null) {
-            target.setCreatedAt(LocalDateTime.now());
-        } else {
-            target.setUpdatedAt(LocalDateTime.now());
-        }
+        if (editing == null) target.setCreatedAt(LocalDateTime.now());
+        else target.setUpdatedAt(LocalDateTime.now());
 
         try {
             if (editing == null) service.ajouter(target);
             else service.modifier(target);
-            close();
-        } catch (Exception e) {
-            showError("Save failed: " + e.getMessage());
-        }
+            onCancel();
+        } catch (Exception e) { error("Save failed: " + e.getMessage()); }
     }
 
-    @FXML public void onCancel() { close(); }
-
-    private void close() { ((Stage) postIdField.getScene().getWindow()).close(); }
+    @FXML public void onCancel() { Router.navigate("/fxml/CommentList.fxml"); }
 
     private String safe(String s) { return s == null ? "" : s.trim(); }
 
-    private void showError(String msg) {
+    private void error(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Validation");
-        a.setHeaderText(null);
-        a.setContentText(msg);
+        a.setTitle("Validation"); a.setHeaderText(null); a.setContentText(msg);
         a.getDialogPane().getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
         a.showAndWait();
     }

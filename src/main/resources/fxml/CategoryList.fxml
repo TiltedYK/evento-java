@@ -12,21 +12,17 @@
 <VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controller.CategoryListController"
-      spacing="18">
-
-    <VBox spacing="2">
+      spacing="22">
+    <VBox spacing="3">
         <Label text="Categories" styleClass="page-title"/>
         <Label text="Organize your product catalog" styleClass="page-subtitle"/>
     </VBox>
-
     <HBox spacing="10" alignment="CENTER_LEFT">
-        <TextField fx:id="searchField" promptText="Search by name..."
-                   styleClass="search-field" prefWidth="280"/>
+        <TextField fx:id="searchField" promptText="🔍 Search by name..." styleClass="search-field" prefWidth="300"/>
         <Button text="Reset" styleClass="btn-ghost" onAction="#onReset"/>
         <Region HBox.hgrow="ALWAYS"/>
         <Button text="+ New Category" styleClass="btn-success" onAction="#onAdd"/>
     </HBox>
-
     <TableView fx:id="table" VBox.vgrow="ALWAYS">
         <columns>
             <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
@@ -35,5 +31,4 @@
             <TableColumn fx:id="colActions" text="ACTIONS" prefWidth="170"/>
         </columns>
     </TableView>
-
 </VBox>

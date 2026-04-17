@@ -3,11 +3,11 @@ package controller;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import model.Category;
 import model.Product;
 import service.CategoryService;
 import service.ProductService;
+import util.Router;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,34 +42,30 @@ public class ProductFormController {
                 @Override public Category fromString(String s) { return null; }
             });
             if (!cats.isEmpty()) categoryCombo.setValue(cats.get(0));
-        } catch (Exception e) {
-            // no categories yet — combo stays empty; save will complain
-        }
-    }
+        } catch (Exception e) { /* empty combo */ }
 
-    public void setProduct(Product p) {
-        this.editing = p;
-        if (p == null) {
+        this.editing = ProductListController.pendingEdit;
+        ProductListController.pendingEdit = null;
+
+        if (editing == null) {
             formTitle.setText("New Product");
             saveButton.setText("Create product");
-            return;
-        }
-        formTitle.setText("Edit Product #" + p.getId());
-        saveButton.setText("Save changes");
+        } else {
+            formTitle.setText("Edit Product #" + editing.getId());
+            saveButton.setText("Save changes");
+            nameField.setText(editing.getName());
+            artistField.setText(editing.getArtistName());
+            priceField.setText(String.valueOf(editing.getPrice()));
+            stockSpinner.getValueFactory().setValue(editing.getStock());
+            barcodeField.setText(editing.getBarcode());
+            imageField.setText(editing.getImage());
+            descriptionArea.setText(editing.getDescription());
+            availableCheck.setSelected(editing.isAvailable());
 
-        nameField.setText(p.getName());
-        artistField.setText(p.getArtistName());
-        priceField.setText(String.valueOf(p.getPrice()));
-        stockSpinner.getValueFactory().setValue(p.getStock());
-        barcodeField.setText(p.getBarcode());
-        imageField.setText(p.getImage());
-        descriptionArea.setText(p.getDescription());
-        availableCheck.setSelected(p.isAvailable());
-
-        for (Category c : categoryCombo.getItems()) {
-            if (c.getId() == p.getCategoryId()) {
-                categoryCombo.setValue(c);
-                break;
+            for (Category c : categoryCombo.getItems()) {
+                if (c.getId() == editing.getCategoryId()) {
+                    categoryCombo.setValue(c); break;
+                }
             }
         }
     }
@@ -79,17 +75,18 @@ public class ProductFormController {
         String name = safe(nameField.getText());
         String artist = safe(artistField.getText());
 
-        if (name.isEmpty())   { showError("Name is required."); return; }
-        if (artist.isEmpty()) { showError("Artist name is required."); return; }
-        if (categoryCombo.getValue() == null) { showError("Please select a category (create one first if none exists)."); return; }
+        if (name.isEmpty())   { error("Name is required."); return; }
+        if (artist.isEmpty()) { error("Artist name is required."); return; }
+        if (categoryCombo.getValue() == null) {
+            error("Please select a category (create one first if none exists)."); return;
+        }
 
         double price;
         try {
             price = Double.parseDouble(priceField.getText().replace(",", ".").trim());
             if (price < 0) throw new NumberFormatException();
         } catch (Exception e) {
-            showError("Price must be a positive number.");
-            return;
+            error("Price must be a positive number."); return;
         }
 
         Product target = editing != null ? editing : new Product();
@@ -107,23 +104,17 @@ public class ProductFormController {
         try {
             if (editing == null) productService.ajouter(target);
             else productService.modifier(target);
-            close();
-        } catch (Exception e) {
-            showError("Save failed: " + e.getMessage());
-        }
+            onCancel();
+        } catch (Exception e) { error("Save failed: " + e.getMessage()); }
     }
 
-    @FXML public void onCancel() { close(); }
-
-    private void close() { ((Stage) nameField.getScene().getWindow()).close(); }
+    @FXML public void onCancel() { Router.navigate("/fxml/ProductList.fxml"); }
 
     private String safe(String s) { return s == null ? "" : s.trim(); }
 
-    private void showError(String msg) {
+    private void error(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Validation");
-        a.setHeaderText(null);
-        a.setContentText(msg);
+        a.setTitle("Validation"); a.setHeaderText(null); a.setContentText(msg);
         a.getDialogPane().getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
         a.showAndWait();
     }

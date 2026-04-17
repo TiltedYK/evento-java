@@ -25,6 +25,7 @@
   "keyToString": {
     "Application.Main.executor": "Run",
     "Application.MainApp.executor": "Run",
+    "Maven.GestionEvenement [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
@@ -72,7 +73,7 @@
       <updated>1775740997267</updated>
       <workItem from="1775740998289" duration="376000" />
       <workItem from="1775759970200" duration="307000" />
-      <workItem from="1776382880010" duration="1261000" />
+      <workItem from="1776382880010" duration="6466000" />
     </task>
     <servers />
   </component>
