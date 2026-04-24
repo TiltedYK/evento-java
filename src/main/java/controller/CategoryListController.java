@@ -1,12 +1,13 @@
 package controller;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
+import javafx.util.converter.DefaultStringConverter;
 import model.Category;
 import service.CategoryService;
 import util.Router;
@@ -17,7 +18,6 @@ public class CategoryListController {
 
     @FXML private TextField searchField;
     @FXML private TableView<Category> table;
-    @FXML private TableColumn<Category, Number> colId;
     @FXML private TableColumn<Category, String> colName;
     @FXML private TableColumn<Category, String> colDescription;
     @FXML private TableColumn<Category, Void> colActions;
@@ -29,9 +29,24 @@ public class CategoryListController {
 
     @FXML
     public void initialize() {
-        colId.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getId()));
+        table.setEditable(true);
+
         colName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
         colDescription.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDescription()));
+
+        colName.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colName.setOnEditCommit(e -> {
+            Category c = e.getRowValue();
+            c.setName(e.getNewValue());
+            try { service.modifier(c); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        colDescription.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colDescription.setOnEditCommit(e -> {
+            Category c = e.getRowValue();
+            c.setDescription(e.getNewValue());
+            try { service.modifier(c); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
 
         setupActions();
         searchField.textProperty().addListener((o, a, b) -> applyFilters());
@@ -42,19 +57,15 @@ public class CategoryListController {
 
     private void setupActions() {
         colActions.setCellFactory(col -> new TableCell<>() {
-            private final Button btnEdit = new Button("Edit");
             private final Button btnDelete = new Button("Delete");
-            private final HBox box = new HBox(6, btnEdit, btnDelete);
             {
-                btnEdit.getStyleClass().addAll("button", "btn-primary", "btn-action");
                 btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
-                btnEdit.setOnAction(e -> openForm(getTableView().getItems().get(getIndex())));
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
             }
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : box);
+                setGraphic(empty ? null : btnDelete);
             }
         });
     }
@@ -68,7 +79,6 @@ public class CategoryListController {
         try {
             List<Category> all = service.recuperer();
             String q = searchField.getText() == null ? "" : searchField.getText().trim().toLowerCase();
-
             List<Category> filtered = all.stream()
                     .filter(c -> q.isEmpty()
                             || (c.getName() != null && c.getName().toLowerCase().contains(q))
@@ -79,13 +89,16 @@ public class CategoryListController {
     }
 
     @FXML public void onReset() { searchField.clear(); }
-    @FXML public void onAdd() { openForm(null); }
+    @FXML public void onAdd() {
+        pendingEdit = null;
+        Router.navigate("/fxml/CategoryForm.fxml");
+    }
 
     private void onDelete(Category c) {
         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
         a.setTitle("Confirm deletion");
-        a.setHeaderText("Delete category #" + c.getId() + "?");
-        a.setContentText("Category: " + c.getName() + "\nProducts linked to this category may become unassigned.");
+        a.setHeaderText("Delete category \"" + c.getName() + "\"?");
+        a.setContentText("Products linked to this category may become unassigned.");
         styleAlert(a);
         a.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
@@ -93,11 +106,6 @@ public class CategoryListController {
                 catch (Exception e) { error("Delete failed: " + e.getMessage()); }
             }
         });
-    }
-
-    private void openForm(Category c) {
-        pendingEdit = c;
-        Router.navigate("/fxml/CategoryForm.fxml");
     }
 
     private void error(String msg) {

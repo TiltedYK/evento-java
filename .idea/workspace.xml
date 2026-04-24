@@ -4,11 +4,40 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01972f0c-db9c-43a3-8ba7-4084292ea57e" name="Changes" comment="" />
+    <list default="true" id="01972f0c-db9c-43a3-8ba7-4084292ea57e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/CategoryListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/CategoryListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/CollaborationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/CollaborationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/CommentListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/CommentListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/EventListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/EventListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/PartnershipRequestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/PartnershipRequestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/PostListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/PostListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/ProductListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/ProductListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/ReservationListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/ReservationListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/UserListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/UserListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/css/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/css/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/CategoryList.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/CategoryList.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/CommentList.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/CommentList.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/Dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/Dashboard.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/EventForm.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/EventForm.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/EventList.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/EventList.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/PostList.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/PostList.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/ProductList.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/ProductList.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/ReservationForm.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/ReservationForm.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/ReservationList.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/ReservationList.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/UserList.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/UserList.fxml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -21,27 +50,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MainApp.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.GestionEvenement [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/store/IdeaProjects/evento-java-main&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Application.MainApp.executor": "Run",
+    "Maven.GestionEvenement [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
+    "Maven.RunApp.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/store/IdeaProjects/evento-java-main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="evento-java-main" />
@@ -52,6 +82,36 @@
     <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
       <module name="evento-java-main" />
       <option name="filePath" />
+      <method v="2" />
+    </configuration>
+    <configuration name="RunApp" type="MavenRunConfiguration" factoryName="Maven">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="cmdOptions" />
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="javafx:run" />
+              </list>
+            </option>
+            <option name="multimoduleDir" />
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="projectsCmdOptionValues">
+              <list />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
       <method v="2" />
     </configuration>
   </component>
@@ -75,6 +135,9 @@
       <workItem from="1775759970200" duration="307000" />
       <workItem from="1776382880010" duration="6466000" />
       <workItem from="1776411633463" duration="859000" />
+      <workItem from="1776412943400" duration="4437000" />
+      <workItem from="1777019258186" duration="448000" />
+      <workItem from="1777019723690" duration="2961000" />
     </task>
     <servers />
   </component>

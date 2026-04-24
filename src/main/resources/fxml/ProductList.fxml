@@ -28,14 +28,13 @@
     </HBox>
     <TableView fx:id="table" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="colId" text="ID" prefWidth="55"/>
-            <TableColumn fx:id="colName" text="NAME" prefWidth="180"/>
-            <TableColumn fx:id="colArtist" text="ARTIST" prefWidth="140"/>
-            <TableColumn fx:id="colCategory" text="CATEGORY" prefWidth="130"/>
-            <TableColumn fx:id="colPrice" text="PRICE" prefWidth="95"/>
-            <TableColumn fx:id="colStock" text="STOCK" prefWidth="95"/>
-            <TableColumn fx:id="colAvailable" text="AVAILABILITY" prefWidth="120"/>
-            <TableColumn fx:id="colActions" text="ACTIONS" prefWidth="170"/>
+            <TableColumn fx:id="colName"      text="NAME"         prefWidth="200"/>
+            <TableColumn fx:id="colArtist"    text="ARTIST"       prefWidth="160"/>
+            <TableColumn fx:id="colCategory"  text="CATEGORY"     prefWidth="140"/>
+            <TableColumn fx:id="colPrice"     text="PRICE"        prefWidth="100"/>
+            <TableColumn fx:id="colStock"     text="STOCK"        prefWidth="100"/>
+            <TableColumn fx:id="colAvailable" text="AVAILABILITY" prefWidth="130"/>
+            <TableColumn fx:id="colActions"   text="ACTIONS"      prefWidth="120"/>
         </columns>
     </TableView>
 </VBox>

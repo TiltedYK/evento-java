@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -12,53 +12,57 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controller.ReservationFormController"
-            fitToWidth="true" styleClass="form-scroll">
-    <content>
-        <VBox spacing="22">
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Button text="← Back" styleClass="btn-ghost" onAction="#onCancel"/>
-                <Region HBox.hgrow="ALWAYS"/>
-            </HBox>
 
-            <VBox spacing="3">
-                <Label fx:id="formTitle" text="New Reservation" styleClass="page-title"/>
-                <Label text="Link an event to a user." styleClass="page-subtitle"/>
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.ReservationFormController"
+      styleClass="content-area"
+      prefWidth="560" spacing="18">
+    <padding><Insets top="28" right="32" bottom="28" left="32"/></padding>
+
+    <!-- Header -->
+    <VBox spacing="4">
+        <Label fx:id="formTitle" text="New Reservation" styleClass="form-title"/>
+        <Label text="Link an event to a user and set the number of places." styleClass="page-subtitle"/>
+        <Region prefHeight="3" prefWidth="80"
+                style="-fx-background-color: linear-gradient(to right, #6366F1, transparent); -fx-background-radius: 2;"/>
+    </VBox>
+
+    <!-- Card -->
+    <VBox styleClass="card" spacing="16">
+
+        <GridPane hgap="16" vgap="13">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/>
+                <ColumnConstraints percentWidth="50"/>
+            </columnConstraints>
+
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="EVENT ID" styleClass="field-label"/>
+                <TextField fx:id="eventIdField" promptText="e.g. 1"/>
+            </VBox>
+            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="USER ID" styleClass="field-label"/>
+                <TextField fx:id="userIdField" promptText="e.g. 5"/>
             </VBox>
 
-            <VBox styleClass="card" spacing="18">
-                <GridPane hgap="16" vgap="14">
-                    <columnConstraints>
-                        <ColumnConstraints percentWidth="50"/>
-                        <ColumnConstraints percentWidth="50"/>
-                    </columnConstraints>
-
-                    <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                        <Label text="EVENT ID" styleClass="field-label"/>
-                        <TextField fx:id="eventIdField" promptText="e.g. 1"/>
-                    </VBox>
-                    <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                        <Label text="USER ID" styleClass="field-label"/>
-                        <TextField fx:id="userIdField" promptText="e.g. 5"/>
-                    </VBox>
-
-                    <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                        <Label text="NUMBER OF PLACES" styleClass="field-label"/>
-                        <Spinner fx:id="placesSpinner" editable="true" maxWidth="Infinity"/>
-                    </VBox>
-                    <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                        <Label text="STATUS" styleClass="field-label"/>
-                        <ComboBox fx:id="statutCombo" maxWidth="Infinity"/>
-                    </VBox>
-                </GridPane>
-
-                <HBox spacing="10" alignment="CENTER_RIGHT">
-                    <Button text="Cancel" styleClass="btn-ghost" onAction="#onCancel"/>
-                    <Button fx:id="saveButton" text="Save reservation" styleClass="btn-success" onAction="#onSave"/>
-                </HBox>
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label text="NUMBER OF PLACES" styleClass="field-label"/>
+                <Spinner fx:id="placesSpinner" editable="true" maxWidth="Infinity"/>
             </VBox>
-        </VBox>
-    </content>
-</ScrollPane>
+            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label text="STATUS" styleClass="field-label"/>
+                <ComboBox fx:id="statutCombo" maxWidth="Infinity"/>
+            </VBox>
+        </GridPane>
+
+        <!-- Divider -->
+        <Region prefHeight="1"
+                style="-fx-background-color: #1C2133;"/>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Cancel" styleClass="btn-ghost" onAction="#onCancel"/>
+            <Button fx:id="saveButton" text="💾  Save Reservation" styleClass="btn-success" onAction="#onSave"/>
+        </HBox>
+    </VBox>
+</VBox>

@@ -25,10 +25,9 @@
     </HBox>
     <TableView fx:id="table" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
-            <TableColumn fx:id="colName" text="NAME" prefWidth="220"/>
-            <TableColumn fx:id="colDescription" text="DESCRIPTION" prefWidth="460"/>
-            <TableColumn fx:id="colActions" text="ACTIONS" prefWidth="170"/>
+            <TableColumn fx:id="colName"        text="NAME"        prefWidth="280"/>
+            <TableColumn fx:id="colDescription" text="DESCRIPTION" prefWidth="530"/>
+            <TableColumn fx:id="colActions"     text="ACTIONS"     prefWidth="120"/>
         </columns>
     </TableView>
 </VBox>

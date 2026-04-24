@@ -1,12 +1,13 @@
 package controller;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
+import javafx.util.converter.DefaultStringConverter;
 import model.Comment;
 import service.CommentService;
 import util.Router;
@@ -19,9 +20,6 @@ public class CommentListController {
     @FXML private TextField searchField;
     @FXML private ComboBox<String> stateFilter;
     @FXML private TableView<Comment> table;
-    @FXML private TableColumn<Comment, Number> colId;
-    @FXML private TableColumn<Comment, Number> colPost;
-    @FXML private TableColumn<Comment, Number> colAuthor;
     @FXML private TableColumn<Comment, String> colContent;
     @FXML private TableColumn<Comment, String> colCreated;
     @FXML private TableColumn<Comment, String> colState;
@@ -38,14 +36,19 @@ public class CommentListController {
         stateFilter.getItems().addAll("all", "active", "deleted");
         stateFilter.setValue("all");
 
-        colId.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getId()));
-        colPost.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getPostId()));
-        colAuthor.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getAuthorId()));
+        table.setEditable(true);
+
         colContent.setCellValueFactory(c -> new SimpleStringProperty(preview(c.getValue().getContent())));
         colCreated.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().getCreatedAt() != null ? c.getValue().getCreatedAt().format(FMT) : ""));
         colState.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().getDeletedAt() != null ? "deleted" : "active"));
+
+        colContent.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colContent.setOnEditCommit(e -> {
+            Comment c = e.getRowValue(); c.setContent(e.getNewValue());
+            try { service.modifier(c); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
 
         setupStatePill();
         setupActions();
@@ -82,15 +85,12 @@ public class CommentListController {
     private void setupActions() {
         colActions.setCellFactory(col -> new TableCell<>() {
             private final Button btnView = new Button("View");
-            private final Button btnEdit = new Button("Edit");
             private final Button btnDelete = new Button("Delete");
-            private final HBox box = new HBox(6, btnView, btnEdit, btnDelete);
+            private final HBox box = new HBox(6, btnView, btnDelete);
             {
                 btnView.getStyleClass().addAll("button", "btn-ghost", "btn-action");
-                btnEdit.getStyleClass().addAll("button", "btn-primary", "btn-action");
                 btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
                 btnView.setOnAction(e -> onView(getTableView().getItems().get(getIndex())));
-                btnEdit.setOnAction(e -> openForm(getTableView().getItems().get(getIndex())));
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
             }
             @Override
@@ -111,12 +111,9 @@ public class CommentListController {
             List<Comment> all = service.recuperer();
             String q = searchField.getText() == null ? "" : searchField.getText().trim().toLowerCase();
             String st = stateFilter.getValue();
-
             List<Comment> filtered = all.stream()
                     .filter(c -> q.isEmpty()
-                            || (c.getContent() != null && c.getContent().toLowerCase().contains(q))
-                            || String.valueOf(c.getPostId()).equals(q)
-                            || String.valueOf(c.getAuthorId()).equals(q))
+                            || (c.getContent() != null && c.getContent().toLowerCase().contains(q)))
                     .filter(c -> st == null || st.equals("all")
                             || (st.equals("active") && c.getDeletedAt() == null)
                             || (st.equals("deleted") && c.getDeletedAt() != null))
@@ -126,12 +123,15 @@ public class CommentListController {
     }
 
     @FXML public void onReset() { searchField.clear(); stateFilter.setValue("all"); }
-    @FXML public void onAdd() { openForm(null); }
+    @FXML public void onAdd() {
+        pendingEdit = null;
+        Router.navigate("/fxml/CommentForm.fxml");
+    }
 
     private void onView(Comment c) {
         Alert a = new Alert(Alert.AlertType.INFORMATION);
         a.setTitle("Comment");
-        a.setHeaderText("Comment #" + c.getId() + " — post " + c.getPostId());
+        a.setHeaderText("Comment — post " + c.getPostId());
         a.setContentText(c.getContent() == null ? "(empty)" : c.getContent());
         a.getDialogPane().setPrefWidth(520);
         styleAlert(a); a.showAndWait();
@@ -140,8 +140,8 @@ public class CommentListController {
     private void onDelete(Comment c) {
         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
         a.setTitle("Confirm deletion");
-        a.setHeaderText("Delete comment #" + c.getId() + "?");
-        a.setContentText("This action cannot be undone.");
+        a.setHeaderText("Delete this comment?");
+        a.setContentText("\"" + preview(c.getContent()) + "\"");
         styleAlert(a);
         a.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
@@ -149,11 +149,6 @@ public class CommentListController {
                 catch (Exception e) { error("Delete failed: " + e.getMessage()); }
             }
         });
-    }
-
-    private void openForm(Comment c) {
-        pendingEdit = c;
-        Router.navigate("/fxml/CommentForm.fxml");
     }
 
     private void error(String msg) {

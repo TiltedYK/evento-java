@@ -1,12 +1,13 @@
 package controller;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
+import javafx.util.converter.DefaultStringConverter;
 import model.User;
 import service.UserService;
 import util.Router;
@@ -19,7 +20,6 @@ public class UserListController {
     @FXML private ComboBox<String> roleFilter;
     @FXML private ComboBox<String> stateFilter;
     @FXML private TableView<User> table;
-    @FXML private TableColumn<User, Number> colId;
     @FXML private TableColumn<User, String> colNom;
     @FXML private TableColumn<User, String> colPrenom;
     @FXML private TableColumn<User, String> colEmail;
@@ -40,13 +40,38 @@ public class UserListController {
         stateFilter.getItems().addAll("all", "active", "banned", "deleted");
         stateFilter.setValue("all");
 
-        colId.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getId()));
+        table.setEditable(true);
+
         colNom.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNom()));
         colPrenom.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getPrenom()));
         colEmail.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEmail()));
         colTel.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNumTelephone()));
         colRole.setCellValueFactory(c -> new SimpleStringProperty(shortRole(c.getValue().getRoles())));
         colState.setCellValueFactory(c -> new SimpleStringProperty(userState(c.getValue())));
+
+        colNom.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colNom.setOnEditCommit(e -> {
+            User u = e.getRowValue(); u.setNom(e.getNewValue());
+            try { service.modifier(u); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        colPrenom.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colPrenom.setOnEditCommit(e -> {
+            User u = e.getRowValue(); u.setPrenom(e.getNewValue());
+            try { service.modifier(u); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        colEmail.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colEmail.setOnEditCommit(e -> {
+            User u = e.getRowValue(); u.setEmail(e.getNewValue());
+            try { service.modifier(u); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        colTel.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colTel.setOnEditCommit(e -> {
+            User u = e.getRowValue(); u.setNumTelephone(e.getNewValue());
+            try { service.modifier(u); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
 
         setupStatePill();
         setupActions();
@@ -95,15 +120,12 @@ public class UserListController {
 
     private void setupActions() {
         colActions.setCellFactory(col -> new TableCell<>() {
-            private final Button btnEdit = new Button("Edit");
             private final Button btnBan = new Button("Ban");
             private final Button btnDelete = new Button("Delete");
-            private final HBox box = new HBox(6, btnEdit, btnBan, btnDelete);
+            private final HBox box = new HBox(6, btnBan, btnDelete);
             {
-                btnEdit.getStyleClass().addAll("button", "btn-primary", "btn-action");
                 btnBan.getStyleClass().addAll("button", "btn-ghost", "btn-action");
                 btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
-                btnEdit.setOnAction(e -> openForm(getTableView().getItems().get(getIndex())));
                 btnBan.setOnAction(e -> onToggleBan(getTableView().getItems().get(getIndex())));
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
             }
@@ -129,7 +151,6 @@ public class UserListController {
             String q = searchField.getText() == null ? "" : searchField.getText().trim().toLowerCase();
             String role = roleFilter.getValue();
             String state = stateFilter.getValue();
-
             List<User> filtered = all.stream()
                     .filter(u -> q.isEmpty()
                             || (u.getNom() != null && u.getNom().toLowerCase().contains(q))
@@ -148,13 +169,16 @@ public class UserListController {
         searchField.clear(); roleFilter.setValue("all"); stateFilter.setValue("all");
     }
 
-    @FXML public void onAdd() { openForm(null); }
+    @FXML public void onAdd() {
+        pendingEdit = null;
+        Router.navigate("/fxml/UserForm.fxml");
+    }
 
     private void onDelete(User u) {
         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
         a.setTitle("Confirm deletion");
-        a.setHeaderText("Delete user #" + u.getId() + "?");
-        a.setContentText("User: " + u.getPrenom() + " " + u.getNom() + "\nThis action cannot be undone.");
+        a.setHeaderText("Delete user \"" + u.getPrenom() + " " + u.getNom() + "\"?");
+        a.setContentText("This action cannot be undone.");
         styleAlert(a);
         a.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
@@ -170,11 +194,6 @@ public class UserListController {
             service.modifier(u);
             refresh();
         } catch (Exception e) { error("Update failed: " + e.getMessage()); }
-    }
-
-    private void openForm(User u) {
-        pendingEdit = u;
-        Router.navigate("/fxml/UserForm.fxml");
     }
 
     private void error(String msg) {

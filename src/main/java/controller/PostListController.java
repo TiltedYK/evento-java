@@ -1,12 +1,13 @@
 package controller;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
+import javafx.util.converter.DefaultStringConverter;
 import model.Post;
 import service.PostService;
 import util.Router;
@@ -19,10 +20,8 @@ public class PostListController {
     @FXML private TextField searchField;
     @FXML private ComboBox<String> stateFilter;
     @FXML private TableView<Post> table;
-    @FXML private TableColumn<Post, Number> colId;
     @FXML private TableColumn<Post, String> colTitle;
     @FXML private TableColumn<Post, String> colSlug;
-    @FXML private TableColumn<Post, Number> colAuthor;
     @FXML private TableColumn<Post, String> colCreated;
     @FXML private TableColumn<Post, String> colState;
     @FXML private TableColumn<Post, Void> colActions;
@@ -38,14 +37,26 @@ public class PostListController {
         stateFilter.getItems().addAll("all", "active", "deleted");
         stateFilter.setValue("all");
 
-        colId.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getId()));
+        table.setEditable(true);
+
         colTitle.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getTitle()));
         colSlug.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getSlug()));
-        colAuthor.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getAuthorId()));
         colCreated.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().getCreatedAt() != null ? c.getValue().getCreatedAt().format(FMT) : ""));
         colState.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().getDeletedAt() != null ? "deleted" : "active"));
+
+        colTitle.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colTitle.setOnEditCommit(e -> {
+            Post p = e.getRowValue(); p.setTitle(e.getNewValue());
+            try { service.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        colSlug.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colSlug.setOnEditCommit(e -> {
+            Post p = e.getRowValue(); p.setSlug(e.getNewValue());
+            try { service.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
 
         setupStatePill();
         setupActions();
@@ -76,15 +87,12 @@ public class PostListController {
     private void setupActions() {
         colActions.setCellFactory(col -> new TableCell<>() {
             private final Button btnView = new Button("View");
-            private final Button btnEdit = new Button("Edit");
             private final Button btnDelete = new Button("Delete");
-            private final HBox box = new HBox(6, btnView, btnEdit, btnDelete);
+            private final HBox box = new HBox(6, btnView, btnDelete);
             {
                 btnView.getStyleClass().addAll("button", "btn-ghost", "btn-action");
-                btnEdit.getStyleClass().addAll("button", "btn-primary", "btn-action");
                 btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
                 btnView.setOnAction(e -> onView(getTableView().getItems().get(getIndex())));
-                btnEdit.setOnAction(e -> openForm(getTableView().getItems().get(getIndex())));
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
             }
             @Override
@@ -105,7 +113,6 @@ public class PostListController {
             List<Post> all = service.recuperer();
             String q = searchField.getText() == null ? "" : searchField.getText().trim().toLowerCase();
             String st = stateFilter.getValue();
-
             List<Post> filtered = all.stream()
                     .filter(p -> q.isEmpty()
                             || (p.getTitle() != null && p.getTitle().toLowerCase().contains(q))
@@ -119,7 +126,10 @@ public class PostListController {
     }
 
     @FXML public void onReset() { searchField.clear(); stateFilter.setValue("all"); }
-    @FXML public void onAdd() { openForm(null); }
+    @FXML public void onAdd() {
+        pendingEdit = null;
+        Router.navigate("/fxml/PostForm.fxml");
+    }
 
     private void onView(Post p) {
         Alert a = new Alert(Alert.AlertType.INFORMATION);
@@ -135,8 +145,8 @@ public class PostListController {
     private void onDelete(Post p) {
         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
         a.setTitle("Confirm deletion");
-        a.setHeaderText("Delete post #" + p.getId() + "?");
-        a.setContentText("\"" + p.getTitle() + "\"\nThis will also hide related comments.");
+        a.setHeaderText("Delete post \"" + p.getTitle() + "\"?");
+        a.setContentText("This will also hide related comments.");
         styleAlert(a);
         a.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
@@ -144,11 +154,6 @@ public class PostListController {
                 catch (Exception e) { error("Delete failed: " + e.getMessage()); }
             }
         });
-    }
-
-    private void openForm(Post p) {
-        pendingEdit = p;
-        Router.navigate("/fxml/PostForm.fxml");
     }
 
     private void error(String msg) {

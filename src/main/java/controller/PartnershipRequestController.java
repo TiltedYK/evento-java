@@ -220,9 +220,7 @@ public class PartnershipRequestController implements Initializable {
         }
     }
 
-    // ==========================================
-    // MÉTHODE DE VALIDATION DES CONTRÔLES
-    // ==========================================
+
     private boolean validateInput() {
         StringBuilder error = new StringBuilder();
 

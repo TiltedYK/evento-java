@@ -1,46 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17"
+<BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controller.DashboardController"
-            prefWidth="1280" prefHeight="780">
+            prefWidth="1240" prefHeight="760">
 
     <left>
-        <VBox styleClass="sidebar" prefWidth="234">
-            <children>
-                <Label text="Evento" styleClass="sidebar-title"/>
-                <Label text="EVENT MANAGEMENT" styleClass="sidebar-subtitle"/>
+        <VBox styleClass="sidebar" prefWidth="224">
+            <!-- Logo block -->
+            <VBox spacing="1" style="-fx-padding: 4 6 22 6;">
+                <Label text="⬡  EVENTO" styleClass="sidebar-title"/>
+                <Label text="Event Management System" styleClass="sidebar-subtitle"/>
+            </VBox>
 
-                <Button fx:id="btnEvents" text="Events" styleClass="nav-button" onAction="#openEvents"/>
-                <Button fx:id="btnReservations" text="Reservations" styleClass="nav-button" onAction="#openReservations"/>
-                <Button fx:id="btnUsers" text="Users" styleClass="nav-button" onAction="#openUsers"/>
+            <!-- Nav section label -->
+            <Label text="NAVIGATION" styleClass="sidebar-subtitle"
+                   style="-fx-padding: 0 0 6 10; -fx-font-size: 9px; -fx-font-weight: bold;"/>
 
-                <Separator/>
+            <Button fx:id="btnEvents"         text="🎵  Events"         styleClass="nav-button" onAction="#openEvents"/>
+            <Button fx:id="btnReservations"   text="🎟  Reservations"   styleClass="nav-button" onAction="#openReservations"/>
+            <Button fx:id="btnUsers"          text="👤  Users"          styleClass="nav-button" onAction="#openUsers"/>
+            <Button fx:id="btnProducts"       text="📦  Products"       styleClass="nav-button" onAction="#openProducts"/>
+            <Button fx:id="btnCategories"     text="🏷  Categories"     styleClass="nav-button" onAction="#openCategories"/>
+            <Button fx:id="btnPosts"          text="📝  Posts"          styleClass="nav-button" onAction="#openPosts"/>
+            <Button fx:id="btnComments"       text="💬  Comments"       styleClass="nav-button" onAction="#openComments"/>
+            <Button fx:id="btnCollaborations" text="🤝  Collaborations" styleClass="nav-button" onAction="#openCollaborations"/>
+            <Button fx:id="btnPartnerships"   text="🔗  Partnerships"   styleClass="nav-button" onAction="#openPartnerships"/>
+            <Button fx:id="btnReferrals"      text="📣  Referrals"      styleClass="nav-button" onAction="#openReferrals"/>
 
-                <Button fx:id="btnProducts" text="Products" styleClass="nav-button" onAction="#openProducts"/>
-                <Button fx:id="btnCategories" text="Categories" styleClass="nav-button" onAction="#openCategories"/>
+            <Region VBox.vgrow="ALWAYS"/>
 
-                <Separator/>
-
-                <Button fx:id="btnPosts" text="Posts" styleClass="nav-button" onAction="#openPosts"/>
-                <Button fx:id="btnComments" text="Comments" styleClass="nav-button" onAction="#openComments"/>
-                <Separator/>
-
-                <Button fx:id="btnCollaborations" text="Collaborations" styleClass="nav-button" onAction="#openCollaborations"/>
-                <Button fx:id="btnPartnerships" text="Partnerships" styleClass="nav-button" onAction="#openPartnerships"/>
-                <Button fx:id="btnReferrals" text="Referral Hits" styleClass="nav-button" onAction="#openReferrals"/>
-                <Region VBox.vgrow="ALWAYS"/>
-
-                <Label text="v2.0.0 — PREMIUM" styleClass="sidebar-subtitle"/>
-            </children>
+            <!-- Footer version -->
+            <Label text="v1.0  ·  Evento" styleClass="sidebar-subtitle"
+                   style="-fx-padding: 0 0 0 8;"/>
         </VBox>
     </left>
 

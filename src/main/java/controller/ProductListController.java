@@ -7,7 +7,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
+import javafx.util.converter.DefaultStringConverter;
 import model.Category;
 import model.Product;
 import service.CategoryService;
@@ -24,7 +26,6 @@ public class ProductListController {
     @FXML private ComboBox<String> categoryFilter;
     @FXML private ComboBox<String> availabilityFilter;
     @FXML private TableView<Product> table;
-    @FXML private TableColumn<Product, Number> colId;
     @FXML private TableColumn<Product, String> colName;
     @FXML private TableColumn<Product, String> colArtist;
     @FXML private TableColumn<Product, String> colCategory;
@@ -51,7 +52,8 @@ public class ProductListController {
         availabilityFilter.getItems().addAll("all", "available", "unavailable");
         availabilityFilter.setValue("all");
 
-        colId.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getId()));
+        table.setEditable(true);
+
         colName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
         colArtist.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getArtistName()));
         colCategory.setCellValueFactory(c -> new SimpleStringProperty(
@@ -60,6 +62,18 @@ public class ProductListController {
         colStock.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getStock()));
         colAvailable.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().isAvailable() ? "available" : "unavailable"));
+
+        colName.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colName.setOnEditCommit(e -> {
+            Product p = e.getRowValue(); p.setName(e.getNewValue());
+            try { productService.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        colArtist.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colArtist.setOnEditCommit(e -> {
+            Product p = e.getRowValue(); p.setArtistName(e.getNewValue());
+            try { productService.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
 
         formatPriceColumn();
         setupStockColoring();
@@ -77,9 +91,7 @@ public class ProductListController {
     private void loadCategoryNames() {
         categoryNames.clear();
         try {
-            for (Category c : categoryService.recuperer()) {
-                categoryNames.put(c.getId(), c.getName());
-            }
+            for (Category c : categoryService.recuperer()) categoryNames.put(c.getId(), c.getName());
         } catch (Exception e) { /* silent */ }
     }
 
@@ -101,9 +113,9 @@ public class ProductListController {
                 if (empty || item == null) { setText(null); setStyle(""); return; }
                 int stock = item.intValue();
                 setText(String.valueOf(stock));
-                if (stock == 0)       setStyle("-fx-text-fill: #D28994; -fx-font-weight: bold;");
-                else if (stock < 5)   setStyle("-fx-text-fill: #DEBC87; -fx-font-weight: bold;");
-                else                  setStyle("-fx-text-fill: #E8ECF2;");
+                if (stock == 0)     setStyle("-fx-text-fill: #D28994; -fx-font-weight: bold;");
+                else if (stock < 5) setStyle("-fx-text-fill: #DEBC87; -fx-font-weight: bold;");
+                else                setStyle("-fx-text-fill: #E8ECF2;");
             }
         });
     }
@@ -126,29 +138,22 @@ public class ProductListController {
 
     private void setupActions() {
         colActions.setCellFactory(col -> new TableCell<>() {
-            private final Button btnEdit = new Button("Edit");
             private final Button btnDelete = new Button("Delete");
-            private final HBox box = new HBox(6, btnEdit, btnDelete);
             {
-                btnEdit.getStyleClass().addAll("button", "btn-primary", "btn-action");
                 btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
-                btnEdit.setOnAction(e -> openForm(getTableView().getItems().get(getIndex())));
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
             }
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : box);
+                setGraphic(empty ? null : btnDelete);
             }
         });
     }
 
     private void refresh() {
-        try {
-            loadCategoryNames();
-            data.setAll(productService.recuperer());
-            applyFilters();
-        } catch (Exception e) { error("Failed to load products: " + e.getMessage()); }
+        try { loadCategoryNames(); data.setAll(productService.recuperer()); applyFilters(); }
+        catch (Exception e) { error("Failed to load products: " + e.getMessage()); }
     }
 
     private void applyFilters() {
@@ -157,7 +162,6 @@ public class ProductListController {
             String q = searchField.getText() == null ? "" : searchField.getText().trim().toLowerCase();
             String cat = categoryFilter.getValue();
             String av = availabilityFilter.getValue();
-
             List<Product> filtered = all.stream()
                     .filter(p -> q.isEmpty()
                             || (p.getName() != null && p.getName().toLowerCase().contains(q))
@@ -173,18 +177,19 @@ public class ProductListController {
     }
 
     @FXML public void onReset() {
-        searchField.clear();
-        categoryFilter.setValue("all");
-        availabilityFilter.setValue("all");
+        searchField.clear(); categoryFilter.setValue("all"); availabilityFilter.setValue("all");
     }
 
-    @FXML public void onAdd() { openForm(null); }
+    @FXML public void onAdd() {
+        pendingEdit = null;
+        Router.navigate("/fxml/ProductForm.fxml");
+    }
 
     private void onDelete(Product p) {
         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
         a.setTitle("Confirm deletion");
-        a.setHeaderText("Delete product #" + p.getId() + "?");
-        a.setContentText(p.getName() + "\nThis action cannot be undone.");
+        a.setHeaderText("Delete product \"" + p.getName() + "\"?");
+        a.setContentText("This action cannot be undone.");
         styleAlert(a);
         a.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
@@ -192,11 +197,6 @@ public class ProductListController {
                 catch (Exception e) { error("Delete failed: " + e.getMessage()); }
             }
         });
-    }
-
-    private void openForm(Product p) {
-        pendingEdit = p;
-        Router.navigate("/fxml/ProductForm.fxml");
     }
 
     private void error(String msg) {

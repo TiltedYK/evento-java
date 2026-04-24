@@ -190,9 +190,7 @@ public class CollaborationController implements Initializable {
         }
     }
     
-    // ==========================================
-    // MÉTHODE DE VALIDATION DES CONTRÔLES (EXCELLENT)
-    // ==========================================
+
     private boolean validateInput() {
         StringBuilder errorMessage = new StringBuilder();
 

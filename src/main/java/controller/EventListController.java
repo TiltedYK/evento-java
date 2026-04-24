@@ -1,12 +1,13 @@
 package controller;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
+import javafx.util.converter.DefaultStringConverter;
 import model.Event;
 import service.EventService;
 import util.Router;
@@ -19,12 +20,10 @@ public class EventListController {
     @FXML private TextField searchField;
     @FXML private ComboBox<String> statusFilter;
     @FXML private TableView<Event> eventsTable;
-    @FXML private TableColumn<Event, Number> colId;
     @FXML private TableColumn<Event, String> colTitre;
     @FXML private TableColumn<Event, String> colDate;
     @FXML private TableColumn<Event, String> colVenue;
     @FXML private TableColumn<Event, String> colGenre;
-    @FXML private TableColumn<Event, Number> colCapacite;
     @FXML private TableColumn<Event, String> colStatut;
     @FXML private TableColumn<Event, Void> colActions;
 
@@ -32,21 +31,39 @@ public class EventListController {
     private final ObservableList<Event> data = FXCollections.observableArrayList();
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static Event pendingEdit; // passed to form
+    public static Event pendingEdit;
 
     @FXML
     public void initialize() {
         statusFilter.getItems().addAll("all", "draft", "published", "cancelled", "completed");
         statusFilter.setValue("all");
 
-        colId.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getId()));
+        eventsTable.setEditable(true);
+
         colTitre.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getTitre()));
         colDate.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().getDateHeure() != null ? c.getValue().getDateHeure().format(DATE_FMT) : ""));
         colVenue.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getVenue()));
         colGenre.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getGenre()));
-        colCapacite.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getCapacite()));
         colStatut.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStatut()));
+
+        colTitre.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colTitre.setOnEditCommit(e -> {
+            Event ev = e.getRowValue(); ev.setTitre(e.getNewValue());
+            try { service.modifier(ev); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        colVenue.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colVenue.setOnEditCommit(e -> {
+            Event ev = e.getRowValue(); ev.setVenue(e.getNewValue());
+            try { service.modifier(ev); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        colGenre.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colGenre.setOnEditCommit(e -> {
+            Event ev = e.getRowValue(); ev.setGenre(e.getNewValue());
+            try { service.modifier(ev); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
 
         setupStatusPillColumn();
         setupActionsColumn();
@@ -73,8 +90,7 @@ public class EventListController {
                         case "draft"                  -> pill.getStyleClass().add("status-draft");
                         default                       -> pill.getStyleClass().add("status-pending");
                     }
-                    setGraphic(pill);
-                    setText(null);
+                    setGraphic(pill); setText(null);
                 }
             }
         });
@@ -82,28 +98,22 @@ public class EventListController {
 
     private void setupActionsColumn() {
         colActions.setCellFactory(col -> new TableCell<>() {
-            private final Button btnEdit = new Button("Edit");
             private final Button btnDelete = new Button("Delete");
-            private final HBox box = new HBox(6, btnEdit, btnDelete);
             {
-                btnEdit.getStyleClass().addAll("button", "btn-primary", "btn-action");
                 btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
-                btnEdit.setOnAction(e -> openForm(getTableView().getItems().get(getIndex())));
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
             }
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : box);
+                setGraphic(empty ? null : btnDelete);
             }
         });
     }
 
     private void refresh() {
-        try {
-            data.setAll(service.recuperer());
-            applyFilters();
-        } catch (Exception e) { error("Failed to load events: " + e.getMessage()); }
+        try { data.setAll(service.recuperer()); applyFilters(); }
+        catch (Exception e) { error("Failed to load events: " + e.getMessage()); }
     }
 
     private void applyFilters() {
@@ -111,7 +121,6 @@ public class EventListController {
             List<Event> all = service.recuperer();
             String q = searchField.getText() == null ? "" : searchField.getText().trim().toLowerCase();
             String st = statusFilter.getValue();
-
             List<Event> filtered = all.stream()
                     .filter(ev -> q.isEmpty()
                             || (ev.getTitre() != null && ev.getTitre().toLowerCase().contains(q))
@@ -123,18 +132,17 @@ public class EventListController {
         } catch (Exception e) { error("Filter failed: " + e.getMessage()); }
     }
 
-    @FXML public void onReset() {
-        searchField.clear();
-        statusFilter.setValue("all");
+    @FXML public void onReset() { searchField.clear(); statusFilter.setValue("all"); }
+    @FXML public void onAdd() {
+        pendingEdit = null;
+        Router.navigate("/fxml/EventForm.fxml");
     }
-
-    @FXML public void onAdd() { openForm(null); }
 
     private void onDelete(Event ev) {
         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
         a.setTitle("Confirm deletion");
-        a.setHeaderText("Delete event #" + ev.getId() + "?");
-        a.setContentText("This action cannot be undone.\nEvent: " + ev.getTitre());
+        a.setHeaderText("Delete event \"" + ev.getTitre() + "\"?");
+        a.setContentText("This action cannot be undone.");
         styleAlert(a);
         a.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
@@ -142,11 +150,6 @@ public class EventListController {
                 catch (Exception e) { error("Delete failed: " + e.getMessage()); }
             }
         });
-    }
-
-    private void openForm(Event ev) {
-        pendingEdit = ev;
-        Router.navigate("/fxml/EventForm.fxml");
     }
 
     private void error(String msg) {
