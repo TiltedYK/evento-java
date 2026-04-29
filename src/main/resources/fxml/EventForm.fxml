@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.EventFormController"
+      styleClass="content-area"
+      prefWidth="680" spacing="18">
+    <padding><Insets top="28" right="32" bottom="28" left="32"/></padding>
+
+    <!-- Header -->
+    <VBox spacing="4">
+        <Label fx:id="formTitle" text="New Event" styleClass="form-title"/>
+        <Label text="Fill in the details below to create or update an event." styleClass="page-subtitle"/>
+        <Region prefHeight="3" prefWidth="80"
+                style="-fx-background-color: linear-gradient(to right, #6366F1, transparent); -fx-background-radius: 2;"/>
+    </VBox>
+
+    <!-- Card -->
+    <VBox styleClass="card" spacing="16">
+
+        <GridPane hgap="16" vgap="13">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50"/>
+                <ColumnConstraints percentWidth="50"/>
+            </columnConstraints>
+
+            <!-- Title (full width) -->
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
+                <Label text="TITLE" styleClass="field-label"/>
+                <TextField fx:id="titreField" promptText="e.g. Summer Jazz Night"/>
+            </VBox>
+
+            <!-- Date + Time -->
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label text="DATE" styleClass="field-label"/>
+                <DatePicker fx:id="datePicker" maxWidth="Infinity"/>
+            </VBox>
+            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label text="TIME  (HH:mm)" styleClass="field-label"/>
+                <TextField fx:id="timeField" promptText="20:30"/>
+            </VBox>
+
+            <!-- Capacity + Status -->
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                <Label text="CAPACITY" styleClass="field-label"/>
+                <Spinner fx:id="capaciteSpinner" editable="true" maxWidth="Infinity"/>
+            </VBox>
+            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <Label text="STATUS" styleClass="field-label"/>
+                <ComboBox fx:id="statutCombo" maxWidth="Infinity"/>
+            </VBox>
+
+            <!-- Venue + Genre -->
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="3">
+                <Label text="VENUE" styleClass="field-label"/>
+                <TextField fx:id="venueField" promptText="e.g. Carthage Amphitheater"/>
+            </VBox>
+            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <Label text="GENRE" styleClass="field-label"/>
+                <TextField fx:id="genreField" promptText="e.g. Jazz, Rock, Electronic"/>
+            </VBox>
+
+            <!-- Location (full width) -->
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2">
+                <Label text="LOCATION / ADDRESS" styleClass="field-label"/>
+                <TextField fx:id="locationField" promptText="Full address or city — used for weather lookup"/>
+            </VBox>
+
+            <!-- Weather preview -->
+            <VBox spacing="3" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2">
+                <Label fx:id="weatherLabel" text="🌤  Weather will appear when you fill in Venue or Location"
+                       style="-fx-font-size:11px; -fx-text-fill:#7880A0; -fx-font-style:italic;"/>
+            </VBox>
+
+            <!-- Image (full width) -->
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="2">
+                <Label text="COVER IMAGE" styleClass="field-label"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <TextField fx:id="imageField" promptText="filename.jpg" HBox.hgrow="ALWAYS"/>
+                    <Button text="Browse…" styleClass="btn-ghost" onAction="#onBrowseImage"/>
+                </HBox>
+            </VBox>
+
+            <!-- Description -->
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.columnSpan="2">
+                <Label text="DESCRIPTION" styleClass="field-label"/>
+                <TextArea fx:id="descriptionArea" promptText="Describe the event…"
+                          prefRowCount="4" wrapText="true"/>
+            </VBox>
+        </GridPane>
+
+        <Region prefHeight="1" style="-fx-background-color: #1C2133;"/>
+
+        <HBox spacing="10" alignment="CENTER_RIGHT">
+            <Button text="Cancel" styleClass="btn-ghost" onAction="#onCancel"/>
+            <Button fx:id="saveButton" text="💾  Save Event" styleClass="btn-success" onAction="#onSave"/>
+        </HBox>
+    </VBox>
+</VBox>

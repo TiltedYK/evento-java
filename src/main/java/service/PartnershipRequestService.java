@@ -19,7 +19,7 @@ public class PartnershipRequestService implements IService<PartnershipRequest> {
 
     @Override
     public void ajouter(PartnershipRequest p) throws SQLException {
-        String sql = "INSERT INTO partnership_request (contact_name, email, company_name, phone, message, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO partnership_request (contact_name, email, company_name, phone, message, status, created_at, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = connection.prepareStatement(sql);
         ps.setString(1, p.getContactName());
         ps.setString(2, p.getEmail());
@@ -28,12 +28,13 @@ public class PartnershipRequestService implements IService<PartnershipRequest> {
         ps.setString(5, p.getMessage());
         ps.setString(6, p.getStatus());
         ps.setTimestamp(7, Timestamp.valueOf(p.getCreatedAt()));
+        if (p.getUserId() != null) ps.setInt(8, p.getUserId()); else ps.setNull(8, Types.INTEGER);
         ps.executeUpdate();
     }
 
     @Override
     public void modifier(PartnershipRequest p) throws SQLException {
-        String sql = "UPDATE partnership_request SET contact_name = ?, email = ?, company_name = ?, phone = ?, message = ?, status = ? WHERE id = ?";
+        String sql = "UPDATE partnership_request SET contact_name = ?, email = ?, company_name = ?, phone = ?, message = ?, status = ?, user_id = ? WHERE id = ?";
         PreparedStatement ps = connection.prepareStatement(sql);
         ps.setString(1, p.getContactName());
         ps.setString(2, p.getEmail());
@@ -41,7 +42,8 @@ public class PartnershipRequestService implements IService<PartnershipRequest> {
         ps.setString(4, p.getPhone());
         ps.setString(5, p.getMessage());
         ps.setString(6, p.getStatus());
-        ps.setInt(7, p.getId());
+        if (p.getUserId() != null) ps.setInt(7, p.getUserId()); else ps.setNull(7, Types.INTEGER);
+        ps.setInt(8, p.getId());
         ps.executeUpdate();
     }
 

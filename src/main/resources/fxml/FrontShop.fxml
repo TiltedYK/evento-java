@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.FrontShopController"
+      styleClass="front-page,shop-root" spacing="0">
+
+    <!-- ── LEFT FILTER SIDEBAR ── -->
+    <VBox styleClass="shop-filter-sidebar" spacing="0" prefWidth="220" minWidth="220">
+
+        <VBox styleClass="shop-filter-header" spacing="4">
+            <padding><Insets top="20" right="16" bottom="16" left="16"/></padding>
+            <Label text="🛒  SHOP" styleClass="shop-sidebar-brand"/>
+            <Label text="Find your perfect merch" styleClass="shop-sidebar-sub"/>
+        </VBox>
+
+        <Region prefHeight="1" style="-fx-background-color:#E5E7EB;"/>
+
+        <ScrollPane styleClass="front-scroll" fitToWidth="true" VBox.vgrow="ALWAYS">
+            <VBox spacing="20" style="-fx-padding:16;">
+
+                <!-- Search -->
+                <VBox spacing="6">
+                    <Label text="SEARCH" styleClass="shop-filter-label"/>
+                    <TextField fx:id="searchField" promptText="Artist, product…"
+                               styleClass="front-search-field" onKeyReleased="#filterProducts"/>
+                </VBox>
+
+                <!-- Sort -->
+                <VBox spacing="6">
+                    <Label text="SORT BY" styleClass="shop-filter-label"/>
+                    <ComboBox fx:id="sortFilter" styleClass="front-combo" maxWidth="Infinity" onAction="#filterProducts"/>
+                </VBox>
+
+                <!-- Currency -->
+                <VBox spacing="6">
+                    <Label text="CURRENCY" styleClass="shop-filter-label"/>
+                    <ComboBox fx:id="currencyCombo" styleClass="front-combo" maxWidth="Infinity" onAction="#onCurrencyChanged"/>
+                </VBox>
+
+                <!-- Price range -->
+                <VBox spacing="8">
+                    <Label text="MAX PRICE" styleClass="shop-filter-label"/>
+                    <Slider fx:id="priceSlider" min="0" max="500" value="500" onMouseReleased="#filterProducts"/>
+                    <Label fx:id="priceLabel" text="500 TND" styleClass="shop-filter-value"/>
+                </VBox>
+
+                <!-- Live rates -->
+                <VBox spacing="4">
+                    <Label text="LIVE RATES  💱" styleClass="shop-filter-label"/>
+                    <Label fx:id="rateLabel" text="Fetching rates…" styleClass="shop-rate-label" wrapText="true"/>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+
+        <Region prefHeight="1" style="-fx-background-color:#E5E7EB;"/>
+
+        <!-- Cart summary -->
+        <VBox styleClass="shop-cart-mini" spacing="6">
+            <padding><Insets top="14" right="16" bottom="16" left="16"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <Label text="🛒" style="-fx-font-size:16px;"/>
+                <Label fx:id="cartBadge" text="Cart is empty" styleClass="shop-cart-mini-label"/>
+            </HBox>
+            <Label fx:id="cartTotalLabel"     text="0.00 TND" styleClass="shop-cart-total"/>
+            <Label fx:id="cartTotalConverted" text=""         styleClass="shop-cart-converted"/>
+            <Button fx:id="checkoutBtn" text="CHECKOUT →" styleClass="checkout-btn"
+                    maxWidth="Infinity" onAction="#onCheckout"/>
+        </VBox>
+    </VBox>
+
+    <!-- ── MAIN PRODUCT AREA ── -->
+    <VBox HBox.hgrow="ALWAYS" spacing="0">
+
+        <!-- Top bar -->
+        <HBox styleClass="shop-product-toolbar" alignment="CENTER_LEFT" spacing="10">
+            <padding><Insets top="12" right="24" bottom="12" left="20"/></padding>
+            <Label fx:id="countLabel" text="0 products" styleClass="shop-count-label"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="🗑  Clear Cart" styleClass="cart-clear-btn" onAction="#onClearCart"/>
+        </HBox>
+
+        <Region prefHeight="1" style="-fx-background-color:#E5E7EB;"/>
+
+        <!-- Product grid -->
+        <ScrollPane styleClass="front-scroll" fitToWidth="true" VBox.vgrow="ALWAYS">
+            <FlowPane fx:id="shopGrid" styleClass="shop-product-grid" hgap="20" vgap="20">
+                <padding><Insets top="20" right="24" bottom="28" left="20"/></padding>
+            </FlowPane>
+        </ScrollPane>
+    </VBox>
+
+    <!-- ── RIGHT CART DRAWER ── -->
+    <VBox fx:id="cartDrawer" styleClass="cart-panel" spacing="0" prefWidth="270" minWidth="270">
+
+        <HBox styleClass="cart-header" alignment="CENTER_LEFT" spacing="8">
+            <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
+            <Label text="CART" styleClass="cart-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+
+        <Region prefHeight="1" style="-fx-background-color:#E5E7EB;"/>
+
+        <ScrollPane styleClass="front-scroll" fitToWidth="true" VBox.vgrow="ALWAYS">
+            <VBox fx:id="cartItemsBox" spacing="8">
+                <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+
+</HBox>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="768.0" prefWidth="1024.0" stylesheets="@/css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainController">
+    
+    <left>
+        <VBox prefWidth="250.0" styleClass="sidebar" BorderPane.alignment="CENTER">
+            <children>
+                <HBox alignment="CENTER" prefHeight="80.0" prefWidth="200.0">
+                    <children>
+                        <Label styleClass="title-label" text="Collaboration" textFill="#bb86fc" />
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="30.0" />
+                    </VBox.margin>
+                </HBox>
+                
+                <Button fx:id="btnCollaborations" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showCollaborations" text="Collaborations">
+                    <styleClass>
+                        <String fx:value="button" />
+                        <String fx:value="nav-active" />
+                    </styleClass>
+                </Button>
+                
+                <Button fx:id="btnRequests" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showRequests" text="Partnership Requests" wrapText="true" />
+                
+                <Button fx:id="btnReferrals" alignment="BASELINE_LEFT" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showReferrals" text="Referral Tracking" />
+                
+            </children>
+        </VBox>
+    </left>
+    
+    <center>
+        <StackPane fx:id="contentArea" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+    </center>
+    
+</BorderPane>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.EventListController"
+      spacing="16">
+
+    <!-- ── Page header ── -->
+    <VBox spacing="4">
+        <Label text="🎵  Events" styleClass="page-title"/>
+        <Label text="Manage all your musical events and performances" styleClass="page-subtitle"/>
+        <Region prefHeight="3" prefWidth="100"
+                style="-fx-background-color: linear-gradient(to right, #6366F1, #818CF8, transparent); -fx-background-radius: 2;"/>
+    </VBox>
+
+    <!-- ── Stats bar ── -->
+    <HBox spacing="12">
+        <VBox styleClass="stat-card,stat-accent-indigo" HBox.hgrow="ALWAYS" spacing="4">
+            <Label text="TOTAL EVENTS" styleClass="stat-label"/>
+            <Label fx:id="statTotal" text="—" styleClass="stat-value"/>
+        </VBox>
+        <VBox styleClass="stat-card,stat-accent-green" HBox.hgrow="ALWAYS" spacing="4">
+            <Label text="UPCOMING" styleClass="stat-label"/>
+            <Label fx:id="statUpcoming" text="—" styleClass="stat-value"/>
+        </VBox>
+        <VBox styleClass="stat-card,stat-accent-amber" HBox.hgrow="ALWAYS" spacing="4">
+            <Label text="PUBLISHED" styleClass="stat-label"/>
+            <Label fx:id="statPublished" text="—" styleClass="stat-value"/>
+        </VBox>
+        <VBox styleClass="stat-card,stat-accent-rose" HBox.hgrow="ALWAYS" spacing="4">
+            <Label text="AVG CAPACITY" styleClass="stat-label"/>
+            <Label fx:id="statAvgCapacity" text="—" styleClass="stat-value"/>
+        </VBox>
+    </HBox>
+
+    <!-- ── Toolbar ── -->
+    <HBox spacing="10" alignment="CENTER_LEFT"
+          style="-fx-background-color: #0D0F16; -fx-padding: 10 14 10 14; -fx-background-radius: 11; -fx-border-color: #1C2133; -fx-border-radius: 11; -fx-border-width: 1;">
+        <TextField fx:id="searchField" promptText="🔍  Search title, venue, genre…"
+                   styleClass="search-field" prefWidth="240"/>
+        <ComboBox fx:id="statusFilter" promptText="Status" prefWidth="130"/>
+        <ComboBox fx:id="sortCombo"    promptText="Sort by" prefWidth="140"/>
+        <Button text="Reset" styleClass="btn-ghost" onAction="#onReset"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="📊  Stats" styleClass="btn-ghost"    onAction="#onShowStats"/>
+        <Button text="📅  iCal" styleClass="btn-ghost"    onAction="#onExportICal"/>
+        <Button text="📄  CSV"  styleClass="btn-ghost"    onAction="#onExportCSV"/>
+        <Button text="+  New Event" styleClass="btn-success" onAction="#onAdd"/>
+    </HBox>
+
+    <!-- ── Table ── -->
+    <TableView fx:id="eventsTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colTitre"   text="TITLE"    prefWidth="190"/>
+            <TableColumn fx:id="colDate"    text="DATE"     prefWidth="140"/>
+            <TableColumn fx:id="colVenue"   text="VENUE"    prefWidth="140"/>
+            <TableColumn fx:id="colGenre"   text="GENRE"    prefWidth="100"/>
+            <TableColumn fx:id="colStatut"  text="STATUS"   prefWidth="110"/>
+            <TableColumn fx:id="colActions" text="ACTIONS"  prefWidth="250"/>
+        </columns>
+    </TableView>
+
+</VBox>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.FrontPartnershipApplyController"
+      styleClass="front-page" spacing="0">
+
+    <VBox styleClass="front-page-header" spacing="10" alignment="CENTER">
+        <padding>
+            <Insets top="40" bottom="30"/>
+        </padding>
+        <Label text="🤝  BECOME A PARTNER" styleClass="front-page-title"/>
+        <Label text="Join our network and promote your brand to thousands of users." styleClass="front-page-subtitle"/>
+    </VBox>
+
+    <HBox alignment="TOP_CENTER" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets top="20" bottom="60"/>
+        </padding>
+        <VBox styleClass="card" prefWidth="550" spacing="12">
+            <padding>
+                <Insets top="40" right="40" bottom="40" left="40"/>
+            </padding>
+            
+            <Label text="Partnership Application" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="Fill out the details below and we will get back to you." style="-fx-text-fill: #5A5F78; -fx-font-size: 13px;"/>
+            
+            <VBox spacing="6">
+                <Label text="COMPANY NAME" styleClass="front-form-label"/>
+                <TextField fx:id="txtCompany" promptText="e.g. Acme Corp" styleClass="front-text-field"/>
+            </VBox>
+            
+            <HBox spacing="20">
+                <VBox HBox.hgrow="ALWAYS" spacing="6">
+                    <Label text="CONTACT PERSON" styleClass="front-form-label"/>
+                    <TextField fx:id="txtContact" promptText="Full Name" styleClass="front-text-field"/>
+                </VBox>
+                <VBox HBox.hgrow="ALWAYS" spacing="6">
+                    <Label text="EMAIL ADDRESS" styleClass="front-form-label"/>
+                    <TextField fx:id="txtEmail" promptText="contact@company.com" styleClass="front-text-field"/>
+                </VBox>
+            </HBox>
+            
+            <VBox spacing="6">
+                <Label text="PHONE NUMBER" styleClass="front-form-label"/>
+                <TextField fx:id="txtPhone" promptText="+216 -- --- ---" styleClass="front-text-field"/>
+            </VBox>
+            
+            <VBox spacing="6">
+                <Label text="PROPOSAL DETAILS" styleClass="front-form-label"/>
+                <TextArea fx:id="txtMessage" prefHeight="120" promptText="Briefly describe your vision for this partnership..." wrapText="true" styleClass="front-text-area"/>
+            </VBox>
+            
+            <Button text="Submit Application" onAction="#handleSubmit" styleClass="hero-cta-btn" maxWidth="Infinity">
+                <VBox.margin>
+                    <Insets top="20"/>
+                </VBox.margin>
+            </Button>
+            
+            <Label fx:id="lblStatus" text="" alignment="CENTER" maxWidth="Infinity">
+                <VBox.margin>
+                    <Insets top="10"/>
+                </VBox.margin>
+            </Label>
+        </VBox>
+    </HBox>
+
+</VBox>

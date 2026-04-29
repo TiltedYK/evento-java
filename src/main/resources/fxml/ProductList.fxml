@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.ProductListController"
+      spacing="22">
+    <VBox spacing="3">
+        <Label text="Products" styleClass="page-title"/>
+        <Label text="Merchandise, albums, and artist goods" styleClass="page-subtitle"/>
+    </VBox>
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="🔍 Search by name or artist..." styleClass="search-field" prefWidth="300"/>
+        <ComboBox fx:id="categoryFilter" promptText="All categories" prefWidth="180"/>
+        <ComboBox fx:id="availabilityFilter" promptText="All states" prefWidth="150"/>
+        <Button text="Reset" styleClass="btn-ghost" onAction="#onReset"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="+ New Product" styleClass="btn-success" onAction="#onAdd"/>
+    </HBox>
+    <TableView fx:id="table" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colName"      text="NAME"         prefWidth="200"/>
+            <TableColumn fx:id="colArtist"    text="ARTIST"       prefWidth="160"/>
+            <TableColumn fx:id="colCategory"  text="CATEGORY"     prefWidth="140"/>
+            <TableColumn fx:id="colPrice"     text="PRICE"        prefWidth="100"/>
+            <TableColumn fx:id="colStock"     text="STOCK"        prefWidth="100"/>
+            <TableColumn fx:id="colAvailable" text="AVAILABILITY" prefWidth="130"/>
+            <TableColumn fx:id="colActions"   text="ACTIONS"      prefWidth="120"/>
+        </columns>
+    </TableView>
+</VBox>
