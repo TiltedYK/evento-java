@@ -38,11 +38,11 @@
             </columnConstraints>
 
             <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                <Label text="EVENT ID" styleClass="field-label"/>
+                <Label text="EVENT" styleClass="field-label"/>
                 <TextField fx:id="eventIdField" promptText="e.g. 1"/>
             </VBox>
             <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                <Label text="USER ID" styleClass="field-label"/>
+                <Label text="GUEST ACCOUNT" styleClass="field-label"/>
                 <TextField fx:id="userIdField" promptText="e.g. 5"/>
             </VBox>
 

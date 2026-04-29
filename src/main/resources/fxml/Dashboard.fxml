@@ -37,12 +37,18 @@
             <Button fx:id="btnCollaborations" text="🤝  Collaborations" styleClass="nav-button" onAction="#openCollaborations"/>
             <Button fx:id="btnPartnerships"   text="🔗  Partnerships"   styleClass="nav-button" onAction="#openPartnerships"/>
             <Button fx:id="btnReferrals"      text="📣  Referrals"      styleClass="nav-button" onAction="#openReferrals"/>
+            <Button fx:id="btnSettings"       text="⚙  Settings"        styleClass="nav-button" onAction="#openSettings"/>
 
             <Region VBox.vgrow="ALWAYS"/>
 
+            <!-- Logout — pinned to bottom of the sidebar -->
+            <Button fx:id="btnLogout" text="🚪  Logout"
+                    styleClass="nav-button,nav-button-logout"
+                    onAction="#handleLogout"/>
+
             <!-- Footer version -->
             <Label text="v1.0  ·  Evento" styleClass="sidebar-subtitle"
-                   style="-fx-padding: 0 0 0 8;"/>
+                   style="-fx-padding: 8 0 0 8;"/>
         </VBox>
     </left>
 

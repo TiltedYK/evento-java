@@ -3,16 +3,25 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import controller.LoginController;
+import util.ThemeManager;
 
 public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Dashboard.fxml"));
-        Scene scene = new Scene(root, 1200, 720);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
+        Parent root = loader.load();
+        LoginController loginCtl = loader.getController();
+
+        Scene scene = new Scene(root, 1240, 760);
         scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
 
-        stage.setTitle("Evento — Event Management");
+        ThemeManager.setScene(scene);
+        ThemeManager.apply(ThemeManager.randomTheme());
+        loginCtl.attachLoginAmbience(scene);
+
+        stage.setTitle("EVENTO — Login");
         stage.setScene(scene);
         stage.setMinWidth(1050);
         stage.setMinHeight(640);

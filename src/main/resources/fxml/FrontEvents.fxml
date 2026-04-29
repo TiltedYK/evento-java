@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.FrontEventsController"
+      styleClass="front-page" spacing="0">
+
+    <!-- Header -->
+    <VBox styleClass="events-page-header" spacing="6">
+        <Label text="🎵  UPCOMING SHOWS" styleClass="front-page-title"/>
+        <Label text="Find your next live experience. No compromises." styleClass="front-page-subtitle"/>
+    </VBox>
+
+    <!-- Filter bar -->
+    <HBox styleClass="front-filters-bar" spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="🔍  Search events…"
+                   styleClass="front-search-field" prefWidth="220" onKeyReleased="#filterEvents"/>
+        <ComboBox fx:id="genreFilter" styleClass="front-combo" prefWidth="120" onAction="#filterEvents"/>
+        <ComboBox fx:id="statusFilter" styleClass="front-combo" prefWidth="120" onAction="#filterEvents"/>
+        <ComboBox fx:id="sortCombo"   styleClass="front-combo" prefWidth="130" onAction="#filterEvents"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="countLabel" text="0 shows" styleClass="front-count-label"/>
+    </HBox>
+
+    <!-- Vertical event list -->
+    <ScrollPane styleClass="front-scroll" fitToWidth="true" VBox.vgrow="ALWAYS">
+        <VBox fx:id="eventsList" spacing="0" styleClass="events-list-container">
+            <padding><Insets top="16" right="32" bottom="32" left="32"/></padding>
+        </VBox>
+    </ScrollPane>
+
+</VBox>

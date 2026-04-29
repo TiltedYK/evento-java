@@ -1,35 +1,44 @@
 package controller;
 
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.HBox;
-import javafx.util.converter.DefaultStringConverter;
+import javafx.util.converter.IntegerStringConverter;
+import model.Event;
 import model.Reservation;
+import model.User;
+import service.EventService;
 import service.ReservationService;
+import service.UserService;
 import util.Router;
 
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReservationListController {
 
     @FXML private TextField searchField;
     @FXML private ComboBox<String> statusFilter;
     @FXML private TableView<Reservation> table;
-    @FXML private TableColumn<Reservation, Number> colEvent;
-    @FXML private TableColumn<Reservation, Number> colUser;
-    @FXML private TableColumn<Reservation, Number> colPlaces;
+    @FXML private TableColumn<Reservation, String> colEvent;
+    @FXML private TableColumn<Reservation, String> colUser;
+    @FXML private TableColumn<Reservation, Integer> colPlaces;
     @FXML private TableColumn<Reservation, String> colStatut;
     @FXML private TableColumn<Reservation, String> colCreated;
     @FXML private TableColumn<Reservation, Void> colActions;
 
     private final ReservationService service = new ReservationService();
+    private final EventService eventService = new EventService();
+    private final UserService userService = new UserService();
     private final ObservableList<Reservation> data = FXCollections.observableArrayList();
+    private final Map<Integer, String> eventTitles = new HashMap<>();
+    private final Map<Integer, String> userEmails = new HashMap<>();
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public static Reservation pendingEdit;
@@ -41,12 +50,24 @@ public class ReservationListController {
 
         table.setEditable(true);
 
-        colEvent.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getEventId()));
-        colUser.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getUserId()));
-        colPlaces.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getNombrePlaces()));
+        colEvent.setCellValueFactory(c -> new SimpleStringProperty(
+                eventTitles.getOrDefault(c.getValue().getEventId(), "—")));
+        colUser.setCellValueFactory(c -> new SimpleStringProperty(
+                userEmails.getOrDefault(c.getValue().getUserId(), "—")));
+        colPlaces.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getNombrePlaces()));
         colStatut.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getStatut()));
         colCreated.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().getCreatedAt() != null ? c.getValue().getCreatedAt().format(FMT) : ""));
+
+        colPlaces.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        colPlaces.setOnEditCommit(e -> {
+            Reservation r = e.getRowValue();
+            Integer v = e.getNewValue();
+            if (v != null && v > 0) {
+                r.setNombrePlaces(v);
+                try { service.modifier(r); refresh(); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+            }
+        });
 
         // Inline edit on status field
         colStatut.setCellFactory(col -> new TableCell<>() {
@@ -111,6 +132,21 @@ public class ReservationListController {
         refresh();
     }
 
+    private void loadLookups() {
+        eventTitles.clear();
+        userEmails.clear();
+        try {
+            for (Event ev : eventService.recuperer()) {
+                String t = ev.getTitre() != null ? ev.getTitre() : "(untitled event)";
+                eventTitles.put(ev.getId(), t);
+            }
+            for (User u : userService.recuperer()) {
+                String em = u.getEmail() != null ? u.getEmail() : (u.getPrenom() + " " + u.getNom()).trim();
+                userEmails.put(u.getId(), em.isBlank() ? "—" : em);
+            }
+        } catch (Exception ignored) { }
+    }
+
     private void setupActionsColumn() {
         colActions.setCellFactory(col -> new TableCell<>() {
             private final Button btnDelete = new Button("Delete");
@@ -127,19 +163,25 @@ public class ReservationListController {
     }
 
     private void refresh() {
-        try { data.setAll(service.recuperer()); applyFilters(); }
+        try {
+            loadLookups();
+            data.setAll(service.recuperer());
+            applyFilters();
+        }
         catch (Exception e) { error("Failed to load reservations: " + e.getMessage()); }
     }
 
     private void applyFilters() {
         try {
+            loadLookups();
             List<Reservation> all = service.recuperer();
-            String q = searchField.getText() == null ? "" : searchField.getText().trim();
+            String q = searchField.getText() == null ? "" : searchField.getText().trim().toLowerCase();
             String st = statusFilter.getValue();
             List<Reservation> filtered = all.stream()
                     .filter(r -> q.isEmpty()
-                            || String.valueOf(r.getEventId()).equals(q)
-                            || String.valueOf(r.getUserId()).equals(q))
+                            || eventTitles.getOrDefault(r.getEventId(), "").toLowerCase().contains(q)
+                            || userEmails.getOrDefault(r.getUserId(), "").toLowerCase().contains(q)
+                            || String.valueOf(r.getNombrePlaces()).contains(q))
                     .filter(r -> st == null || st.equals("all")
                             || (r.getStatut() != null && r.getStatut().equalsIgnoreCase(st)))
                     .toList();
@@ -155,10 +197,12 @@ public class ReservationListController {
     }
 
     private void onDelete(Reservation r) {
+        String ev = eventTitles.getOrDefault(r.getEventId(), "this event");
+        String usr = userEmails.getOrDefault(r.getUserId(), "this user");
         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
         a.setTitle("Confirm deletion");
         a.setHeaderText("Delete this reservation?");
-        a.setContentText("Event ID: " + r.getEventId() + " — User ID: " + r.getUserId() + "\nThis action cannot be undone.");
+        a.setContentText(ev + " — " + usr + "\nThis action cannot be undone.");
         styleAlert(a);
         a.showAndWait().ifPresent(res -> {
             if (res == ButtonType.OK) {

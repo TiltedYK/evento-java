@@ -37,7 +37,7 @@
                         <TextField fx:id="titleField" promptText="e.g. Summer lineup announced"/>
                     </VBox>
                     <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                        <Label text="AUTHOR ID" styleClass="field-label"/>
+                        <Label text="AUTHOR" styleClass="field-label"/>
                         <TextField fx:id="authorIdField" promptText="e.g. 1"/>
                     </VBox>
 

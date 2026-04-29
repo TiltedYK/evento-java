@@ -1,15 +1,16 @@
 package controller;
 
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.HBox;
 import javafx.util.converter.DefaultStringConverter;
+import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.IntegerStringConverter;
 import model.Category;
 import model.Product;
 import service.CategoryService;
@@ -29,8 +30,8 @@ public class ProductListController {
     @FXML private TableColumn<Product, String> colName;
     @FXML private TableColumn<Product, String> colArtist;
     @FXML private TableColumn<Product, String> colCategory;
-    @FXML private TableColumn<Product, Number> colPrice;
-    @FXML private TableColumn<Product, Number> colStock;
+    @FXML private TableColumn<Product, Double> colPrice;
+    @FXML private TableColumn<Product, Integer> colStock;
     @FXML private TableColumn<Product, String> colAvailable;
     @FXML private TableColumn<Product, Void> colActions;
 
@@ -58,8 +59,8 @@ public class ProductListController {
         colArtist.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getArtistName()));
         colCategory.setCellValueFactory(c -> new SimpleStringProperty(
                 categoryNames.getOrDefault(c.getValue().getCategoryId(), "—")));
-        colPrice.setCellValueFactory(c -> new SimpleDoubleProperty(c.getValue().getPrice()));
-        colStock.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getStock()));
+        colPrice.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getPrice()));
+        colStock.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getStock()));
         colAvailable.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().isAvailable() ? "available" : "unavailable"));
 
@@ -75,13 +76,63 @@ public class ProductListController {
             try { productService.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
         });
 
-        formatPriceColumn();
-        setupStockColoring();
-        setupAvailabilityPill();
+        colPrice.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        colPrice.setOnEditCommit(e -> {
+            Product p = e.getRowValue();
+            Double v = e.getNewValue();
+            if (v != null) {
+                p.setPrice(v);
+                try { productService.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+            }
+        });
+
+        colStock.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        colStock.setOnEditCommit(e -> {
+            Product p = e.getRowValue();
+            Integer v = e.getNewValue();
+            if (v != null) {
+                p.setStock(v);
+                try { productService.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+            }
+        });
+
+        ObservableList<String> catChoices = FXCollections.observableArrayList();
+        colCategory.setCellFactory(ComboBoxTableCell.forTableColumn(catChoices));
+        colCategory.setOnEditCommit(e -> {
+            Product p = e.getRowValue();
+            String name = e.getNewValue();
+            if (name == null) return;
+            for (var en : categoryNames.entrySet()) {
+                if (en.getValue().equals(name)) {
+                    p.setCategoryId(en.getKey());
+                    try { productService.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+                    return;
+                }
+            }
+        });
+
+        ObservableList<String> availChoices = FXCollections.observableArrayList("available", "unavailable");
+        colAvailable.setCellFactory(ComboBoxTableCell.forTableColumn(availChoices));
+        colAvailable.setOnEditCommit(e -> {
+            Product p = e.getRowValue();
+            String v = e.getNewValue();
+            if (v == null) return;
+            p.setAvailable("available".equalsIgnoreCase(v));
+            try { productService.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        refreshCategoryChoices(catChoices);
+
         setupActions();
 
-        searchField.textProperty().addListener((o, a, b) -> applyFilters());
-        categoryFilter.valueProperty().addListener((o, a, b) -> applyFilters());
+        searchField.textProperty().addListener((o, a, b) -> {
+            refreshCategoryChoices(catChoices);
+            applyFilters();
+        });
+        categoryFilter.valueProperty().addListener((o, a, b) -> {
+            refreshCategoryChoices(catChoices);
+            applyFilters();
+        });
         availabilityFilter.valueProperty().addListener((o, a, b) -> applyFilters());
 
         table.setItems(data);
@@ -95,45 +146,11 @@ public class ProductListController {
         } catch (Exception e) { /* silent */ }
     }
 
-    private void formatPriceColumn() {
-        colPrice.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(Number item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : String.format("%.2f DT", item.doubleValue()));
-            }
-        });
-    }
-
-    private void setupStockColoring() {
-        colStock.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(Number item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) { setText(null); setStyle(""); return; }
-                int stock = item.intValue();
-                setText(String.valueOf(stock));
-                if (stock == 0)     setStyle("-fx-text-fill: #D28994; -fx-font-weight: bold;");
-                else if (stock < 5) setStyle("-fx-text-fill: #DEBC87; -fx-font-weight: bold;");
-                else                setStyle("-fx-text-fill: #E8ECF2;");
-            }
-        });
-    }
-
-    private void setupAvailabilityPill() {
-        colAvailable.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) { setGraphic(null); setText(null); }
-                else {
-                    Label pill = new Label(item);
-                    pill.getStyleClass().add("status-pill");
-                    pill.getStyleClass().add(item.equals("available") ? "status-confirmed" : "status-cancelled");
-                    setGraphic(pill); setText(null);
-                }
-            }
-        });
+    private void refreshCategoryChoices(ObservableList<String> catChoices) {
+        try {
+            loadCategoryNames();
+            catChoices.setAll(categoryNames.values().stream().sorted().toList());
+        } catch (Exception ignored) { }
     }
 
     private void setupActions() {

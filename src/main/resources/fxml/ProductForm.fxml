@@ -8,10 +8,12 @@
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <ScrollPane xmlns="http://javafx.com/javafx/17"
@@ -50,8 +52,11 @@
                     </VBox>
 
                     <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
-                        <Label text="PRICE (DT)" styleClass="field-label"/>
-                        <TextField fx:id="priceField" promptText="e.g. 59.90"/>
+                        <Label text="PRICE" styleClass="field-label"/>
+                        <HBox spacing="6">
+                            <TextField fx:id="priceField" promptText="e.g. 59.90" HBox.hgrow="ALWAYS"/>
+                            <ComboBox fx:id="currencyCombo" prefWidth="90" promptText="Currency"/>
+                        </HBox>
                     </VBox>
                     <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
                         <Label text="STOCK" styleClass="field-label"/>
@@ -63,16 +68,35 @@
                         <TextField fx:id="barcodeField" promptText="Optional"/>
                     </VBox>
                     <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                        <Label text="IMAGE (filename)" styleClass="field-label"/>
-                        <TextField fx:id="imageField" promptText="e.g. vinyl_cover.jpg"/>
+                        <Label text="SIZE" styleClass="field-label"/>
+                        <TextField fx:id="sizeField" promptText="e.g. S, M, L, XL, One size"/>
                     </VBox>
 
                     <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2">
+                        <Label text="PRODUCT IMAGE" styleClass="field-label"/>
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <StackPane minWidth="80" prefWidth="80" minHeight="80" prefHeight="80"
+                                       style="-fx-background-color:#F3F4F6;-fx-background-radius:10;-fx-border-color:#E5E7EB;-fx-border-radius:10;-fx-border-width:1;">
+                                <ImageView fx:id="productPreview" fitWidth="80" fitHeight="80" preserveRatio="true"/>
+                            </StackPane>
+                            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                <HBox spacing="6">
+                                    <Button text="📁 Choose file…" styleClass="btn-ghost" onAction="#onPickProductImage"/>
+                                    <Button text="✕ Clear"          styleClass="btn-ghost" onAction="#onClearProductImage"/>
+                                </HBox>
+                                <Label fx:id="productImageHint" text="No image — gradient placeholder will be used."
+                                       styleClass="field-label" style="-fx-text-fill:#6B7280;-fx-font-weight:normal;-fx-font-size:11px;"
+                                       wrapText="true"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2">
                         <Label text="DESCRIPTION" styleClass="field-label"/>
                         <TextArea fx:id="descriptionArea" promptText="Describe the product..." prefRowCount="4" wrapText="true"/>
                     </VBox>
 
-                    <HBox GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2">
+                    <HBox GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="2">
                         <CheckBox fx:id="availableCheck" text="Available for sale" selected="true"/>
                     </HBox>
                 </GridPane>

@@ -18,7 +18,7 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="controller.EventFormController"
       styleClass="content-area"
-      prefWidth="660" spacing="18">
+      prefWidth="680" spacing="18">
     <padding><Insets top="28" right="32" bottom="28" left="32"/></padding>
 
     <!-- Header -->
@@ -71,28 +71,40 @@
             </VBox>
             <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="3">
                 <Label text="GENRE" styleClass="field-label"/>
-                <TextField fx:id="genreField" promptText="e.g. Jazz, Rock, Mezoued"/>
+                <TextField fx:id="genreField" promptText="e.g. Jazz, Rock, Electronic"/>
             </VBox>
 
-            <!-- Location (full) -->
+            <!-- Location (full width) -->
             <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2">
-                <Label text="LOCATION" styleClass="field-label"/>
-                <TextField fx:id="locationField" promptText="Full address or city"/>
+                <Label text="LOCATION / ADDRESS" styleClass="field-label"/>
+                <TextField fx:id="locationField" promptText="Full address or city — used for weather lookup"/>
+            </VBox>
+
+            <!-- Weather preview -->
+            <VBox spacing="3" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2">
+                <Label fx:id="weatherLabel" text="🌤  Weather will appear when you fill in Venue or Location"
+                       style="-fx-font-size:11px; -fx-text-fill:#7880A0; -fx-font-style:italic;"/>
+            </VBox>
+
+            <!-- Image (full width) -->
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="2">
+                <Label text="COVER IMAGE" styleClass="field-label"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <TextField fx:id="imageField" promptText="filename.jpg" HBox.hgrow="ALWAYS"/>
+                    <Button text="Browse…" styleClass="btn-ghost" onAction="#onBrowseImage"/>
+                </HBox>
             </VBox>
 
             <!-- Description -->
-            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2">
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.columnSpan="2">
                 <Label text="DESCRIPTION" styleClass="field-label"/>
                 <TextArea fx:id="descriptionArea" promptText="Describe the event…"
                           prefRowCount="4" wrapText="true"/>
             </VBox>
         </GridPane>
 
-        <!-- Divider -->
-        <Region prefHeight="1"
-                style="-fx-background-color: #1C2133;"/>
+        <Region prefHeight="1" style="-fx-background-color: #1C2133;"/>
 
-        <!-- Actions -->
         <HBox spacing="10" alignment="CENTER_RIGHT">
             <Button text="Cancel" styleClass="btn-ghost" onAction="#onCancel"/>
             <Button fx:id="saveButton" text="💾  Save Event" styleClass="btn-success" onAction="#onSave"/>

@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.HBox;
 import javafx.util.converter.DefaultStringConverter;
 import model.Comment;
 import service.CommentService;
@@ -38,7 +37,8 @@ public class CommentListController {
 
         table.setEditable(true);
 
-        colContent.setCellValueFactory(c -> new SimpleStringProperty(preview(c.getValue().getContent())));
+        colContent.setCellValueFactory(c -> new SimpleStringProperty(
+                c.getValue().getContent() == null ? "" : c.getValue().getContent()));
         colCreated.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().getCreatedAt() != null ? c.getValue().getCreatedAt().format(FMT) : ""));
         colState.setCellValueFactory(c -> new SimpleStringProperty(
@@ -84,19 +84,15 @@ public class CommentListController {
 
     private void setupActions() {
         colActions.setCellFactory(col -> new TableCell<>() {
-            private final Button btnView = new Button("View");
             private final Button btnDelete = new Button("Delete");
-            private final HBox box = new HBox(6, btnView, btnDelete);
             {
-                btnView.getStyleClass().addAll("button", "btn-ghost", "btn-action");
                 btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
-                btnView.setOnAction(e -> onView(getTableView().getItems().get(getIndex())));
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
             }
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : box);
+                setGraphic(empty ? null : btnDelete);
             }
         });
     }
@@ -126,15 +122,6 @@ public class CommentListController {
     @FXML public void onAdd() {
         pendingEdit = null;
         Router.navigate("/fxml/CommentForm.fxml");
-    }
-
-    private void onView(Comment c) {
-        Alert a = new Alert(Alert.AlertType.INFORMATION);
-        a.setTitle("Comment");
-        a.setHeaderText("Comment — post " + c.getPostId());
-        a.setContentText(c.getContent() == null ? "(empty)" : c.getContent());
-        a.getDialogPane().setPrefWidth(520);
-        styleAlert(a); a.showAndWait();
     }
 
     private void onDelete(Comment c) {

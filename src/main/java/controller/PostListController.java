@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.layout.HBox;
 import javafx.util.converter.DefaultStringConverter;
 import model.Post;
 import service.PostService;
@@ -86,19 +85,15 @@ public class PostListController {
 
     private void setupActions() {
         colActions.setCellFactory(col -> new TableCell<>() {
-            private final Button btnView = new Button("View");
             private final Button btnDelete = new Button("Delete");
-            private final HBox box = new HBox(6, btnView, btnDelete);
             {
-                btnView.getStyleClass().addAll("button", "btn-ghost", "btn-action");
                 btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
-                btnView.setOnAction(e -> onView(getTableView().getItems().get(getIndex())));
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
             }
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : box);
+                setGraphic(empty ? null : btnDelete);
             }
         });
     }
@@ -129,17 +124,6 @@ public class PostListController {
     @FXML public void onAdd() {
         pendingEdit = null;
         Router.navigate("/fxml/PostForm.fxml");
-    }
-
-    private void onView(Post p) {
-        Alert a = new Alert(Alert.AlertType.INFORMATION);
-        a.setTitle("Post preview");
-        a.setHeaderText(p.getTitle());
-        String body = p.getContent() == null ? "" : p.getContent();
-        if (body.length() > 1500) body = body.substring(0, 1500) + "\n\n… (truncated)";
-        a.setContentText(body);
-        a.getDialogPane().setPrefWidth(560);
-        styleAlert(a); a.showAndWait();
     }
 
     private void onDelete(Post p) {

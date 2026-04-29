@@ -28,7 +28,7 @@ public class CommentFormController {
             formTitle.setText("New Comment");
             saveButton.setText("Post comment");
         } else {
-            formTitle.setText("Edit Comment #" + editing.getId());
+            formTitle.setText("Edit comment");
             saveButton.setText("Save changes");
             postIdField.setText(String.valueOf(editing.getPostId()));
             authorIdField.setText(String.valueOf(editing.getAuthorId()));
@@ -49,7 +49,7 @@ public class CommentFormController {
             authorId = Integer.parseInt(authorIdField.getText().trim());
             if (postId <= 0 || authorId <= 0) throw new NumberFormatException();
         } catch (Exception e) {
-            error("Post ID and Author ID must be positive numbers."); return;
+            error("Post and author must be positive numbers."); return;
         }
 
         Comment target = editing != null ? editing : new Comment();

@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.util.converter.DefaultStringConverter;
@@ -73,7 +74,35 @@ public class UserListController {
             try { service.modifier(u); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
         });
 
-        setupStatePill();
+        ObservableList<String> roleChoices = FXCollections.observableArrayList("User", "Admin", "Artist");
+        colRole.setCellFactory(ComboBoxTableCell.forTableColumn(roleChoices));
+        colRole.setOnEditCommit(e -> {
+            User u = e.getRowValue();
+            String v = e.getNewValue();
+            if (v == null) return;
+            String json = switch (v) {
+                case "Admin" -> "[\"ROLE_ADMIN\"]";
+                case "Artist" -> "[\"ROLE_ARTIST\"]";
+                default -> "[\"ROLE_USER\"]";
+            };
+            u.setRoles(json);
+            try { service.modifier(u); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        ObservableList<String> stateChoices = FXCollections.observableArrayList("active", "banned", "deleted");
+        colState.setCellFactory(ComboBoxTableCell.forTableColumn(stateChoices));
+        colState.setOnEditCommit(e -> {
+            User u = e.getRowValue();
+            String v = e.getNewValue();
+            if (v == null) return;
+            switch (v) {
+                case "banned" -> { u.setBanned(1); u.setDeleted(0); }
+                case "deleted" -> { u.setDeleted(1); }
+                default -> { u.setBanned(0); u.setDeleted(0); }
+            }
+            try { service.modifier(u); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
         setupActions();
 
         searchField.textProperty().addListener((o, a, b) -> applyFilters());
@@ -97,36 +126,18 @@ public class UserListController {
         return "active";
     }
 
-    private void setupStatePill() {
-        colState.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) { setGraphic(null); setText(null); }
-                else {
-                    Label pill = new Label(item);
-                    pill.getStyleClass().add("status-pill");
-                    switch (item) {
-                        case "active"  -> pill.getStyleClass().add("status-confirmed");
-                        case "banned"  -> pill.getStyleClass().add("status-cancelled");
-                        case "deleted" -> pill.getStyleClass().add("status-pending");
-                        default        -> pill.getStyleClass().add("status-draft");
-                    }
-                    setGraphic(pill); setText(null);
-                }
-            }
-        });
-    }
-
     private void setupActions() {
         colActions.setCellFactory(col -> new TableCell<>() {
-            private final Button btnBan = new Button("Ban");
+            private final Button btnBan    = new Button("Ban");
+            private final Button btnArtist = new Button("★ Artist");
             private final Button btnDelete = new Button("Delete");
-            private final HBox box = new HBox(6, btnBan, btnDelete);
+            private final HBox box = new HBox(6, btnBan, btnArtist, btnDelete);
             {
                 btnBan.getStyleClass().addAll("button", "btn-ghost", "btn-action");
+                btnArtist.getStyleClass().addAll("button", "btn-warning", "btn-action");
                 btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
                 btnBan.setOnAction(e -> onToggleBan(getTableView().getItems().get(getIndex())));
+                btnArtist.setOnAction(e -> onAcceptArtist(getTableView().getItems().get(getIndex())));
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
             }
             @Override
@@ -135,9 +146,18 @@ public class UserListController {
                 if (empty) { setGraphic(null); return; }
                 User u = getTableView().getItems().get(getIndex());
                 btnBan.setText(u.getBanned() == 1 ? "Unban" : "Ban");
+                boolean alreadyArtist = u.getRoles() != null && u.getRoles().contains("ARTIST");
+                btnArtist.setVisible(!alreadyArtist);
+                btnArtist.setManaged(!alreadyArtist);
                 setGraphic(box);
             }
         });
+    }
+
+    private void onAcceptArtist(User u) {
+        u.setRoles("[\"ROLE_ARTIST\"]");
+        try { service.modifier(u); refresh(); }
+        catch (Exception e) { error("Update failed: " + e.getMessage()); }
     }
 
     private void refresh() {

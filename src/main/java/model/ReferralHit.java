@@ -9,6 +9,10 @@ public class ReferralHit {
     private String sessionId;
     private LocalDateTime visitedAt;
     private Integer referredUserId;
+    
+    // UI Only (Transient)
+    private String collaborationTitle;
+    private String referredUserEmail;
 
     public ReferralHit() {
         this.visitedAt = LocalDateTime.now();
@@ -43,6 +47,12 @@ public class ReferralHit {
 
     public Integer getReferredUserId() { return referredUserId; }
     public void setReferredUserId(Integer referredUserId) { this.referredUserId = referredUserId; }
+
+    public String getCollaborationTitle() { return collaborationTitle; }
+    public void setCollaborationTitle(String collaborationTitle) { this.collaborationTitle = collaborationTitle; }
+
+    public String getReferredUserEmail() { return referredUserEmail; }
+    public void setReferredUserEmail(String referredUserEmail) { this.referredUserEmail = referredUserEmail; }
 
     @Override
     public String toString() {

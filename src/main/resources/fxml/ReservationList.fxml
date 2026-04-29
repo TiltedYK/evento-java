@@ -25,7 +25,7 @@
 
     <HBox spacing="10" alignment="CENTER_LEFT"
           style="-fx-background-color: #0D0F16; -fx-padding: 10 14 10 14; -fx-background-radius: 11; -fx-border-color: #1C2133; -fx-border-radius: 11; -fx-border-width: 1;">
-        <TextField fx:id="searchField" promptText="🔍  Search by user ID or event ID…"
+        <TextField fx:id="searchField" promptText="🔍  Search by event, guest email, or ticket count…"
                    styleClass="search-field" prefWidth="320"/>
         <ComboBox fx:id="statusFilter" promptText="All statuses" prefWidth="155"/>
         <Button text="Reset" styleClass="btn-ghost" onAction="#onReset"/>
@@ -35,8 +35,8 @@
 
     <TableView fx:id="table" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="colEvent"   text="EVENT ID"   prefWidth="120"/>
-            <TableColumn fx:id="colUser"    text="USER ID"    prefWidth="120"/>
+            <TableColumn fx:id="colEvent"   text="EVENT"      prefWidth="220"/>
+            <TableColumn fx:id="colUser"    text="GUEST"      prefWidth="200"/>
             <TableColumn fx:id="colPlaces"  text="PLACES"     prefWidth="100"/>
             <TableColumn fx:id="colStatut"  text="STATUS"     prefWidth="160"/>
             <TableColumn fx:id="colCreated" text="CREATED AT" prefWidth="180"/>

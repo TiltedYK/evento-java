@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.FrontProfileController"
+      styleClass="front-page" spacing="0">
+
+    <VBox styleClass="front-page-header" spacing="6">
+        <Label text="👤  MY PROFILE" styleClass="front-page-title"/>
+        <Label text="Your account, your stats, your identity." styleClass="front-page-subtitle"/>
+    </VBox>
+
+    <ScrollPane styleClass="front-scroll" fitToWidth="true" VBox.vgrow="ALWAYS">
+        <VBox spacing="24" style="-fx-padding: 28 32 32 32;">
+
+            <!-- Avatar + Identity -->
+            <HBox spacing="28" alignment="CENTER_LEFT">
+                <VBox spacing="8" alignment="CENTER">
+                    <ImageView fx:id="avatarView" fitWidth="96" fitHeight="96" preserveRatio="true"
+                               style="-fx-effect: dropshadow(gaussian,rgba(232,50,10,0.4),18,0,0,0);"/>
+                    <HBox spacing="6" alignment="CENTER">
+                        <Button text="🖼  Change" styleClass="btn-ghost" onAction="#onChangePicture"/>
+                        <Button text="✖" styleClass="btn-ghost" onAction="#onResetPicture"/>
+                    </HBox>
+                </VBox>
+                <VBox spacing="6">
+                    <Label fx:id="displayName" text="—" styleClass="profile-display-name"/>
+                    <Label fx:id="emailLabel"  text="—" styleClass="card-meta-text"/>
+                    <Label fx:id="gravatarNote" text="Avatar from Gravatar" styleClass="comment-date"/>
+                </VBox>
+            </HBox>
+
+            <!-- Stats row -->
+            <HBox spacing="14">
+                <VBox styleClass="stat-card,stat-accent-indigo" HBox.hgrow="ALWAYS" spacing="4">
+                    <Label text="RESERVATIONS" styleClass="stat-label"/>
+                    <Label fx:id="statReservations" text="—" styleClass="stat-value"/>
+                </VBox>
+                <VBox styleClass="stat-card,stat-accent-green" HBox.hgrow="ALWAYS" spacing="4">
+                    <Label text="EVENTS ATTENDED" styleClass="stat-label"/>
+                    <Label fx:id="statAttended" text="—" styleClass="stat-value"/>
+                </VBox>
+                <VBox styleClass="stat-card,stat-accent-amber" HBox.hgrow="ALWAYS" spacing="4">
+                    <Label text="FAVOURITE GENRE" styleClass="stat-label"/>
+                    <Label fx:id="statGenre" text="—" styleClass="stat-value" style="-fx-font-size:16px;"/>
+                </VBox>
+                <VBox styleClass="stat-card,stat-accent-rose" HBox.hgrow="ALWAYS" spacing="4">
+                    <Label text="TOTAL SEATS" styleClass="stat-label"/>
+                    <Label fx:id="statSeats" text="—" styleClass="stat-value"/>
+                </VBox>
+            </HBox>
+
+            <!-- Edit profile -->
+            <VBox styleClass="card" spacing="14">
+                <Label text="EDIT PROFILE" styleClass="profile-section-title"/>
+
+                <HBox spacing="14">
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="FIRST NAME" styleClass="field-label"/>
+                        <TextField fx:id="firstNameField" promptText="First name"/>
+                    </VBox>
+                    <VBox spacing="5" HBox.hgrow="ALWAYS">
+                        <Label text="LAST NAME" styleClass="field-label"/>
+                        <TextField fx:id="lastNameField" promptText="Last name"/>
+                    </VBox>
+                </HBox>
+
+                <VBox spacing="5">
+                    <Label text="EMAIL" styleClass="field-label"/>
+                    <TextField fx:id="emailField" promptText="your@email.com"/>
+                </VBox>
+
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Label fx:id="saveMessage" text="" styleClass="profile-save-msg"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="💾  SAVE CHANGES" styleClass="btn-success" onAction="#onSaveProfile"/>
+                </HBox>
+            </VBox>
+
+
+        </VBox>
+    </ScrollPane>
+
+</VBox>

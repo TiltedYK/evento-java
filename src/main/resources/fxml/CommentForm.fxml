@@ -33,11 +33,11 @@
                     </columnConstraints>
 
                     <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
-                        <Label text="POST ID" styleClass="field-label"/>
+                        <Label text="POST" styleClass="field-label"/>
                         <TextField fx:id="postIdField" promptText="e.g. 1"/>
                     </VBox>
                     <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
-                        <Label text="AUTHOR ID" styleClass="field-label"/>
+                        <Label text="AUTHOR" styleClass="field-label"/>
                         <TextField fx:id="authorIdField" promptText="e.g. 5"/>
                     </VBox>
 

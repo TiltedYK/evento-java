@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.FrontPartnersController"
+      styleClass="front-page" spacing="0">
+
+    <VBox styleClass="front-page-header" spacing="6">
+        <Label text="🎙  ARTISTS &amp; PARTNERS" styleClass="front-page-title"/>
+        <Label text="The artists, brands and collaborators behind every show." styleClass="front-page-subtitle"/>
+    </VBox>
+
+    <ScrollPane styleClass="front-scroll" fitToWidth="true" VBox.vgrow="ALWAYS">
+        <VBox spacing="36" style="-fx-padding: 28 36 48 36;">
+
+            <!-- Featured spotlight -->
+            <VBox fx:id="featuredBox" spacing="0"/>
+
+            <!-- ── ARTISTS (PartnershipRequest) ── -->
+            <VBox spacing="16">
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label text="◈" styleClass="section-icon"/>
+                    <Label text="ARTISTS" styleClass="section-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <TextField fx:id="searchField" promptText="🔍  Search…"
+                               styleClass="front-search-field" prefWidth="180" onKeyReleased="#filterPartners"/>
+                    <ComboBox fx:id="statusFilter" styleClass="front-combo" prefWidth="130" onAction="#filterPartners"/>
+                    <Label fx:id="artistCount" text="" styleClass="front-count-label"/>
+                </HBox>
+                <FlowPane fx:id="artistsGrid" hgap="18" vgap="18" styleClass="events-flow-grid"/>
+            </VBox>
+
+            <!-- CTA -->
+            <VBox styleClass="partner-cta-box" spacing="14">
+                <HBox alignment="CENTER_LEFT" spacing="20">
+                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                        <Label text="🤝  JOIN THE EVENTO NETWORK" styleClass="partner-cta-title"/>
+                        <Label text="Are you an artist, band or brand? Apply to appear on EVENTO and reach thousands of music fans."
+                               styleClass="partner-cta-sub" wrapText="true"/>
+                    </VBox>
+                    <Button text="APPLY NOW →" styleClass="partner-cta-btn" onAction="#onApplyNow"/>
+                </HBox>
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+
+</VBox>

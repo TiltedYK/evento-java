@@ -5,17 +5,28 @@ import utils.MyDatabase;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReservationService implements IService<Reservation> {
 
     private Connection connection;
+    private Set<String> tableColumns = null;
 
     public ReservationService() {
         connection = MyDatabase.getInstance().getConnection();
     }
+
+    private Set<String> columns() throws SQLException {
+        if (tableColumns == null) {
+            tableColumns = new HashSet<>();
+            ResultSet rs = connection.getMetaData().getColumns(null, null, "reservation", null);
+            while (rs.next()) tableColumns.add(rs.getString("COLUMN_NAME").toLowerCase());
+        }
+        return tableColumns;
+    }
+
+    private boolean has(String col) throws SQLException { return columns().contains(col); }
 
     @Override
     public void ajouter(Reservation r) throws SQLException {
@@ -55,6 +66,7 @@ public class ReservationService implements IService<Reservation> {
         Statement st = connection.createStatement();
         ResultSet rs = st.executeQuery(sql);
 
+        Set<String> c = columns();
         List<Reservation> list = new ArrayList<>();
         while (rs.next()) {
             Reservation r = new Reservation();
@@ -63,10 +75,16 @@ public class ReservationService implements IService<Reservation> {
             r.setUserId(rs.getInt("user_id"));
             r.setNombrePlaces(rs.getInt("nombre_places"));
             r.setStatut(rs.getString("statut"));
-            Timestamp confirmedTs = rs.getTimestamp("confirmed_at");
-            if (confirmedTs != null) r.setConfirmedAt(confirmedTs.toLocalDateTime());
-            r.setConfirmationToken(rs.getString("confirmation_token"));
-            r.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+            if (c.contains("created_at")) {
+                Timestamp ts = rs.getTimestamp("created_at");
+                if (ts != null) r.setCreatedAt(ts.toLocalDateTime());
+            }
+            if (has("confirmed_at")) {
+                Timestamp ct = rs.getTimestamp("confirmed_at");
+                if (ct != null) r.setConfirmedAt(ct.toLocalDateTime());
+            }
+            if (has("confirmation_token"))
+                r.setConfirmationToken(rs.getString("confirmation_token"));
             list.add(r);
         }
         return list;
@@ -90,5 +108,20 @@ public class ReservationService implements IService<Reservation> {
         return recuperer().stream()
                 .filter(r -> r.getUserId() == userId)
                 .collect(Collectors.toList());
+    }
+
+    public int countByEventId(int eventId) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement(
+                "SELECT COALESCE(SUM(nombre_places), 0) FROM reservation WHERE event_id = ?");
+        ps.setInt(1, eventId);
+        ResultSet rs = ps.executeQuery();
+        return rs.next() ? rs.getInt(1) : 0;
+    }
+
+    public int countTotalByUser(int userId) throws SQLException {
+        return (int) recuperer().stream()
+                .filter(r -> r.getUserId() == userId)
+                .mapToInt(r -> r.getNombrePlaces())
+                .sum();
     }
 }
