@@ -5,8 +5,7 @@ import utils.MyDatabase;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProductService implements IService<Product> {
@@ -17,54 +16,83 @@ public class ProductService implements IService<Product> {
         connection = MyDatabase.getInstance().getConnection();
     }
 
+    private Set<String> tableColumns = null;
+
+    private Set<String> columns() throws SQLException {
+        if (tableColumns == null) {
+            tableColumns = new HashSet<>();
+            ResultSet rs = connection.getMetaData().getColumns(null, null, "product", null);
+            while (rs.next()) tableColumns.add(rs.getString("COLUMN_NAME").toLowerCase());
+        }
+        return tableColumns;
+    }
+
+    private boolean has(String col) throws SQLException {
+        return columns().contains(col);
+    }
+
     @Override
     public void ajouter(Product p) throws SQLException {
-        String sql = "INSERT INTO product (category_id, name, description, price, stock, image, artist_name, is_available, created_at, barcode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        List<String> cols = new ArrayList<>(Arrays.asList("category_id","name","description","price","stock","image","artist_name","is_available","created_at"));
+        if (has("barcode"))   cols.add("barcode");
+        if (has("size"))      cols.add("size");
+        if (has("currency"))  cols.add("currency");
+
+        String sql = "INSERT INTO product (" + String.join(",", cols) + ") VALUES (" +
+                String.join(",", Collections.nCopies(cols.size(), "?")) + ")";
         PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setInt(1, p.getCategoryId());
-        ps.setString(2, p.getName());
-        ps.setString(3, p.getDescription());
-        ps.setDouble(4, p.getPrice());
-        ps.setInt(5, p.getStock());
-        ps.setString(6, p.getImage());
-        ps.setString(7, p.getArtistName());
-        ps.setBoolean(8, p.isAvailable());
-        ps.setTimestamp(9, Timestamp.valueOf(p.getCreatedAt()));
-        ps.setString(10, p.getBarcode());
+        int i = 1;
+        ps.setInt(i++, p.getCategoryId());
+        ps.setString(i++, p.getName());
+        ps.setString(i++, p.getDescription());
+        ps.setDouble(i++, p.getPrice());
+        ps.setInt(i++, p.getStock());
+        ps.setString(i++, p.getImage());
+        ps.setString(i++, p.getArtistName());
+        ps.setBoolean(i++, p.isAvailable());
+        ps.setTimestamp(i++, p.getCreatedAt() != null ? Timestamp.valueOf(p.getCreatedAt()) : Timestamp.valueOf(LocalDateTime.now()));
+        if (has("barcode"))   ps.setString(i++, p.getBarcode());
+        if (has("size"))      ps.setString(i++, p.getSize());
+        if (has("currency"))  ps.setString(i++, p.getCurrency());
         ps.executeUpdate();
     }
 
     @Override
     public void modifier(Product p) throws SQLException {
-        String sql = "UPDATE product SET category_id = ?, name = ?, description = ?, price = ?, stock = ?, image = ?, artist_name = ?, is_available = ?, barcode = ? WHERE id = ?";
+        List<String> setCols = new ArrayList<>(Arrays.asList("category_id=?","name=?","description=?","price=?","stock=?","image=?","artist_name=?","is_available=?"));
+        if (has("barcode"))  setCols.add("barcode=?");
+        if (has("size"))     setCols.add("size=?");
+        if (has("currency")) setCols.add("currency=?");
+
+        String sql = "UPDATE product SET " + String.join(",", setCols) + " WHERE id=?";
         PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setInt(1, p.getCategoryId());
-        ps.setString(2, p.getName());
-        ps.setString(3, p.getDescription());
-        ps.setDouble(4, p.getPrice());
-        ps.setInt(5, p.getStock());
-        ps.setString(6, p.getImage());
-        ps.setString(7, p.getArtistName());
-        ps.setBoolean(8, p.isAvailable());
-        ps.setString(9, p.getBarcode());
-        ps.setInt(10, p.getId());
+        int i = 1;
+        ps.setInt(i++, p.getCategoryId());
+        ps.setString(i++, p.getName());
+        ps.setString(i++, p.getDescription());
+        ps.setDouble(i++, p.getPrice());
+        ps.setInt(i++, p.getStock());
+        ps.setString(i++, p.getImage());
+        ps.setString(i++, p.getArtistName());
+        ps.setBoolean(i++, p.isAvailable());
+        if (has("barcode"))  ps.setString(i++, p.getBarcode());
+        if (has("size"))     ps.setString(i++, p.getSize());
+        if (has("currency")) ps.setString(i++, p.getCurrency());
+        ps.setInt(i, p.getId());
         ps.executeUpdate();
     }
 
     @Override
     public void supprimer(int id) throws SQLException {
-        String sql = "DELETE FROM product WHERE id = ?";
-        PreparedStatement ps = connection.prepareStatement(sql);
+        PreparedStatement ps = connection.prepareStatement("DELETE FROM product WHERE id=?");
         ps.setInt(1, id);
         ps.executeUpdate();
     }
 
     @Override
     public List<Product> recuperer() throws SQLException {
-        String sql = "SELECT * FROM product";
-        Statement st = connection.createStatement();
-        ResultSet rs = st.executeQuery(sql);
-
+        ResultSet rs = connection.createStatement().executeQuery("SELECT * FROM product");
+        Set<String> c = columns();
         List<Product> list = new ArrayList<>();
         while (rs.next()) {
             Product p = new Product();
@@ -74,11 +102,16 @@ public class ProductService implements IService<Product> {
             p.setDescription(rs.getString("description"));
             p.setPrice(rs.getDouble("price"));
             p.setStock(rs.getInt("stock"));
-            p.setImage(rs.getString("image"));
-            p.setArtistName(rs.getString("artist_name"));
-            p.setAvailable(rs.getBoolean("is_available"));
-            p.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-            p.setBarcode(rs.getString("barcode"));
+            if (c.contains("image"))       p.setImage(rs.getString("image"));
+            if (c.contains("artist_name")) p.setArtistName(rs.getString("artist_name"));
+            if (c.contains("is_available")) p.setAvailable(rs.getBoolean("is_available"));
+            if (c.contains("created_at")) {
+                Timestamp ts = rs.getTimestamp("created_at");
+                if (ts != null) p.setCreatedAt(ts.toLocalDateTime());
+            }
+            if (c.contains("barcode"))   p.setBarcode(rs.getString("barcode"));
+            if (c.contains("size"))      p.setSize(rs.getString("size"));
+            if (c.contains("currency"))  p.setCurrency(rs.getString("currency"));
             list.add(p);
         }
         return list;

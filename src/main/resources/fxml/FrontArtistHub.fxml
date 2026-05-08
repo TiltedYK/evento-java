@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.FrontArtistHubController"
+      styleClass="front-page" spacing="0">
+
+    <!-- Profile Banner -->
+    <VBox fx:id="profileBanner" spacing="0"
+          style="-fx-background-color:linear-gradient(to bottom right,rgba(99,102,241,0.22),rgba(8,10,15,0.0));-fx-padding:28 36 24 36;">
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <StackPane fx:id="avatarHolder" minWidth="96" prefWidth="96" minHeight="96" prefHeight="96"/>
+            <VBox spacing="6">
+                <Label fx:id="artistNameLabel" text="Artist" styleClass="front-page-title"
+                       style="-fx-font-size:28px;"/>
+                <Label fx:id="artistRoleLabel" text="🎤  VERIFIED ARTIST"
+                       style="-fx-font-size:11px;-fx-font-weight:bold;-fx-text-fill:#A5B4FC;-fx-letter-spacing:2px;"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="＋  CREATE EVENT" styleClass="btn-primary"
+                    onAction="#onCreateEvent"/>
+        </HBox>
+    </VBox>
+
+    <!-- Stats row -->
+    <HBox spacing="0" style="-fx-border-color:transparent transparent rgba(255,255,255,0.07) transparent;-fx-border-width:0 0 1 0;">
+        <VBox alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS" style="-fx-padding:18 0 18 0;-fx-border-color:transparent #1C2133 transparent transparent;-fx-border-width:0 1 0 0;">
+            <Label fx:id="statEvents" text="—" style="-fx-font-size:28px;-fx-font-weight:bold;-fx-text-fill:#E0E7FF;"/>
+            <Label text="MY EVENTS" style="-fx-font-size:9px;-fx-font-weight:bold;-fx-text-fill:#6366F1;-fx-letter-spacing:1.5px;"/>
+        </VBox>
+        <VBox alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS" style="-fx-padding:18 0 18 0;-fx-border-color:transparent #1C2133 transparent transparent;-fx-border-width:0 1 0 0;">
+            <Label fx:id="statAttendees" text="—" style="-fx-font-size:28px;-fx-font-weight:bold;-fx-text-fill:#E0E7FF;"/>
+            <Label text="TOTAL ATTENDEES" style="-fx-font-size:9px;-fx-font-weight:bold;-fx-text-fill:#22C55E;-fx-letter-spacing:1.5px;"/>
+        </VBox>
+        <VBox alignment="CENTER" spacing="4" HBox.hgrow="ALWAYS" style="-fx-padding:18 0 18 0;">
+            <Label fx:id="statUpcoming" text="—" style="-fx-font-size:28px;-fx-font-weight:bold;-fx-text-fill:#E0E7FF;"/>
+            <Label text="UPCOMING" style="-fx-font-size:9px;-fx-font-weight:bold;-fx-text-fill:#F59E0B;-fx-letter-spacing:1.5px;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Events list -->
+    <ScrollPane styleClass="front-scroll" fitToWidth="true" VBox.vgrow="ALWAYS">
+        <VBox fx:id="eventsBox" spacing="16" style="-fx-padding:24 36 48 36;"/>
+    </ScrollPane>
+
+</VBox>

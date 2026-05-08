@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.FrontDashboardController"
+            prefWidth="1240" prefHeight="760"
+            styleClass="front-root">
+
+    <!-- ════ TOP NAVBAR ════ -->
+    <top>
+        <HBox styleClass="front-navbar" alignment="CENTER_LEFT" spacing="0">
+
+            <HBox alignment="CENTER_LEFT" spacing="6" style="-fx-padding:0 24 0 24;-fx-min-width:160;-fx-cursor:hand;"
+                  onMouseClicked="#showHome">
+                <Label text="⚡" styleClass="nav-bolt" mouseTransparent="true"/>
+                <Label text="EVENTO" styleClass="nav-brand-text" mouseTransparent="true"/>
+            </HBox>
+
+            <HBox fx:id="navButtonsBox" alignment="CENTER" spacing="0" HBox.hgrow="ALWAYS">
+                <Button fx:id="btnNavArtists" text="ARTISTS"    styleClass="front-nav-btn"        onAction="#showArtists"/>
+                <Button fx:id="btnNavEvents"  text="EVENTS"     styleClass="front-nav-btn,nav-featured" onAction="#showEvents"/>
+                <Button fx:id="btnNavShop"    text="MERCH"      styleClass="front-nav-btn"        onAction="#showShop"/>
+                <Button fx:id="btnNavMyRes"   text="MY TICKETS" styleClass="front-nav-btn"        onAction="#showMyReservations"/>
+                <Button fx:id="btnNavBlog"    text="BLOG"       styleClass="front-nav-btn"        onAction="#showBlog"/>
+                <Button fx:id="btnNavPromo"   text="📢 PROMOS"  styleClass="front-nav-btn"        onAction="#showPromos"/>
+                <Button fx:id="btnNavApplyPartner"  text="PARTNER"         styleClass="front-nav-btn" onAction="#showApplyPartner"/>
+                <Button fx:id="btnNavArtistHub"     text="🎤 MY EVENTS"    styleClass="front-nav-btn" onAction="#showArtistHub"    managed="false" visible="false"/>
+                <Button fx:id="btnNavPartnerHub"    text="PARTNER HUB"     styleClass="front-nav-btn" onAction="#showPartnerHub"    managed="false" visible="false"/>
+                <Button fx:id="btnNavInfluencerHub" text="INFLUENCER HUB"  styleClass="front-nav-btn" onAction="#showInfluencerHub" managed="false" visible="false"/>
+            </HBox>
+
+            <HBox alignment="CENTER_RIGHT" spacing="10" style="-fx-padding:0 20 0 0;-fx-min-width:200;">
+                <Button fx:id="themeToggle" text="🎲" styleClass="theme-toggle-btn" onAction="#toggleTheme"/>
+                <Label fx:id="userLabel" text="🎸 Guest" styleClass="nav-user-label"
+                       style="-fx-cursor:hand;" onMouseClicked="#showProfile"/>
+                <Button text="LOGOUT" styleClass="nav-logout-btn" onAction="#handleLogout"/>
+            </HBox>
+
+        </HBox>
+    </top>
+
+    <!-- ════ CONTENT ════ -->
+    <center>
+        <StackPane fx:id="frontContentArea" styleClass="front-content-area">
+
+            <!-- HOME — professional landing page -->
+            <VBox fx:id="heroPane" styleClass="hero-pane">
+
+                <!-- Hero banner with big EVENTO logo -->
+                <StackPane styleClass="hero-banner" prefHeight="460" minHeight="360">
+                    <VBox styleClass="hero-scanlines" mouseTransparent="true"/>
+                    <VBox styleClass="hero-content-overlay" alignment="CENTER">
+                        <VBox alignment="CENTER" spacing="14" styleClass="hero-text-block">
+                            <Label fx:id="heroLogo"  text="⚡ EVENTO"              styleClass="hero-big-logo"/>
+                            <Label fx:id="heroTitle" text="WHERE MUSIC MEETS EXPERIENCE" styleClass="hero-main-title"/>
+                            <Label text="Discover live events, meet artists, and shop exclusive merch." styleClass="hero-subtitle"/>
+                            <HBox spacing="14" alignment="CENTER" style="-fx-padding:10 0 0 0;">
+                                <Button text="▶  EXPLORE EVENTS" styleClass="hero-cta-btn"         onAction="#showEvents"/>
+                                <Button text="🎙  MEET ARTISTS"   styleClass="hero-cta-outline-btn" onAction="#showArtists"/>
+                                <Button text="🛒  SHOP MERCH"      styleClass="hero-cta-outline-btn" onAction="#showShop"/>
+                            </HBox>
+                        </VBox>
+                    </VBox>
+                </StackPane>
+
+                <ScrollPane fitToWidth="true" styleClass="front-scroll" VBox.vgrow="ALWAYS">
+                    <VBox spacing="0">
+
+                        <!-- About section -->
+                        <VBox styleClass="landing-section,landing-section-alt" spacing="20">
+                            <padding><Insets top="56" right="120" bottom="56" left="120"/></padding>
+                            <Label text="◈  OUR STORY" styleClass="landing-section-eyebrow"/>
+                            <Label text="Born Underground. Built for the Stage." styleClass="landing-section-heading"/>
+                            <Label text="EVENTO was founded by a team of music fanatics who were tired of missing shows because information was scattered and ticket systems were clunky. We built a single platform where artists, venues, and fans connect without friction.&#10;&#10;From intimate jazz clubs to massive open-air festivals — if it has a stage and a heartbeat, it lives on EVENTO." styleClass="landing-section-body" wrapText="true"/>
+                        </VBox>
+
+                        <!-- Stats row -->
+                        <HBox styleClass="landing-stats-row" spacing="0">
+                            <VBox styleClass="landing-stat" HBox.hgrow="ALWAYS" alignment="CENTER" spacing="6">
+                                <Label text="500+" styleClass="landing-stat-number"/>
+                                <Label text="EVENTS HOSTED" styleClass="landing-stat-label"/>
+                            </VBox>
+                            <Region prefWidth="1" style="-fx-background-color:#E5E7EB;"/>
+                            <VBox styleClass="landing-stat" HBox.hgrow="ALWAYS" alignment="CENTER" spacing="6">
+                                <Label text="120+" styleClass="landing-stat-number"/>
+                                <Label text="ARTIST PARTNERS" styleClass="landing-stat-label"/>
+                            </VBox>
+                            <Region prefWidth="1" style="-fx-background-color:#E5E7EB;"/>
+                            <VBox styleClass="landing-stat" HBox.hgrow="ALWAYS" alignment="CENTER" spacing="6">
+                                <Label text="50K+" styleClass="landing-stat-number"/>
+                                <Label text="TICKETS SOLD" styleClass="landing-stat-label"/>
+                            </VBox>
+                            <Region prefWidth="1" style="-fx-background-color:#E5E7EB;"/>
+                            <VBox styleClass="landing-stat" HBox.hgrow="ALWAYS" alignment="CENTER" spacing="6">
+                                <Label text="4.9★" styleClass="landing-stat-number"/>
+                                <Label text="AVERAGE RATING" styleClass="landing-stat-label"/>
+                            </VBox>
+                        </HBox>
+
+                        <!-- How it works -->
+                        <VBox styleClass="landing-section" spacing="24">
+                            <padding><Insets top="56" right="80" bottom="56" left="80"/></padding>
+                            <Label text="◈  HOW IT WORKS" styleClass="landing-section-eyebrow"/>
+                            <Label text="Three steps to your next great night." styleClass="landing-section-heading"/>
+                            <HBox spacing="24">
+                                <VBox styleClass="landing-step" HBox.hgrow="ALWAYS" spacing="10">
+                                    <Label text="01" styleClass="landing-step-num"/>
+                                    <Label text="DISCOVER" styleClass="landing-step-title"/>
+                                    <Label text="Browse upcoming shows filtered by genre, date and venue. Live weather forecasts included." styleClass="landing-step-body" wrapText="true"/>
+                                </VBox>
+                                <VBox styleClass="landing-step" HBox.hgrow="ALWAYS" spacing="10">
+                                    <Label text="02" styleClass="landing-step-num"/>
+                                    <Label text="RESERVE" styleClass="landing-step-title"/>
+                                    <Label text="One click to reserve your seat. Your ticket lives in My Tickets — complete with QR code and PDF." styleClass="landing-step-body" wrapText="true"/>
+                                </VBox>
+                                <VBox styleClass="landing-step" HBox.hgrow="ALWAYS" spacing="10">
+                                    <Label text="03" styleClass="landing-step-num"/>
+                                    <Label text="EXPERIENCE" styleClass="landing-step-title"/>
+                                    <Label text="Show up, scan your QR code, and lose yourself in the music. Follow artists and read their stories on the Blog." styleClass="landing-step-body" wrapText="true"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Featured events teaser -->
+                        <VBox styleClass="landing-section,landing-section-alt" spacing="20">
+                            <padding><Insets top="48" right="80" bottom="48" left="80"/></padding>
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <Label text="◈" styleClass="section-icon"/>
+                                <Label text="UPCOMING SHOWS" styleClass="section-title"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button text="ALL EVENTS →" styleClass="section-link-btn" onAction="#showEvents"/>
+                            </HBox>
+                            <ScrollPane fitToHeight="true" styleClass="front-scroll" prefHeight="240"
+                                        hbarPolicy="AS_NEEDED" vbarPolicy="NEVER">
+                                <HBox fx:id="featuredEventsBox" spacing="14" alignment="CENTER_LEFT">
+                                    <padding><Insets top="4" right="4" bottom="8" left="4"/></padding>
+                                </HBox>
+                            </ScrollPane>
+                        </VBox>
+
+                        <!-- Merch teaser -->
+                        <VBox styleClass="landing-section" spacing="20">
+                            <padding><Insets top="48" right="80" bottom="56" left="80"/></padding>
+                            <HBox alignment="CENTER_LEFT" spacing="12">
+                                <Label text="◈" styleClass="section-icon"/>
+                                <Label text="LATEST MERCH" styleClass="section-title"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button text="ALL MERCH →" styleClass="section-link-btn" onAction="#showShop"/>
+                            </HBox>
+                            <ScrollPane fitToHeight="true" styleClass="front-scroll" prefHeight="240"
+                                        hbarPolicy="AS_NEEDED" vbarPolicy="NEVER">
+                                <HBox fx:id="featuredMerchBox" spacing="14" alignment="CENTER_LEFT">
+                                    <padding><Insets top="4" right="4" bottom="8" left="4"/></padding>
+                                </HBox>
+                            </ScrollPane>
+                        </VBox>
+
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+
+        </StackPane>
+    </center>
+
+    <!-- ════ MUSIC PLAYER BAR ════ -->
+    <bottom>
+        <HBox styleClass="music-player-bar" alignment="CENTER" spacing="0">
+            <padding><Insets top="0" right="20" bottom="0" left="20"/></padding>
+
+            <!-- Transport controls -->
+            <HBox spacing="4" alignment="CENTER" style="-fx-min-width:120;">
+                <Button fx:id="btnPrev"      text="⏮" styleClass="player-btn" onAction="#playerPrev"/>
+                <Button fx:id="btnPlayPause" text="⏸" styleClass="player-btn-main" onAction="#playerPlayPause"/>
+                <Button fx:id="btnNext"      text="⏭" styleClass="player-btn" onAction="#playerNext"/>
+            </HBox>
+
+            <!-- Track info -->
+            <VBox spacing="1" alignment="CENTER_LEFT" style="-fx-min-width:200; -fx-padding:0 16 0 12;">
+                <Label text="♫  NOW PLAYING" styleClass="np-label"/>
+                <Label fx:id="npTrackLabel" text="Linkin Park — In The End" styleClass="np-track"/>
+            </VBox>
+
+            <!-- Progress slider + time -->
+            <HBox spacing="10" alignment="CENTER" HBox.hgrow="ALWAYS">
+                <Label fx:id="playerElapsed" text="0:00" styleClass="player-time"/>
+                <Slider fx:id="playerProgress"
+                    HBox.hgrow="ALWAYS" prefHeight="18"
+                    min="0" max="100" value="0"
+                    styleClass="player-progress"/>
+                <Label fx:id="playerDuration" text="0:00" styleClass="player-time"/>
+            </HBox>
+
+            <!-- Volume / mute -->
+            <HBox spacing="8" alignment="CENTER" style="-fx-min-width:80; -fx-padding:0 0 0 12;">
+                <Label fx:id="npDot" text="●" styleClass="np-pulse-dot"/>
+                <Button fx:id="muteBtn" text="🔊" styleClass="mute-btn" onAction="#toggleMute"/>
+            </HBox>
+
+        </HBox>
+    </bottom>
+
+</BorderPane>

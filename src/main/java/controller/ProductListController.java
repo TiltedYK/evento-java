@@ -1,22 +1,21 @@
 package controller;
 
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.DefaultStringConverter;
+import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.IntegerStringConverter;
 import model.Category;
 import model.Product;
 import service.CategoryService;
 import service.ProductService;
+import util.Router;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,12 +27,11 @@ public class ProductListController {
     @FXML private ComboBox<String> categoryFilter;
     @FXML private ComboBox<String> availabilityFilter;
     @FXML private TableView<Product> table;
-    @FXML private TableColumn<Product, Number> colId;
     @FXML private TableColumn<Product, String> colName;
     @FXML private TableColumn<Product, String> colArtist;
     @FXML private TableColumn<Product, String> colCategory;
-    @FXML private TableColumn<Product, Number> colPrice;
-    @FXML private TableColumn<Product, Number> colStock;
+    @FXML private TableColumn<Product, Double> colPrice;
+    @FXML private TableColumn<Product, Integer> colStock;
     @FXML private TableColumn<Product, String> colAvailable;
     @FXML private TableColumn<Product, Void> colActions;
 
@@ -41,6 +39,8 @@ public class ProductListController {
     private final CategoryService categoryService = new CategoryService();
     private final ObservableList<Product> data = FXCollections.observableArrayList();
     private final Map<Integer, String> categoryNames = new HashMap<>();
+
+    public static Product pendingEdit;
 
     @FXML
     public void initialize() {
@@ -53,23 +53,86 @@ public class ProductListController {
         availabilityFilter.getItems().addAll("all", "available", "unavailable");
         availabilityFilter.setValue("all");
 
-        colId.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getId()));
+        table.setEditable(true);
+
         colName.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
         colArtist.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getArtistName()));
         colCategory.setCellValueFactory(c -> new SimpleStringProperty(
                 categoryNames.getOrDefault(c.getValue().getCategoryId(), "—")));
-        colPrice.setCellValueFactory(c -> new SimpleDoubleProperty(c.getValue().getPrice()));
-        colStock.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getStock()));
+        colPrice.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getPrice()));
+        colStock.setCellValueFactory(c -> new SimpleObjectProperty<>(c.getValue().getStock()));
         colAvailable.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().isAvailable() ? "available" : "unavailable"));
 
-        formatPriceColumn();
-        setupStockColoring();
-        setupAvailabilityPill();
-        setupActionsColumn();
+        colName.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colName.setOnEditCommit(e -> {
+            Product p = e.getRowValue(); p.setName(e.getNewValue());
+            try { productService.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
 
-        searchField.textProperty().addListener((o, a, b) -> applyFilters());
-        categoryFilter.valueProperty().addListener((o, a, b) -> applyFilters());
+        colArtist.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colArtist.setOnEditCommit(e -> {
+            Product p = e.getRowValue(); p.setArtistName(e.getNewValue());
+            try { productService.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        colPrice.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        colPrice.setOnEditCommit(e -> {
+            Product p = e.getRowValue();
+            Double v = e.getNewValue();
+            if (v != null) {
+                p.setPrice(v);
+                try { productService.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+            }
+        });
+
+        colStock.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        colStock.setOnEditCommit(e -> {
+            Product p = e.getRowValue();
+            Integer v = e.getNewValue();
+            if (v != null) {
+                p.setStock(v);
+                try { productService.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+            }
+        });
+
+        ObservableList<String> catChoices = FXCollections.observableArrayList();
+        colCategory.setCellFactory(ComboBoxTableCell.forTableColumn(catChoices));
+        colCategory.setOnEditCommit(e -> {
+            Product p = e.getRowValue();
+            String name = e.getNewValue();
+            if (name == null) return;
+            for (var en : categoryNames.entrySet()) {
+                if (en.getValue().equals(name)) {
+                    p.setCategoryId(en.getKey());
+                    try { productService.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+                    return;
+                }
+            }
+        });
+
+        ObservableList<String> availChoices = FXCollections.observableArrayList("available", "unavailable");
+        colAvailable.setCellFactory(ComboBoxTableCell.forTableColumn(availChoices));
+        colAvailable.setOnEditCommit(e -> {
+            Product p = e.getRowValue();
+            String v = e.getNewValue();
+            if (v == null) return;
+            p.setAvailable("available".equalsIgnoreCase(v));
+            try { productService.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        refreshCategoryChoices(catChoices);
+
+        setupActions();
+
+        searchField.textProperty().addListener((o, a, b) -> {
+            refreshCategoryChoices(catChoices);
+            applyFilters();
+        });
+        categoryFilter.valueProperty().addListener((o, a, b) -> {
+            refreshCategoryChoices(catChoices);
+            applyFilters();
+        });
         availabilityFilter.valueProperty().addListener((o, a, b) -> applyFilters());
 
         table.setItems(data);
@@ -79,81 +142,35 @@ public class ProductListController {
     private void loadCategoryNames() {
         categoryNames.clear();
         try {
-            for (Category c : categoryService.recuperer()) {
-                categoryNames.put(c.getId(), c.getName());
-            }
-        } catch (Exception e) { /* silent, categories may be empty */ }
+            for (Category c : categoryService.recuperer()) categoryNames.put(c.getId(), c.getName());
+        } catch (Exception e) { /* silent */ }
     }
 
-    private void formatPriceColumn() {
-        colPrice.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(Number item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : String.format("%.2f DT", item.doubleValue()));
-            }
-        });
+    private void refreshCategoryChoices(ObservableList<String> catChoices) {
+        try {
+            loadCategoryNames();
+            catChoices.setAll(categoryNames.values().stream().sorted().toList());
+        } catch (Exception ignored) { }
     }
 
-    private void setupStockColoring() {
-        colStock.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(Number item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) { setText(null); setStyle(""); return; }
-                int stock = item.intValue();
-                setText(String.valueOf(stock));
-                if (stock == 0)       setStyle("-fx-text-fill: #D28994; -fx-font-weight: bold;");
-                else if (stock < 5)   setStyle("-fx-text-fill: #D9BC85; -fx-font-weight: bold;");
-                else                  setStyle("-fx-text-fill: #E4E7EC;");
-            }
-        });
-    }
-
-    private void setupAvailabilityPill() {
-        colAvailable.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) { setGraphic(null); setText(null); }
-                else {
-                    Label pill = new Label(item);
-                    pill.getStyleClass().add("status-pill");
-                    pill.getStyleClass().add(item.equals("available") ? "status-confirmed" : "status-cancelled");
-                    setGraphic(pill);
-                    setText(null);
-                }
-            }
-        });
-    }
-
-    private void setupActionsColumn() {
+    private void setupActions() {
         colActions.setCellFactory(col -> new TableCell<>() {
-            private final Button btnEdit = new Button("Edit");
             private final Button btnDelete = new Button("Delete");
-            private final HBox box = new HBox(6, btnEdit, btnDelete);
             {
-                btnEdit.getStyleClass().addAll("button", "btn-primary");
-                btnDelete.getStyleClass().addAll("button", "btn-danger");
-                btnEdit.setStyle("-fx-font-size: 11px; -fx-padding: 5 12;");
-                btnDelete.setStyle("-fx-font-size: 11px; -fx-padding: 5 12;");
-                btnEdit.setOnAction(e -> openForm(getTableView().getItems().get(getIndex())));
+                btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
             }
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : box);
+                setGraphic(empty ? null : btnDelete);
             }
         });
     }
 
     private void refresh() {
-        try {
-            loadCategoryNames();
-            data.setAll(productService.recuperer());
-            applyFilters();
-        } catch (Exception e) { showError("Failed to load products", e.getMessage()); }
+        try { loadCategoryNames(); data.setAll(productService.recuperer()); applyFilters(); }
+        catch (Exception e) { error("Failed to load products: " + e.getMessage()); }
     }
 
     private void applyFilters() {
@@ -162,7 +179,6 @@ public class ProductListController {
             String q = searchField.getText() == null ? "" : searchField.getText().trim().toLowerCase();
             String cat = categoryFilter.getValue();
             String av = availabilityFilter.getValue();
-
             List<Product> filtered = all.stream()
                     .filter(p -> q.isEmpty()
                             || (p.getName() != null && p.getName().toLowerCase().contains(q))
@@ -174,59 +190,36 @@ public class ProductListController {
                             || (av.equals("unavailable") && !p.isAvailable()))
                     .toList();
             data.setAll(filtered);
-        } catch (Exception e) { showError("Filter failed", e.getMessage()); }
+        } catch (Exception e) { error("Filter failed: " + e.getMessage()); }
     }
 
     @FXML public void onReset() {
-        searchField.clear();
-        categoryFilter.setValue("all");
-        availabilityFilter.setValue("all");
+        searchField.clear(); categoryFilter.setValue("all"); availabilityFilter.setValue("all");
     }
 
-    @FXML public void onAdd() { openForm(null); }
+    @FXML public void onAdd() {
+        pendingEdit = null;
+        Router.navigate("/fxml/ProductForm.fxml");
+    }
 
     private void onDelete(Product p) {
         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
         a.setTitle("Confirm deletion");
-        a.setHeaderText("Delete product #" + p.getId() + "?");
-        a.setContentText(p.getName() + "\nThis action cannot be undone.");
+        a.setHeaderText("Delete product \"" + p.getName() + "\"?");
+        a.setContentText("This action cannot be undone.");
         styleAlert(a);
         a.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
                 try { productService.supprimer(p.getId()); refresh(); }
-                catch (Exception e) { showError("Delete failed", e.getMessage()); }
+                catch (Exception e) { error("Delete failed: " + e.getMessage()); }
             }
         });
     }
 
-    private void openForm(Product p) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ProductForm.fxml"));
-            Parent root = loader.load();
-            ProductFormController ctrl = loader.getController();
-            ctrl.setProduct(p);
-
-            Stage st = new Stage();
-            st.initModality(Modality.APPLICATION_MODAL);
-            st.setTitle(p == null ? "New Product" : "Edit Product");
-            Scene sc = new Scene(root);
-            sc.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-            st.setScene(sc);
-            st.showAndWait();
-            refresh();
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Could not open form", e.getMessage());
-        }
-    }
-
-    private void showError(String header, String msg) {
+    private void error(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Error");
-        a.setHeaderText(header);
-        a.setContentText(msg);
-        styleAlert(a);
-        a.showAndWait();
+        a.setTitle("Error"); a.setHeaderText(null); a.setContentText(msg);
+        styleAlert(a); a.showAndWait();
     }
 
     private void styleAlert(Alert a) {

@@ -1,0 +1,1963 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   EVENTO — FRONT OFFICE  ·  ROCK / METAL EDITION
+   Palette: Void Black · Ember Red · Acid Yellow · Steel Silver
+   Fonts: loaded via Google Fonts in MainApp or use system fallbacks
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ─── CSS VARIABLES ──────────────────────────────────────────────────── */
+.front-root, .login-root, .front-page, .front-navbar, .front-content-area {
+    /* Core palette */
+    -void:       #050507;
+    -deep:       #0A0A0F;
+    -surface:    #111118;
+    -surface2:   #18181F;
+    -border:     #252530;
+    -ember:      #E8320A;
+    -ember-glow: #FF4422;
+    -acid:       #C8FF00;
+    -steel:      #8890A8;
+    -silver:     #C8CDD8;
+    -white:      #F0F2F8;
+    -muted:      #3A3D52;
+}
+
+/* ─── ROOT ───────────────────────────────────────────────────────────── */
+.front-root, .login-root {
+    -fx-background-color: #050507;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 13px;
+    -fx-text-fill: #F0F2F8;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LOGIN PAGE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.login-root {
+    -fx-background-color: #050507;
+}
+
+.login-bg-video {
+    -fx-background-color: #050507;
+}
+
+.login-overlay {
+    -fx-background-color: linear-gradient(
+        to bottom,
+        rgba(5,5,7,0.55) 0%,
+        rgba(5,5,7,0.80) 60%,
+        rgba(5,5,7,0.95) 100%
+    );
+}
+
+.scan-lines {
+    -fx-background-color: rgba(0,0,0,0.10);
+}
+
+/* Login card — compact, soft corners */
+.login-card {
+    -fx-background-color: #0A0A0F;
+    -fx-border-color: #E8320A;
+    -fx-border-width: 1.2;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.45), 48, 0, 0, 0);
+    -fx-padding: 26 32 26 32;
+}
+.login-section-label {
+    -fx-font-size:10px; -fx-font-family:"Courier New",monospace; -fx-text-fill:#E8320A;
+    -fx-letter-spacing:4px; -fx-font-weight:bold; -fx-padding: 2 0 2 0;
+}
+.login-success-banner {
+    -fx-background-color: rgba(34,197,94,0.10);
+    -fx-border-color: rgba(34,197,94,0.45); -fx-border-width: 1;
+    -fx-background-radius: 6; -fx-border-radius: 6;
+    -fx-text-fill: #4ADE80; -fx-padding: 9 12 9 12;
+    -fx-font-family: "Courier New",monospace; -fx-font-size: 11.5px;
+}
+.login-link {
+    -fx-text-fill:#E8320A; -fx-font-family:"Courier New",monospace;
+    -fx-font-size:11px; -fx-cursor:hand; -fx-letter-spacing:1px;
+}
+.login-link:hover { -fx-text-fill:#FF4422; -fx-underline:true; }
+
+.login-card-error {
+    -fx-border-color: #FF4422;
+    -fx-effect: dropshadow(gaussian, rgba(255,68,34,0.8), 80, 0, 0, 0);
+}
+
+/* ── Login theme toggle */
+.login-theme-btn {
+    -fx-background-color:rgba(255,255,255,0.08);-fx-border-color:rgba(255,255,255,0.15);-fx-border-width:1;
+    -fx-border-radius:8;-fx-background-radius:8;-fx-font-size:15px;-fx-padding:8 12 8 12;-fx-cursor:hand;
+}
+.login-theme-btn:hover { -fx-background-color:rgba(232,50,10,0.25);-fx-border-color:#E8320A; }
+
+/* ── Login tabs */
+.login-tab-row { -fx-background-color:#050507;-fx-border-color:transparent transparent #1C1C28 transparent;-fx-border-width:0 0 1 0; }
+.login-tab { -fx-background-color:transparent;-fx-border-color:transparent;-fx-text-fill:#5A5F78;-fx-font-size:11px;-fx-font-weight:700;-fx-letter-spacing:2px;-fx-padding:13 0 13 0;-fx-cursor:hand;-fx-background-radius:0; }
+.login-tab:hover { -fx-text-fill:#C8CDD8;-fx-background-color:rgba(255,255,255,0.03); }
+.login-tab-active { -fx-text-fill:#E8320A !important;-fx-border-color:transparent transparent #E8320A transparent !important;-fx-border-width:0 0 2.5 0 !important;-fx-background-color:rgba(232,50,10,0.05) !important; }
+.login-captcha-label { -fx-font-size:16px;-fx-font-weight:700;-fx-text-fill:#F0F2F8;-fx-font-family:"Courier New",monospace; }
+.login-ghost-btn { -fx-background-color:rgba(255,255,255,0.06);-fx-border-color:#252530;-fx-border-width:1;-fx-border-radius:6;-fx-background-radius:6;-fx-text-fill:#8890A8;-fx-cursor:hand; }
+.login-ghost-btn:hover { -fx-border-color:#E8320A;-fx-text-fill:#E8320A; }
+
+/* ── Music player bar (dark) */
+.music-player-bar { -fx-background-color:#060608;-fx-border-color:#1C1C28 transparent transparent transparent;-fx-border-width:1 0 0 0;-fx-min-height:54px;-fx-pref-height:54px; }
+.player-btn { -fx-background-color:transparent;-fx-border-color:transparent;-fx-text-fill:#8890A8;-fx-font-size:16px;-fx-padding:6 10 6 10;-fx-cursor:hand;-fx-background-radius:8; }
+.player-btn:hover { -fx-background-color:rgba(255,255,255,0.05);-fx-text-fill:#E8320A; }
+.player-btn-main { -fx-background-color:#E8320A;-fx-text-fill:#FFFFFF;-fx-font-size:16px;-fx-padding:7 12 7 12;-fx-cursor:hand;-fx-background-radius:50%;-fx-border-color:transparent;-fx-effect:dropshadow(gaussian,rgba(232,50,10,0.5),8,0,0,2); }
+.player-btn-main:hover { -fx-background-color:#FF4422; }
+.player-time { -fx-font-size:10px;-fx-text-fill:#5A5F78;-fx-font-family:"Courier New",monospace; }
+/* Spotify-style seek slider */
+.player-progress {
+    -fx-pref-height: 18;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+}
+.player-progress .track {
+    -fx-background-color: #252530;
+    -fx-background-radius: 3;
+    -fx-pref-height: 4;
+}
+.player-progress .colored-track {
+    -fx-background-color: #E8320A;
+    -fx-background-radius: 3;
+}
+.player-progress .thumb {
+    -fx-background-color: #F0F2F8;
+    -fx-background-radius: 50%;
+    -fx-pref-width: 14;
+    -fx-pref-height: 14;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.6), 6, 0, 0, 0);
+}
+.player-progress .thumb:hover {
+    -fx-background-color: #FFFFFF;
+    -fx-pref-width: 16;
+    -fx-pref-height: 16;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.9), 10, 0, 0, 0);
+}
+.player-progress:focused .thumb { -fx-background-color: #E8320A; }
+
+/* ── Product card image header + low-stock (dark) */
+.product-card-img-header { -fx-background-radius:16 16 0 0;-fx-alignment:CENTER; }
+.product-low-stock-badge { -fx-background-color:#EF4444;-fx-text-fill:#FFFFFF;-fx-font-size:8px;-fx-font-weight:700;-fx-padding:3 8 3 8;-fx-background-radius:0 12 0 8;-fx-letter-spacing:1px; }
+
+/* Logo block */
+.login-logo-block {
+    -fx-padding: 0 0 14 0;
+}
+
+.login-bolt {
+    -fx-font-size: 32px;
+    -fx-text-fill: #E8320A;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,1.0), 24, 0.6, 0, 0);
+}
+
+.login-brand {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #F0F2F8;
+    -fx-letter-spacing: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.6), 20, 0, 0, 0);
+}
+
+.login-tagline {
+    -fx-font-size: 10px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #E8320A;
+    -fx-letter-spacing: 4px;
+}
+
+/* Divider */
+.login-divider-line {
+    -fx-padding: 0 0 24 0;
+    -fx-alignment: CENTER;
+}
+
+.login-divider-text {
+    -fx-font-size: 9px;
+    -fx-text-fill: #3A3D52;
+    -fx-font-family: "Courier New", monospace;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 0 12 0 12;
+}
+
+/* Form block */
+.login-form-block {
+    -fx-padding: 0;
+}
+
+.login-field-label {
+    -fx-font-size: 9px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #8890A8;
+    -fx-letter-spacing: 3px;
+    -fx-font-weight: bold;
+}
+
+.login-field {
+    -fx-background-color: #111118;
+    -fx-border-color: #252530;
+    -fx-border-width: 1.2;
+    -fx-border-radius: 1;
+    -fx-background-radius: 1;
+    -fx-text-fill: #F0F2F8;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 14px;
+    -fx-padding: 12 14 12 14;
+    -fx-prompt-text-fill: #3A3D52;
+}
+
+.login-field:focused {
+    -fx-border-color: #E8320A;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.4), 16, 0, 0, 0);
+    -fx-background-color: #13131B;
+}
+
+/* Login button */
+.login-button {
+    -fx-background-color: #E8320A;
+    -fx-text-fill: #F0F2F8;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-letter-spacing: 3px;
+    -fx-padding: 14 0 14 0;
+    -fx-background-radius: 1;
+    -fx-border-radius: 1;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.5), 20, 0, 0, 4);
+}
+
+.login-button:hover {
+    -fx-background-color: #FF4422;
+    -fx-effect: dropshadow(gaussian, rgba(255,68,34,0.8), 32, 0, 0, 4);
+}
+
+.login-button:pressed {
+    -fx-background-color: #B82508;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* "OR" separator between password and Google */
+.login-or-divider { -fx-padding: 4 0 4 0; }
+.login-or-line {
+    -fx-pref-height: 1; -fx-min-height: 1; -fx-max-height: 1;
+    -fx-background-color: #252530;
+}
+.login-or-text {
+    -fx-font-size: 9px; -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #3A3D52; -fx-letter-spacing: 4px;
+}
+
+/* Continue with Google — white card style, like everywhere else on the web */
+.login-google-button {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #1F1F1F;
+    -fx-font-size: 13px; -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 13 0 13 0;
+    -fx-background-radius: 1;
+    -fx-border-color: #DADCE0; -fx-border-width: 1.2; -fx-border-radius: 1;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 14, 0, 0, 3);
+}
+.login-google-button:hover {
+    -fx-background-color: #F4F4F6;
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.35), 22, 0, 0, 3);
+}
+.login-google-button:disabled {
+    -fx-opacity: 0.55;
+    -fx-cursor: wait;
+}
+
+.login-error {
+    -fx-font-size: 11px;
+    -fx-text-fill: #FF4422;
+    -fx-font-family: "Courier New", monospace;
+    -fx-min-height: 16px;
+}
+
+.login-footer-text {
+    -fx-font-size: 10px;
+    -fx-text-fill: #3A3D52;
+    -fx-font-family: "Courier New", monospace;
+}
+
+/* Corner labels */
+.login-corner-label {
+    -fx-font-size: 9px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #252530;
+    -fx-letter-spacing: 2px;
+}
+
+/* Video fallback */
+.video-fallback {
+    -fx-background-color: linear-gradient(
+        to bottom right,
+        #0A0007, #050507, #070A00
+    );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FRONT DASHBOARD SHELL
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.front-root {
+    -fx-background-color: #050507;
+}
+
+/* ─── TOP NAVBAR ─────────────────────────────────────────────────────── */
+.front-navbar {
+    -fx-background-color: #080A0F;
+    -fx-border-color: transparent transparent #1C1C28 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-min-height: 64px; -fx-pref-height: 64px;
+    -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.8),20,0,0,6);
+}
+
+.front-nav-brand { /* legacy — keep so old FXMLs don't break */
+    -fx-font-size: 20px; -fx-font-weight: bold; -fx-font-family:"Courier New",monospace;
+    -fx-text-fill: #F0F2F8; -fx-letter-spacing: 4px;
+    -fx-effect: dropshadow(gaussian,rgba(232,50,10,0.5),14,0,0,0);
+}
+
+.nav-bolt { -fx-font-size:20px; -fx-text-fill:#E8320A; -fx-effect:dropshadow(gaussian,rgba(232,50,10,0.9),14,0,0,0); }
+.nav-brand-text { -fx-font-size:18px; -fx-font-weight:800; -fx-text-fill:#F0F2F8; -fx-letter-spacing:2px; }
+
+.front-nav-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8890A8;
+    -fx-font-size: 12px; -fx-font-weight: 600; -fx-letter-spacing: 0.3px;
+    -fx-padding: 20 18 20 18;
+    -fx-background-radius: 0; -fx-cursor: hand;
+    -fx-border-color: transparent; -fx-border-width: 0 0 3 0;
+}
+.front-nav-btn:hover {
+    -fx-text-fill: #F0F2F8;
+    -fx-background-color: rgba(255,255,255,0.03);
+    -fx-border-color: transparent transparent #E8320A transparent;
+}
+.front-nav-btn.active {
+    -fx-text-fill: #E8320A;
+    -fx-border-color: transparent transparent #E8320A transparent;
+    -fx-background-color: rgba(232,50,10,0.06);
+}
+/* `.nav-featured` previously hardcoded an "always-orange-underline" look that
+   made the Events button appear active even when it wasn't.  We now keep it
+   subtle (a tiny accent dot via the after-content trick is too JavaFX-y, so
+   just bold + tiny dot in the text). The .active state is what marks selection. */
+.nav-featured {
+    -fx-font-size: 13px !important;
+    -fx-font-weight: 700 !important;
+}
+
+.front-user-label { -fx-font-size:13px; -fx-text-fill:#8890A8; -fx-font-weight:600; }
+.nav-user-label   { -fx-font-size:13px; -fx-text-fill:#8890A8; -fx-font-weight:600; }
+
+.front-logout-btn, .nav-logout-btn {
+    -fx-background-color: rgba(255,255,255,0.04); -fx-border-color: #2A2A38; -fx-border-width:1;
+    -fx-border-radius: 8; -fx-background-radius: 8; -fx-text-fill: #8890A8;
+    -fx-font-size: 11px; -fx-font-weight:600; -fx-padding: 7 16 7 16; -fx-cursor: hand;
+}
+.front-logout-btn:hover, .nav-logout-btn:hover {
+    -fx-background-color: rgba(232,50,10,0.08); -fx-border-color:#E8320A; -fx-text-fill:#E8320A;
+}
+
+.theme-toggle-btn {
+    -fx-background-color: rgba(255,255,255,0.05); -fx-border-color:#2A2A38; -fx-border-width:1;
+    -fx-border-radius:8; -fx-background-radius:8; -fx-font-size:15px;
+    -fx-padding: 6 10 6 10; -fx-cursor:hand;
+}
+.theme-toggle-btn:hover { -fx-background-color:rgba(232,50,10,0.1); -fx-border-color:#E8320A; }
+
+/* ─── CONTENT AREA ───────────────────────────────────────────────────── */
+.front-content-area {
+    -fx-background-color: #050507;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   HERO SECTION
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.hero-pane {
+    -fx-background-color: #050507;
+}
+
+/* ── Audio-only hero banner (replaces video) ── */
+.hero-banner {
+    -fx-background-color: radial-gradient(center 50% 30%, radius 90%,
+        #1A0A0A 0%,
+        #0D0008 40%,
+        #050507 100%);
+    -fx-pref-height: 520;
+    -fx-min-height: 260;
+}
+
+.hero-scanlines {
+    -fx-background-color: rgba(0,0,0,0.08);
+}
+
+.hero-content-overlay {
+    -fx-background-color: linear-gradient(
+        to bottom,
+        rgba(5,5,7,0.0)  0%,
+        rgba(5,5,7,0.25) 30%,
+        rgba(5,5,7,0.80) 70%,
+        rgba(5,5,7,1.0)  100%
+    );
+}
+
+.video-overlay {
+    -fx-background-color: linear-gradient(
+        to bottom,
+        rgba(5,5,7,0.0) 0%,
+        rgba(5,5,7,0.3) 40%,
+        rgba(5,5,7,0.85) 75%,
+        rgba(5,5,7,1.0) 100%
+    );
+}
+
+.hero-text-block {
+    -fx-padding: 0 60 50 60;
+    -fx-alignment: CENTER;
+}
+
+.hero-main-title {
+    -fx-font-size: 54px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #F0F2F8;
+    -fx-letter-spacing: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.7), 40, 0.3, 0, 0);
+    -fx-alignment: CENTER;
+}
+
+.hero-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #8890A8;
+    -fx-font-family: "Courier New", monospace;
+    -fx-letter-spacing: 2px;
+    -fx-alignment: CENTER;
+}
+
+/* Hero CTA buttons */
+.hero-cta-btn {
+    -fx-background-color: #E8320A;
+    -fx-text-fill: #F0F2F8;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 14 30 14 30;
+    -fx-background-radius: 1;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.6), 24, 0, 0, 4);
+}
+
+.hero-cta-btn:hover {
+    -fx-background-color: #FF4422;
+    -fx-effect: dropshadow(gaussian, rgba(255,68,34,0.9), 36, 0, 0, 4);
+    -fx-scale-x: 1.04;
+    -fx-scale-y: 1.04;
+}
+
+.hero-cta-outline-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: #C8CDD8;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 1;
+    -fx-text-fill: #C8CDD8;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 14 30 14 30;
+    -fx-cursor: hand;
+}
+
+.hero-cta-outline-btn:hover {
+    -fx-border-color: #F0F2F8;
+    -fx-text-fill: #F0F2F8;
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-scale-x: 1.04;
+    -fx-scale-y: 1.04;
+}
+
+/* ─── SECTIONS BELOW HERO ────────────────────────────────────────────── */
+.hero-below {
+    -fx-background-color: #050507;
+    -fx-padding: 40 32 40 32;
+}
+
+.home-section {
+    -fx-padding: 0 0 10 0;
+}
+
+.section-icon {
+    -fx-font-size: 18px;
+    -fx-text-fill: #E8320A;
+}
+
+.section-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #C8CDD8;
+    -fx-letter-spacing: 4px;
+}
+
+.section-link-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #E8320A;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 10px;
+    -fx-letter-spacing: 2px;
+    -fx-cursor: hand;
+    -fx-padding: 4 0 4 0;
+    -fx-border-color: transparent;
+}
+
+.section-link-btn:hover {
+    -fx-text-fill: #FF4422;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CARDS — EVENT (HOME FEATURED)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.event-front-card {
+    -fx-background-color: #0F0F16;
+    -fx-border-color: #1C1C28;
+    -fx-border-width: 1;
+    -fx-border-radius: 2;
+    -fx-background-radius: 2;
+    -fx-padding: 20 20 20 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 14, 0, 0, 4);
+}
+
+.event-front-card:hover {
+    -fx-border-color: #E8320A;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.35), 28, 0, 0, 4);
+}
+
+/* Cards — detailed (Events page) */
+.event-detail-card {
+    -fx-background-color: #0F0F16;
+    -fx-border-color: #1C1C28;
+    -fx-border-width: 1;
+    -fx-border-radius: 2;
+    -fx-background-radius: 2;
+    -fx-padding: 24 24 24 24;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 16, 0, 0, 4);
+}
+
+.event-detail-card:hover {
+    -fx-border-color: #E8320A;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.40), 36, 0, 0, 4);
+}
+
+/* Merch cards */
+.merch-front-card {
+    -fx-background-color: #0F0F16;
+    -fx-border-color: #1C1C28;
+    -fx-border-width: 1;
+    -fx-border-radius: 2;
+    -fx-background-radius: 2;
+    -fx-padding: 20 20 20 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 14, 0, 0, 4);
+}
+
+.merch-front-card:hover {
+    -fx-border-color: #C8FF00;
+    -fx-effect: dropshadow(gaussian, rgba(200,255,0,0.25), 28, 0, 0, 4);
+}
+
+.merch-detail-card {
+    -fx-background-color: #0F0F16;
+    -fx-border-color: #1C1C28;
+    -fx-border-width: 1;
+    -fx-border-radius: 2;
+    -fx-background-radius: 2;
+    -fx-padding: 24 24 24 24;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 16, 0, 0, 4);
+}
+
+.merch-detail-card:hover {
+    -fx-border-color: #C8FF00;
+    -fx-effect: dropshadow(gaussian, rgba(200,255,0,0.30), 36, 0, 0, 4);
+}
+
+/* Ticket card */
+.ticket-card {
+    -fx-background-color: #0F0F16;
+    -fx-border-color: #252530;
+    -fx-border-width: 1;
+    -fx-border-left-width: 4;
+    -fx-border-color: #E8320A #252530 #252530 #E8320A;
+    -fx-border-radius: 2;
+    -fx-background-radius: 2;
+    -fx-padding: 22 22 22 22;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 16, 0, 0, 4);
+}
+
+.ticket-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.30), 28, 0, 0, 4);
+}
+
+.ticket-stub-label {
+    -fx-font-size: 9px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #E8320A;
+    -fx-letter-spacing: 3px;
+    -fx-font-weight: bold;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CARD INTERNALS — TYPOGRAPHY
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.card-genre-badge {
+    -fx-background-color: rgba(232,50,10,0.15);
+    -fx-border-color: rgba(232,50,10,0.40);
+    -fx-border-width: 1;
+    -fx-border-radius: 1;
+    -fx-background-radius: 1;
+    -fx-text-fill: #E8320A;
+    -fx-font-size: 9px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 3 8 3 8;
+}
+
+.badge-upcoming {
+    -fx-background-color: rgba(200,255,0,0.10);
+    -fx-border-color: rgba(200,255,0,0.35);
+    -fx-border-width: 1;
+    -fx-border-radius: 1;
+    -fx-background-radius: 1;
+    -fx-text-fill: #C8FF00;
+    -fx-font-size: 9px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 3 8 3 8;
+}
+
+.badge-status {
+    -fx-background-color: rgba(136,144,168,0.10);
+    -fx-border-color: rgba(136,144,168,0.30);
+    -fx-border-width: 1;
+    -fx-border-radius: 1;
+    -fx-background-radius: 1;
+    -fx-text-fill: #8890A8;
+    -fx-font-size: 9px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 3 8 3 8;
+}
+
+.card-event-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #F0F2F8;
+    -fx-line-spacing: 2;
+}
+
+.card-event-title-large {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #F0F2F8;
+    -fx-line-spacing: 3;
+}
+
+.card-event-venue {
+    -fx-font-size: 11px;
+    -fx-text-fill: #8890A8;
+    -fx-font-family: "Courier New", monospace;
+}
+
+.card-event-date {
+    -fx-font-size: 11px;
+    -fx-text-fill: #3A3D52;
+    -fx-font-family: "Courier New", monospace;
+}
+
+.card-event-desc {
+    -fx-font-size: 11px;
+    -fx-text-fill: #5A5F78;
+    -fx-font-family: "Courier New", monospace;
+    -fx-line-spacing: 3;
+}
+
+.card-meta-block {
+    -fx-background-color: rgba(255,255,255,0.02);
+    -fx-border-color: #1C1C28;
+    -fx-border-width: 1;
+    -fx-border-radius: 1;
+    -fx-background-radius: 1;
+    -fx-padding: 12 14 12 14;
+}
+
+.card-price-label {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #C8FF00;
+}
+
+.card-price-big {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #C8FF00;
+    -fx-effect: dropshadow(gaussian, rgba(200,255,0,0.4), 10, 0, 0, 0);
+}
+
+/* ─── BUTTONS ON CARDS ───────────────────────────────────────────────── */
+
+.card-reserve-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: #E8320A;
+    -fx-border-width: 1.2;
+    -fx-border-radius: 1;
+    -fx-text-fill: #E8320A;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 8 14 8 14;
+    -fx-cursor: hand;
+}
+
+.card-reserve-btn:hover {
+    -fx-background-color: #E8320A;
+    -fx-text-fill: #F0F2F8;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.5), 14, 0, 0, 2);
+}
+
+.card-reserve-btn-large {
+    -fx-background-color: #E8320A;
+    -fx-text-fill: #F0F2F8;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 12 0 12 0;
+    -fx-background-radius: 1;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.45), 16, 0, 0, 3);
+}
+
+.card-reserve-btn-large:hover {
+    -fx-background-color: #FF4422;
+    -fx-effect: dropshadow(gaussian, rgba(255,68,34,0.7), 24, 0, 0, 3);
+}
+
+.card-reserve-btn-large:disabled {
+    -fx-background-color: #1C1C28;
+    -fx-text-fill: #3A3D52;
+    -fx-effect: none;
+}
+
+.card-reserve-btn-outline {
+    -fx-background-color: transparent;
+    -fx-border-color: #3A3D52;
+    -fx-border-width: 1;
+    -fx-border-radius: 1;
+    -fx-text-fill: #8890A8;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 11px;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 12 0 12 0;
+    -fx-cursor: hand;
+}
+
+.card-reserve-btn-outline:hover {
+    -fx-border-color: #8890A8;
+    -fx-text-fill: #C8CDD8;
+}
+
+.btn-success {
+    -fx-background-color: #1A3010 !important;
+    -fx-border-color: #C8FF00 !important;
+    -fx-border-width: 1 !important;
+    -fx-text-fill: #C8FF00 !important;
+    -fx-effect: dropshadow(gaussian, rgba(200,255,0,0.3), 12, 0, 0, 0) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FRONT PAGE STRUCTURE (Events / Shop / MyReservations)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.front-page {
+    -fx-background-color: #050507;
+}
+
+.front-page-header {
+    -fx-background-color: #050507;
+    -fx-padding: 32 32 20 32;
+    -fx-border-color: transparent transparent #1C1C28 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.front-page-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #F0F2F8;
+    -fx-letter-spacing: 4px;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.5), 20, 0, 0, 0);
+}
+
+.front-page-subtitle {
+    -fx-font-size: 11px;
+    -fx-text-fill: #3A3D52;
+    -fx-font-family: "Courier New", monospace;
+    -fx-letter-spacing: 2px;
+}
+
+/* ─── FILTERS BAR ────────────────────────────────────────────────────── */
+
+.front-filters-bar {
+    -fx-background-color: #08080D;
+    -fx-border-color: transparent transparent #1C1C28 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 14 24 14 24;
+}
+
+.front-search-field {
+    -fx-background-color: #0F0F16;
+    -fx-border-color: #252530;
+    -fx-border-width: 1;
+    -fx-border-radius: 1;
+    -fx-background-radius: 1;
+    -fx-text-fill: #F0F2F8;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 12px;
+    -fx-padding: 9 14 9 14;
+    -fx-prompt-text-fill: #3A3D52;
+}
+
+.front-search-field:focused {
+    -fx-border-color: #E8320A;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.3), 10, 0, 0, 0);
+}
+
+.front-combo {
+    -fx-background-color: #0F0F16;
+    -fx-border-color: #252530;
+    -fx-border-width: 1;
+    -fx-border-radius: 1;
+    -fx-background-radius: 1;
+    -fx-text-fill: #8890A8;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 11px;
+    -fx-padding: 4 6 4 6;
+    -fx-cursor: hand;
+}
+
+.front-combo:focused {
+    -fx-border-color: #E8320A;
+}
+
+.front-combo .list-cell {
+    -fx-background-color: #0F0F16;
+    -fx-text-fill: #C8CDD8;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 11px;
+    -fx-padding: 6 12 6 12;
+}
+
+.front-combo .list-cell:hover {
+    -fx-background-color: #1C1C28;
+}
+
+.front-count-label {
+    -fx-font-size: 10px;
+    -fx-text-fill: #3A3D52;
+    -fx-font-family: "Courier New", monospace;
+    -fx-letter-spacing: 2px;
+}
+
+/* ─── SCROLL PANE ────────────────────────────────────────────────────── */
+
+.front-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.front-scroll > .viewport {
+    -fx-background-color: #050507;
+}
+
+.front-scroll .scroll-bar {
+    -fx-background-color: #0A0A0F;
+}
+
+.front-scroll .scroll-bar .thumb {
+    -fx-background-color: #252530;
+    -fx-background-radius: 0;
+}
+
+.front-scroll .scroll-bar .thumb:hover {
+    -fx-background-color: #E8320A;
+}
+
+/* ─── EVENT GRID ─────────────────────────────────────────────────────── */
+
+.events-flow-grid {
+    -fx-background-color: transparent;
+}
+
+.featured-events-row, .featured-merch-row {
+    -fx-background-color: transparent;
+}
+
+/* ─── EMPTY STATE ────────────────────────────────────────────────────── */
+
+.front-empty-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #3A3D52;
+    -fx-font-family: "Courier New", monospace;
+    -fx-line-spacing: 8;
+    -fx-padding: 60 0 0 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ADMIN DASHBOARD INJECTION — make setCurrentUser compile
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Admin dashboard already has styles.css — these are additive tweaks
+   only applied when front-styles.css is also loaded. No conflicts. */
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SCROLLBAR — GLOBAL OVERRIDE
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.scroll-bar:vertical .track,
+.scroll-bar:horizontal .track {
+    -fx-background-color: #08080D;
+}
+
+.scroll-bar:vertical .thumb,
+.scroll-bar:horizontal .thumb {
+    -fx-background-color: #252530;
+    -fx-background-radius: 0;
+}
+
+.scroll-bar:vertical .thumb:hover,
+.scroll-bar:horizontal .thumb:hover {
+    -fx-background-color: #E8320A;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: #0A0A0F;
+    -fx-padding: 2;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-background-color: #3A3D52;
+    -fx-shape: " ";
+    -fx-padding: 0 0 0 0;
+}
+
+/* ═══ NOW PLAYING BAR ═══ */
+.now-playing-bar { -fx-background-color:#060608;-fx-min-height:46px;-fx-pref-height:46px;-fx-border-color:#1C1C28 transparent transparent transparent;-fx-border-width:1 0 0 0; }
+.np-icon         { -fx-font-size:18px;-fx-text-fill:#E8320A;-fx-effect:dropshadow(gaussian,rgba(232,50,10,0.9),12,0,0,0); }
+.np-label        { -fx-font-size:8px;-fx-font-weight:bold;-fx-text-fill:#3A3D52;-fx-letter-spacing:3px; }
+.np-track        { -fx-font-size:12px;-fx-text-fill:#8890A8;-fx-font-family:"Courier New",monospace; }
+.np-pulse-dot    { -fx-font-size:10px;-fx-text-fill:#E8320A; }
+.np-live-label   { -fx-font-size:9px;-fx-font-weight:bold;-fx-text-fill:#E8320A;-fx-letter-spacing:3px; }
+
+/* ═══ LANDING PAGE ═══ */
+.landing-section       { -fx-background-color:#0A0A0F; }
+.landing-section-alt   { -fx-background-color:#050507; }
+.landing-section-eyebrow { -fx-font-size:10px;-fx-font-weight:bold;-fx-text-fill:#E8320A;-fx-letter-spacing:4px; }
+.landing-section-heading { -fx-font-size:30px;-fx-font-weight:bold;-fx-text-fill:#F0F2F8;-fx-line-spacing:2; }
+.landing-section-body    { -fx-font-size:13px;-fx-text-fill:#8890A8;-fx-line-spacing:6; }
+.landing-stats-row       { -fx-background-color:#0A0A0F;-fx-border-color:#1C1C28 transparent transparent transparent;-fx-border-width:1 0 0 0;-fx-padding:40 0 40 0; }
+.landing-stat            { -fx-padding:20; }
+.landing-stat-number     { -fx-font-size:40px;-fx-font-weight:bold;-fx-text-fill:#E8320A;-fx-effect:dropshadow(gaussian,rgba(232,50,10,0.5),14,0,0,0); }
+.landing-stat-label      { -fx-font-size:10px;-fx-font-weight:bold;-fx-text-fill:#3A3D52;-fx-letter-spacing:3px; }
+.landing-step { -fx-background-color:#0D0D14;-fx-border-color:#1C1C28;-fx-border-width:1;-fx-border-radius:10;-fx-background-radius:10;-fx-padding:24; }
+.landing-step-num   { -fx-font-size:32px;-fx-font-weight:bold;-fx-text-fill:#1C1C28; }
+.landing-step-title { -fx-font-size:14px;-fx-font-weight:bold;-fx-text-fill:#F0F2F8;-fx-letter-spacing:2px; }
+.landing-step-body  { -fx-font-size:12px;-fx-text-fill:#8890A8;-fx-line-spacing:4; }
+
+/* ═══ EVENTS LIST ═══ */
+.events-page-header { -fx-background-color:#050507;-fx-padding:32 32 24 32;-fx-border-color:transparent transparent rgba(232,50,10,0.3) transparent;-fx-border-width:0 0 1 0; }
+.events-list-container { -fx-background-color:transparent; }
+.event-list-row { -fx-background-color:#0D0D14;-fx-border-color:transparent transparent #1C1C28 transparent;-fx-border-width:0 0 1 0;-fx-cursor:hand; }
+.event-list-row:hover { -fx-background-color:#13131B; }
+.event-list-inner { -fx-padding:20 32 20 32; }
+.event-date-block { -fx-background-color:#E8320A;-fx-background-radius:8;-fx-padding:10 14 10 14;-fx-min-width:70;-fx-max-width:70; }
+.event-date-month { -fx-font-size:9px;-fx-font-weight:bold;-fx-text-fill:#F0F2F8;-fx-letter-spacing:2px; }
+.event-date-day   { -fx-font-size:28px;-fx-font-weight:bold;-fx-text-fill:#FFFFFF; }
+.event-date-time  { -fx-font-size:10px;-fx-text-fill:#F0F2F8;-fx-letter-spacing:1px; }
+.event-list-title { -fx-font-size:20px;-fx-font-weight:bold;-fx-text-fill:#F0F2F8; }
+.event-list-meta  { -fx-font-size:11px;-fx-text-fill:#8890A8; }
+.event-cap-text   { -fx-font-size:10px;-fx-text-fill:#5A5F78; }
+.event-weather-badge   { -fx-font-size:12px;-fx-text-fill:#38BDF8;-fx-background-color:rgba(14,165,233,0.1);-fx-background-radius:6;-fx-border-color:rgba(14,165,233,0.25);-fx-border-width:1;-fx-border-radius:6;-fx-padding:5 10 5 10;-fx-font-weight:bold; }
+.event-weather-loading { -fx-font-size:11px;-fx-text-fill:#5A5F78;-fx-font-style:italic; }
+.event-weather-na      { -fx-font-size:11px;-fx-text-fill:#3A3D52; }
+.event-btn-reserve { -fx-background-color:#E8320A;-fx-text-fill:#F0F2F8;-fx-font-weight:bold;-fx-letter-spacing:2px;-fx-padding:11 20 11 20;-fx-background-radius:6;-fx-cursor:hand; }
+.event-btn-reserve:hover { -fx-background-color:#FF4422; }
+.event-btn-unavailable { -fx-background-color:#1C1C28;-fx-text-fill:#5A5F78;-fx-font-weight:bold;-fx-padding:11 20 11 20;-fx-background-radius:6; }
+.event-btn-done { -fx-background-color:#14532D;-fx-text-fill:#4ADE80;-fx-font-weight:bold;-fx-padding:11 20 11 20;-fx-background-radius:6; }
+
+/* ═══ BLOG / FEED (dark) ═══ */
+.blog-sidebar { -fx-background-color:#060608;-fx-border-color:transparent transparent transparent #1C1C28;-fx-border-width:0 0 0 1.5; }
+.blog-sidebar-section { -fx-background-color:#0A0A0F; }
+.sidebar-section-title { -fx-font-size:10px;-fx-font-weight:bold;-fx-text-fill:#C8CDD8;-fx-letter-spacing:2px; }
+.sidebar-status-label  { -fx-font-size:10px;-fx-text-fill:#5A5F78; }
+.sidebar-quote         { -fx-font-size:12px;-fx-font-style:italic;-fx-text-fill:#8890A8;-fx-line-spacing:4; }
+.sidebar-quote-author  { -fx-font-size:10px;-fx-font-weight:bold;-fx-text-fill:#E8320A; }
+.news-sidebar-list { -fx-background-color:transparent; }
+.news-sidebar-item { -fx-background-color:#0A0A0F;-fx-border-color:transparent transparent #1C1C28 transparent;-fx-border-width:0 0 1 0;-fx-padding:10 4 10 4;-fx-cursor:hand; }
+.news-sidebar-item:hover { -fx-background-color:#13131B; }
+.news-sidebar-title { -fx-font-size:11px;-fx-font-weight:bold;-fx-text-fill:#C8CDD8; }
+.news-sidebar-meta  { -fx-font-size:9px;-fx-text-fill:#5A5F78; }
+.news-sidebar-stats { -fx-font-size:9px;-fx-text-fill:#8890A8; }
+.feed-container { -fx-background-color:#050507; }
+.feed-card { -fx-background-color:#0D0D14;-fx-border-color:transparent transparent #1C1C28 transparent;-fx-border-width:0 0 1 0; }
+.feed-card-news .feed-card-header { -fx-background-color:#13090A; }
+.feed-card-header { -fx-background-color:#0A0A0F;-fx-padding:14 24 14 24;-fx-border-color:transparent transparent #1C1C28 transparent;-fx-border-width:0 0 1 0; }
+.feed-card-body   { -fx-padding:16 24 16 24; }
+.feed-avatar      { -fx-font-size:28px;-fx-min-width:36; }
+.feed-author      { -fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#F0F2F8; }
+.feed-date        { -fx-font-size:10px;-fx-text-fill:#5A5F78; }
+.feed-read-time   { -fx-font-size:9px;-fx-text-fill:#5A5F78;-fx-letter-spacing:1px; }
+.feed-live-badge  { -fx-background-color:rgba(232,50,10,0.15);-fx-border-color:rgba(232,50,10,0.35);-fx-border-width:1;-fx-border-radius:4;-fx-background-radius:4;-fx-text-fill:#E8320A;-fx-font-size:9px;-fx-font-weight:bold;-fx-letter-spacing:2px;-fx-padding:3 8 3 8; }
+.feed-post-title   { -fx-font-size:17px;-fx-font-weight:bold;-fx-text-fill:#F0F2F8; }
+.feed-post-content { -fx-font-size:13px;-fx-text-fill:#8890A8;-fx-line-spacing:4; }
+.feed-read-more-btn { -fx-background-color:transparent;-fx-border-color:#E8320A;-fx-border-width:1;-fx-border-radius:4;-fx-text-fill:#E8320A;-fx-font-size:10px;-fx-font-weight:bold;-fx-padding:5 12 5 12;-fx-cursor:hand; }
+.feed-footer { -fx-background-color:#0A0A0F;-fx-border-color:transparent transparent #1C1C28 transparent;-fx-border-width:0 0 1 0;-fx-padding:10 24 10 24; }
+.reaction-btn { -fx-background-color:#1C1C28;-fx-border-color:#252530;-fx-border-width:1;-fx-border-radius:20;-fx-background-radius:20;-fx-text-fill:#8890A8;-fx-font-size:12px;-fx-padding:5 12 5 12;-fx-cursor:hand; }
+.reaction-btn:hover { -fx-background-color:#13090A;-fx-border-color:#E8320A;-fx-text-fill:#E8320A; }
+.reaction-btn-active { -fx-background-color:#13090A !important;-fx-border-color:#E8320A !important;-fx-text-fill:#E8320A !important;-fx-font-weight:bold; }
+.feed-comment-toggle { -fx-background-color:transparent;-fx-border-color:#252530;-fx-border-width:1;-fx-border-radius:6;-fx-text-fill:#8890A8;-fx-font-size:11px;-fx-padding:5 12 5 12;-fx-cursor:hand; }
+.feed-comment-section { -fx-background-color:#0A0A0F;-fx-padding:12 24 12 24; }
+.feed-comment-avatar  { -fx-font-size:20px; }
+.feed-comment-text    { -fx-font-size:12px;-fx-text-fill:#C8CDD8; }
+.feed-comment-date    { -fx-font-size:9px;-fx-text-fill:#5A5F78; }
+.feed-comment-input { -fx-background-color:#111118;-fx-border-color:#252530;-fx-border-width:1;-fx-border-radius:20;-fx-background-radius:20;-fx-padding:8 14 8 14;-fx-font-size:12px;-fx-text-fill:#F0F2F8; }
+.feed-comment-post-btn { -fx-background-color:#E8320A;-fx-text-fill:#F0F2F8;-fx-font-size:10px;-fx-font-weight:bold;-fx-padding:8 14 8 14;-fx-background-radius:20;-fx-cursor:hand; }
+
+/* ═══ PARTNERS LIST (dark) ═══ */
+.partners-table-header { -fx-background-color:#060608;-fx-border-color:transparent transparent #1C1C28 transparent;-fx-border-width:0 0 1 0; }
+.partners-col-header   { -fx-font-size:10px;-fx-font-weight:bold;-fx-text-fill:#5A5F78;-fx-letter-spacing:2px; }
+.partners-list         { -fx-background-color:#050507; }
+.partner-row           { -fx-background-color:#050507;-fx-border-color:transparent transparent #1C1C28 transparent;-fx-border-width:0 0 1 0;-fx-padding:8 32 8 32;-fx-cursor:hand; }
+.partner-row-hover     { -fx-background-color:#0D0D14; }
+.partner-row-num       { -fx-font-size:14px;-fx-text-fill:#5A5F78;-fx-font-family:"Courier New",monospace; }
+.partner-row-name      { -fx-font-size:14px;-fx-font-weight:bold;-fx-text-fill:#F0F2F8; }
+.partner-row-sub       { -fx-font-size:11px;-fx-text-fill:#5A5F78; }
+.partner-row-views     { -fx-font-size:12px;-fx-text-fill:#8890A8; }
+
+/* ═══ SHOP (dark) ═══ */
+.shop-root { -fx-background-color:#050507; }
+.shop-filter-sidebar { -fx-background-color:#060608;-fx-border-color:transparent #1C1C28 transparent transparent;-fx-border-width:0 1 0 0; }
+.shop-trends-panel   { -fx-background-color:#060608;-fx-border-color:transparent transparent transparent #1C1C28;-fx-border-width:0 0 0 1; }
+.shop-filter-header { -fx-background-color:#0A0A0F;-fx-border-color:transparent transparent #1C1C28 transparent;-fx-border-width:0 0 1 0; }
+.shop-sidebar-brand { -fx-font-size:18px;-fx-font-weight:bold;-fx-text-fill:#F0F2F8;-fx-letter-spacing:2px; }
+.shop-sidebar-sub   { -fx-font-size:10px;-fx-text-fill:#5A5F78; }
+.shop-filter-label  { -fx-font-size:9px;-fx-font-weight:bold;-fx-text-fill:#5A5F78;-fx-letter-spacing:2px; }
+.shop-filter-value  { -fx-font-size:12px;-fx-font-weight:bold;-fx-text-fill:#E8320A; }
+.shop-rate-label    { -fx-font-size:10px;-fx-text-fill:#F59E0B;-fx-line-spacing:3; }
+.shop-cart-mini { -fx-background-color:#0A0A0F;-fx-border-color:#1C1C28 transparent transparent transparent;-fx-border-width:1 0 0 0; }
+.shop-cart-mini-label { -fx-font-size:11px;-fx-text-fill:#8890A8; }
+.shop-cart-total      { -fx-font-size:18px;-fx-font-weight:bold;-fx-text-fill:#C8FF00; }
+.shop-cart-converted  { -fx-font-size:10px;-fx-text-fill:#5A5F78; }
+.shop-product-toolbar { -fx-background-color:#0A0A0F;-fx-border-color:transparent transparent #1C1C28 transparent;-fx-border-width:0 0 1 0; }
+.shop-count-label     { -fx-font-size:13px;-fx-font-weight:bold;-fx-text-fill:#C8CDD8; }
+.shop-product-grid    { -fx-background-color:transparent; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SIDEBAR NAVIGATION
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.front-sidebar {
+    -fx-background-color: #060608;
+    -fx-border-color: transparent #1C1C28 transparent transparent;
+    -fx-border-width: 0 1.5 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.9), 20, 0, 6, 0);
+}
+
+.sidebar-brand-area {
+    -fx-background-color: #050507;
+}
+
+.sidebar-brand {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #F0F2F8;
+    -fx-letter-spacing: 4px;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.55), 18, 0, 0, 0);
+}
+
+.sidebar-tagline {
+    -fx-font-size: 8px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #E8320A;
+    -fx-letter-spacing: 4px;
+}
+
+.front-nav-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #5A5F78;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 1px;
+    -fx-padding: 13 16 13 16;
+    -fx-alignment: center-left;
+    -fx-cursor: hand;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent transparent transparent transparent;
+    -fx-border-width: 0 0 0 3;
+}
+
+.front-nav-item:hover {
+    -fx-text-fill: #C8CDD8;
+    -fx-background-color: rgba(255,255,255,0.03);
+    -fx-border-color: transparent transparent transparent rgba(232,50,10,0.4);
+}
+
+.front-nav-item.active {
+    -fx-text-fill: #F0F2F8;
+    -fx-background-color: rgba(232,50,10,0.07);
+    -fx-border-color: transparent transparent transparent #E8320A;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.15), 8, 0, 2, 0);
+}
+
+/* ── Now Playing ── */
+.now-playing-block {
+    -fx-background-color: rgba(232,50,10,0.05);
+}
+
+.now-playing-label {
+    -fx-font-size: 8px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #E8320A;
+    -fx-letter-spacing: 3px;
+    -fx-font-weight: bold;
+}
+
+.now-playing-track {
+    -fx-font-size: 10px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #8890A8;
+}
+
+/* ── User block ── */
+.sidebar-user-block {
+    -fx-background-color: #050507;
+}
+
+.sidebar-user-name {
+    -fx-font-size: 11px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #8890A8;
+}
+
+.sidebar-logout-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: #2A2A38;
+    -fx-border-width: 1;
+    -fx-border-radius: 2;
+    -fx-text-fill: #5A5F78;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 9px;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 7 0 7 0;
+    -fx-cursor: hand;
+}
+
+.sidebar-logout-btn:hover {
+    -fx-border-color: #E8320A;
+    -fx-text-fill: #E8320A;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   HOME HERO — improved
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.hero-banner {
+    -fx-background-color: radial-gradient(center 50% 40%, radius 80%, #1E0808, #0A0508, #050507);
+    -fx-cursor: default;
+}
+
+.hero-text-block {
+    -fx-padding: 0 50 44 50;
+    -fx-alignment: CENTER;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   HOME FEATURE CARDS  (event + merch)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.home-event-card {
+    -fx-background-color: #0D0D14;
+    -fx-border-color: #1C1C28;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 16 16 16 16;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 12, 0, 0, 3);
+}
+
+.home-event-card:hover {
+    -fx-border-color: #E8320A;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.3), 22, 0, 0, 3);
+}
+
+.home-merch-card {
+    -fx-background-color: #0D0D14;
+    -fx-border-color: #1C1C28;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 16 16 16 16;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 12, 0, 0, 3);
+}
+
+.home-merch-card:hover {
+    -fx-border-color: #C8FF00;
+    -fx-effect: dropshadow(gaussian, rgba(200,255,0,0.25), 22, 0, 0, 3);
+}
+
+.card-meta-text {
+    -fx-font-size: 10px;
+    -fx-text-fill: #5A5F78;
+    -fx-font-family: "Courier New", monospace;
+}
+
+.card-action-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: #E8320A;
+    -fx-border-width: 1.2;
+    -fx-border-radius: 2;
+    -fx-text-fill: #E8320A;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 7 12 7 12;
+    -fx-cursor: hand;
+}
+
+.card-action-btn:hover {
+    -fx-background-color: #E8320A;
+    -fx-text-fill: #F0F2F8;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.5), 10, 0, 0, 2);
+}
+
+.card-action-btn-outline {
+    -fx-background-color: transparent;
+    -fx-border-color: #3A3D52;
+    -fx-border-width: 1;
+    -fx-border-radius: 2;
+    -fx-text-fill: #5A5F78;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 9px;
+    -fx-letter-spacing: 1px;
+    -fx-padding: 7 12 7 12;
+    -fx-cursor: hand;
+}
+
+.card-action-btn-outline:hover {
+    -fx-border-color: #8890A8;
+    -fx-text-fill: #C8CDD8;
+}
+
+.card-genre-badge-acid {
+    -fx-background-color: rgba(200,255,0,0.10);
+    -fx-border-color: rgba(200,255,0,0.30);
+    -fx-border-width: 1;
+    -fx-border-radius: 1;
+    -fx-background-radius: 1;
+    -fx-text-fill: #C8FF00;
+    -fx-font-size: 9px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 3 8 3 8;
+}
+
+.card-price-main {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #C8FF00;
+    -fx-effect: dropshadow(gaussian, rgba(200,255,0,0.35), 8, 0, 0, 0);
+}
+
+.card-price-converted {
+    -fx-font-size: 11px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #5A5F78;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PRODUCT CARDS  (Shop page)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.product-card {
+    -fx-background-color: #0D0D14;
+    -fx-border-color: #1C1C28;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 18 18 18 18;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 14, 0, 0, 4);
+}
+
+.product-card:hover {
+    -fx-border-color: #C8FF00;
+    -fx-effect: dropshadow(gaussian, rgba(200,255,0,0.22), 26, 0, 0, 4);
+}
+
+/* ── Exchange rate bar ── */
+.rate-info-bar {
+    -fx-background-color: rgba(245,158,11,0.06);
+    -fx-border-color: transparent transparent rgba(245,158,11,0.15) transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.rate-label {
+    -fx-font-size: 10px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #F59E0B;
+    -fx-letter-spacing: 1px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CART PANEL
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.cart-panel {
+    -fx-background-color: #060608;
+    -fx-border-color: transparent transparent transparent #1C1C28;
+    -fx-border-width: 0 0 0 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 20, 0, -4, 0);
+}
+
+.cart-header {
+    -fx-background-color: #080A0F;
+}
+
+.cart-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #F0F2F8;
+    -fx-letter-spacing: 2px;
+}
+
+.cart-badge-label {
+    -fx-font-size: 9px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #5A5F78;
+    -fx-letter-spacing: 1px;
+}
+
+.cart-empty-label {
+    -fx-font-size: 11px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #3A3D52;
+    -fx-line-spacing: 5;
+    -fx-padding: 20 0 0 0;
+}
+
+.cart-item-row {
+    -fx-background-color: #0F0F18;
+    -fx-border-color: #1C1C28;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 8 10 8 10;
+}
+
+.cart-item-name {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #C8CDD8;
+}
+
+.cart-item-sub {
+    -fx-font-size: 10px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #C8FF00;
+}
+
+.cart-qty-btn {
+    -fx-background-color: #18181F;
+    -fx-border-color: #2A2A38;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-text-fill: #8890A8;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 2 7 2 7;
+    -fx-cursor: hand;
+    -fx-min-width: 26;
+}
+
+.cart-qty-btn:hover {
+    -fx-border-color: #E8320A;
+    -fx-text-fill: #E8320A;
+}
+
+.cart-qty-label {
+    -fx-font-size: 12px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #F0F2F8;
+    -fx-min-width: 20;
+    -fx-alignment: CENTER;
+}
+
+.cart-del-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #3A3D52;
+    -fx-font-size: 11px;
+    -fx-padding: 2 5 2 5;
+    -fx-cursor: hand;
+}
+
+.cart-del-btn:hover { -fx-text-fill: #EF4444; }
+
+.cart-footer {
+    -fx-background-color: #080A0F;
+}
+
+.cart-total-key {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #8890A8;
+    -fx-letter-spacing: 2px;
+}
+
+.cart-total-value {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #C8FF00;
+    -fx-effect: dropshadow(gaussian, rgba(200,255,0,0.4), 8, 0, 0, 0);
+}
+
+.cart-converted-label {
+    -fx-font-size: 10px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #5A5F78;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.checkout-btn {
+    -fx-background-color: #E8320A;
+    -fx-text-fill: #F0F2F8;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 2px;
+    -fx-padding: 11 0 11 0;
+    -fx-background-radius: 2;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.5), 14, 0, 0, 3);
+}
+
+.checkout-btn:hover {
+    -fx-background-color: #FF4422;
+    -fx-effect: dropshadow(gaussian, rgba(255,68,34,0.7), 22, 0, 0, 3);
+}
+
+.checkout-btn:disabled {
+    -fx-background-color: #1C1C28;
+    -fx-text-fill: #3A3D52;
+    -fx-effect: none;
+}
+
+.cart-clear-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: #2A2A38;
+    -fx-border-width: 1;
+    -fx-border-radius: 2;
+    -fx-text-fill: #3A3D52;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 9px;
+    -fx-letter-spacing: 1px;
+    -fx-padding: 6 0 6 0;
+    -fx-cursor: hand;
+}
+
+.cart-clear-btn:hover {
+    -fx-border-color: #EF4444;
+    -fx-text-fill: #EF4444;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TICKET CARDS  (My Tickets)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.ticket-card {
+    -fx-background-color: #0D0D14;
+    -fx-border-color: #E8320A #1C1C28 #1C1C28 #E8320A;
+    -fx-border-width: 1 1 1 4;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 18 18 18 18;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 16, 0, 0, 4);
+}
+
+.ticket-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.28), 26, 0, 0, 4);
+}
+
+.ticket-stub-label {
+    -fx-font-size: 8px;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #E8320A;
+    -fx-letter-spacing: 3px;
+    -fx-font-weight: bold;
+}
+
+.card-cancel-btn {
+    -fx-background-color: transparent;
+    -fx-border-color: #3A3D52;
+    -fx-border-width: 1;
+    -fx-border-radius: 2;
+    -fx-text-fill: #5A5F78;
+    -fx-font-family: "Courier New", monospace;
+    -fx-font-size: 9px;
+    -fx-letter-spacing: 1px;
+    -fx-padding: 6 10 6 10;
+    -fx-cursor: hand;
+}
+
+.card-cancel-btn:hover {
+    -fx-border-color: #EF4444;
+    -fx-text-fill: #EF4444;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RECOMMENDATIONS HEADER
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.recommendation-header {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #E8320A;
+    -fx-letter-spacing: 3px;
+    -fx-padding: 16 0 4 4;
+    -fx-border-color: transparent transparent #E8320A transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* ── Price slider ── */
+.price-slider .track {
+    -fx-background-color: #1C1C28;
+    -fx-background-radius: 2;
+    -fx-pref-height: 3;
+}
+
+.price-slider .thumb {
+    -fx-background-color: #E8320A;
+    -fx-background-radius: 50%;
+    -fx-pref-width: 14;
+    -fx-pref-height: 14;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.5), 6, 0, 0, 0);
+}
+
+.price-slider .thumb:hover {
+    -fx-background-color: #FF4422;
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DARK MODE — VISUAL POLISH  (identical structure to light mode)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.front-root, .front-page, .front-content-area {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 14px;
+}
+/* Default label color in dark mode — without this, any unstyled Label
+   inherits JavaFX's black text and becomes invisible on dark backgrounds. */
+.label {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-text-fill: #C8CDD8;
+}
+.nav-brand-text, .hero-big-logo, .hero-main-title, .np-track, .np-label, .np-live-label,
+.landing-step-num, .landing-stat-number { -fx-font-family: "Courier New", monospace; }
+
+/* Cards */
+.home-event-card, .home-merch-card, .event-detail-card, .product-card, .blog-card, .ticket-card {
+    -fx-border-radius: 16; -fx-background-radius: 16; -fx-border-width: 0;
+    -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.5),28,0,0,8); -fx-padding: 22 22 22 22;
+}
+.home-event-card:hover, .home-merch-card:hover, .event-detail-card:hover,
+.product-card:hover, .blog-card:hover {
+    -fx-effect: dropshadow(gaussian,rgba(232,50,10,0.28),36,0,0,10); -fx-translate-y: -2;
+}
+
+/* Buttons */
+.front-nav-btn { -fx-padding:18 18 18 18; -fx-font-size:12px; -fx-font-weight:600; }
+.card-action-btn, .card-reserve-btn-large, .checkout-btn, .event-btn-reserve, .feed-comment-post-btn {
+    -fx-background-radius:10; -fx-border-radius:10; -fx-font-size:12px; -fx-font-weight:600;
+}
+.card-action-btn-outline, .cart-clear-btn, .card-cancel-btn { -fx-background-radius:10; -fx-border-radius:10; }
+
+/* Typography */
+.front-page-header    { -fx-padding:32 36 26 36; }
+.front-filters-bar    { -fx-padding:14 28 14 28; }
+.front-page-title     { -fx-font-size:26px; -fx-font-weight:700; -fx-letter-spacing:-0.5px; }
+.front-page-subtitle  { -fx-font-size:14px; }
+.card-event-title       { -fx-font-size:15px; -fx-font-weight:700; }
+.card-event-title-large { -fx-font-size:17px; -fx-font-weight:700; -fx-line-spacing:3; }
+.card-event-desc        { -fx-font-size:13px; -fx-line-spacing:4; }
+.event-list-title       { -fx-font-size:22px; -fx-font-weight:700; }
+.feed-post-title        { -fx-font-size:17px; -fx-font-weight:700; }
+.feed-post-content      { -fx-font-size:14px; -fx-line-spacing:5; }
+.events-list-inner      { -fx-padding:24 36 24 36; }
+.feed-card-header       { -fx-padding:16 28 16 28; }
+.feed-card-body         { -fx-padding:18 28 18 28; }
+.feed-footer            { -fx-padding:12 28 12 28; }
+.overlay-header         { -fx-padding:16 22 16 22; -fx-background-color:#0A0A0F; -fx-border-color:transparent transparent #1C1C28 transparent; -fx-border-width:0 0 1 0; -fx-background-radius:14 14 0 0; }
+.overlay-body           { -fx-padding:22 26 22 26; -fx-background-color:#0D0D14; }
+.overlay-panel          { -fx-background-color:#0D0D14; -fx-border-color:#1C1C28; -fx-border-width:1.2; -fx-border-radius:14; -fx-background-radius:14; -fx-effect:dropshadow(gaussian,rgba(232,50,10,0.18),28,0,0,6); }
+.overlay-title          { -fx-text-fill:#E8320A; -fx-font-weight:bold; -fx-font-size:13px; -fx-letter-spacing:2px; }
+.overlay-x-btn          { -fx-background-color:transparent; -fx-text-fill:#8890A8; -fx-font-size:16px; -fx-cursor:hand; -fx-padding:2 8 2 8; }
+.overlay-x-btn:hover    { -fx-text-fill:#E8320A; }
+.overlay-post-title     { -fx-text-fill:#F0F2F8; -fx-font-size:18px; -fx-font-weight:bold; }
+.overlay-post-body      { -fx-text-fill:#C8CDD8; -fx-font-size:13px; -fx-line-spacing:4; }
+.overlay-section-label  { -fx-text-fill:#E8320A; -fx-font-size:10px; -fx-font-weight:bold; -fx-letter-spacing:3px; }
+
+/* Smooth Tunisian-flavored context-banner pills above the trending strip */
+.shop-context-pill {
+    -fx-background-color: rgba(232,50,10,0.10);
+    -fx-border-color: rgba(232,50,10,0.40);
+    -fx-border-width: 1; -fx-border-radius: 24; -fx-background-radius: 24;
+    -fx-text-fill: #F0F2F8;
+    -fx-padding: 8 16 8 16;
+    -fx-font-size: 11.5px;
+    -fx-font-weight: 600;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.20), 8, 0, 0, 1);
+}
+
+/* Make the trending album scroller's horizontal bar visible & themed */
+.shop-trending-scroll .scroll-bar:horizontal { -fx-pref-height: 8; }
+
+.reaction-btn           { -fx-background-radius:24; -fx-border-radius:24; -fx-padding:6 14 6 14; -fx-font-size:13px; }
+
+/* Navbar */
+.front-navbar { -fx-min-height:62px; -fx-pref-height:62px; }
+
+/* Partner cards (dark) */
+.partner-card-grid {
+    -fx-background-color:#0D0D14; -fx-border-width:0; -fx-border-radius:16; -fx-background-radius:16;
+    -fx-effect:dropshadow(gaussian,rgba(0,0,0,0.6),28,0,0,8); -fx-cursor:hand;
+}
+.partner-card-grid:hover { -fx-effect:dropshadow(gaussian,rgba(232,50,10,0.28),36,0,0,10); -fx-translate-y:-3; }
+.partner-card-header  { -fx-background-radius:16 16 0 0; -fx-pref-height:80; -fx-alignment:CENTER; }
+.partner-card-body    { -fx-padding:18 18 18 18; }
+.partner-card-name    { -fx-font-size:15px; -fx-font-weight:700; -fx-text-fill:#F0F2F8; }
+.partner-card-meta    { -fx-font-size:11px; -fx-text-fill:#5A5F78; }
+.partner-card-views   { -fx-font-size:12px; -fx-text-fill:#8890A8; }
+.partner-featured-banner { -fx-background-color:linear-gradient(to right,#0D0407,#1A0808); -fx-background-radius:16; -fx-border-radius:16; -fx-padding:28 32 28 32; -fx-effect:dropshadow(gaussian,rgba(232,50,10,0.3),28,0,0,6); }
+.partner-featured-tag  { -fx-font-size:10px;-fx-font-weight:700;-fx-text-fill:#E8320A;-fx-letter-spacing:3px; }
+.partner-featured-name { -fx-font-size:28px;-fx-font-weight:700;-fx-text-fill:#F0F2F8;-fx-letter-spacing:-0.5px; }
+.partner-featured-sub  { -fx-font-size:13px;-fx-text-fill:#8890A8; }
+.partner-cta-box { -fx-background-color:#0D0D14;-fx-border-color:#1C1C28;-fx-border-width:1;-fx-border-radius:16;-fx-background-radius:16;-fx-padding:28 32 28 32; }
+.partner-cta-title { -fx-font-size:18px;-fx-font-weight:700;-fx-text-fill:#F0F2F8; }
+.partner-cta-sub   { -fx-font-size:13px;-fx-text-fill:#8890A8;-fx-line-spacing:3; }
+.partner-cta-btn   { -fx-background-color:#E8320A;-fx-text-fill:#F0F2F8;-fx-font-size:13px;-fx-font-weight:700;-fx-padding:12 24 12 24;-fx-background-radius:10;-fx-cursor:hand;-fx-effect:dropshadow(gaussian,rgba(232,50,10,0.5),14,0,0,4); }
+.partner-cta-btn:hover { -fx-background-color:#FF4422; }
+
+/* Post creation (dark) */
+.post-create-box { -fx-background-color:#0D0D14;-fx-border-width:0;-fx-border-radius:16;-fx-background-radius:16;-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.5),20,0,0,6);-fx-padding:16 24 16 24; }
+.post-create-input { -fx-background-color:#111118;-fx-border-color:#252530;-fx-border-width:1;-fx-border-radius:24;-fx-background-radius:24;-fx-padding:11 18 11 18;-fx-font-size:14px;-fx-text-fill:#F0F2F8;-fx-prompt-text-fill:#5A5F78; }
+.post-create-input:focused { -fx-border-color:#E8320A;-fx-background-color:#13131B; }
+.post-create-btn { -fx-background-color:#E8320A;-fx-text-fill:#F0F2F8;-fx-font-size:12px;-fx-font-weight:700;-fx-padding:10 20 10 20;-fx-background-radius:10;-fx-cursor:hand; }
+
+/* Mute button (dark) */
+.mute-btn { -fx-background-color:transparent;-fx-border-color:transparent;-fx-text-fill:#5A5F78;-fx-font-size:15px;-fx-cursor:hand;-fx-padding:4 8 4 8; }
+.mute-btn:hover { -fx-text-fill:#E8320A; }
+
+/* Referral (dark) */
+.referral-card { -fx-background-color:#0D0D14;-fx-border-width:0;-fx-border-radius:16;-fx-background-radius:16;-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.5),24,0,0,7);-fx-padding:24 28 24 28; }
+.overlay-panel-large {
+    -fx-max-width: 920;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 32, 0, 0, 8);
+}
+.referral-code-box { -fx-background-color:#111118;-fx-border-color:#252530;-fx-border-width:1;-fx-border-radius:10;-fx-background-radius:10;-fx-padding:12 18 12 18; }
+.referral-code  { -fx-font-size:20px;-fx-font-weight:700;-fx-text-fill:#E8320A;-fx-font-family:"Courier New",monospace; }
+.referral-label { -fx-font-size:10px;-fx-font-weight:700;-fx-text-fill:#5A5F78;-fx-letter-spacing:2px; }
+.referral-count { -fx-font-size:32px;-fx-font-weight:700;-fx-text-fill:#E8320A; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PROMOTIONS MODULE  (dark mode)
+   ═══════════════════════════════════════════════════════════════════════ */
+.promo-geo-label  { -fx-font-size:12px;-fx-text-fill:#8890A8;-fx-font-weight:600; }
+
+.promo-stats-bar  { -fx-background-color:#080A0F;-fx-border-color:transparent transparent #1C1C28 transparent;-fx-border-width:0 0 1 0; }
+.promo-stats-title { -fx-font-size:11px;-fx-font-weight:700;-fx-text-fill:#C8CDD8;-fx-letter-spacing:2px; }
+.promo-stat-chip  { -fx-background-color:#0D0D14;-fx-border-color:#1C1C28;-fx-border-width:1;-fx-border-radius:10;-fx-background-radius:10;-fx-padding:8 18 8 18; }
+.promo-stat-num   { -fx-font-size:20px;-fx-font-weight:700;-fx-text-fill:#E8320A; }
+.promo-stat-key   { -fx-font-size:8px;-fx-font-weight:700;-fx-text-fill:#5A5F78;-fx-letter-spacing:2px; }
+
+.promo-card { -fx-background-color:#0D0D14;-fx-border-width:0;-fx-border-radius:16;-fx-background-radius:16;-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.6),24,0,0,7);-fx-cursor:hand; }
+.promo-card:hover { -fx-effect:dropshadow(gaussian,rgba(232,50,10,0.22),32,0,0,8);-fx-translate-y:-3; }
+
+.promo-card-badges { -fx-padding:10 16 10 16;-fx-background-color:#0A0A0F;-fx-border-color:transparent transparent #1C1C28 transparent;-fx-border-width:0 0 1 0; }
+.promo-badge-sponsored { -fx-background-color:rgba(232,50,10,0.12);-fx-border-color:#E8320A;-fx-border-width:1;-fx-border-radius:6;-fx-background-radius:6;-fx-text-fill:#E8320A;-fx-font-size:9px;-fx-font-weight:700;-fx-letter-spacing:2px;-fx-padding:3 8 3 8; }
+.promo-badge-video     { -fx-background-color:rgba(225,29,72,0.1);-fx-border-color:rgba(225,29,72,0.5);-fx-border-width:1;-fx-border-radius:6;-fx-background-radius:6;-fx-text-fill:#FB7185;-fx-font-size:9px;-fx-font-weight:700;-fx-padding:3 8 3 8; }
+.promo-badge-near      { -fx-background-color:rgba(22,163,74,0.1);-fx-border-color:rgba(22,163,74,0.4);-fx-border-width:1;-fx-border-radius:6;-fx-background-radius:6;-fx-text-fill:#4ADE80;-fx-font-size:9px;-fx-font-weight:700;-fx-padding:3 8 3 8; }
+.promo-countdown       { -fx-font-size:10px;-fx-font-weight:700;-fx-text-fill:#F59E0B; }
+.promo-countdown-expired { -fx-text-fill:#5A5F78 !important; }
+
+.promo-card-body     { -fx-padding:18 20 18 20; }
+.promo-partner-name  { -fx-font-size:17px;-fx-font-weight:700;-fx-text-fill:#F0F2F8; }
+.promo-preview-title { -fx-font-size:14px;-fx-font-weight:600;-fx-text-fill:#C8CDD8;-fx-line-spacing:3; }
+.promo-preview-desc  { -fx-font-size:12px;-fx-text-fill:#8890A8;-fx-line-spacing:4; }
+.promo-meta-row      { -fx-padding:10 0 10 0; }
+.promo-meta-item     { -fx-font-size:11px;-fx-text-fill:#5A5F78; }
+.promo-grade-label   { -fx-font-size:12px;-fx-font-weight:700;-fx-text-fill:#8890A8; }
+
+.promo-visit-btn { -fx-background-color:#E8320A;-fx-text-fill:#F0F2F8;-fx-font-size:12px;-fx-font-weight:700;-fx-padding:10 0 10 0;-fx-background-radius:10;-fx-cursor:hand;-fx-effect:dropshadow(gaussian,rgba(232,50,10,0.5),10,0,0,3); }
+.promo-visit-btn:hover { -fx-background-color:#FF4422; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   METAL THEME POLISH — hover scale, crisper edges, missing utilities
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Hover scale on all interactive cards */
+.home-event-card:hover, .home-merch-card:hover,
+.event-front-card:hover, .event-detail-card:hover,
+.product-card:hover, .ticket-card:hover,
+.partner-card-grid:hover, .promo-card:hover {
+    -fx-scale-x: 1.015; -fx-scale-y: 1.015;
+}
+
+/* Button hover scale */
+.hero-cta-btn:hover, .card-reserve-btn-large:hover,
+.event-btn-reserve:hover, .checkout-btn:hover,
+.partner-cta-btn:hover, .post-create-btn:hover {
+    -fx-scale-x: 1.025; -fx-scale-y: 1.025;
+}
+
+/* Consistent border radius across all cards */
+.event-front-card, .event-detail-card, .merch-front-card, .merch-detail-card,
+.home-event-card, .home-merch-card {
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+}
+.ticket-card { -fx-border-radius: 12; -fx-background-radius: 12; }
+
+/* Refined nav active state */
+.front-nav-btn.active {
+    -fx-border-color: transparent transparent #E8320A transparent;
+    -fx-background-color: rgba(232,50,10,0.06);
+    -fx-text-fill: #E8320A;
+}
+
+/* Promo sidebar (metal dark) */
+.promo-sidebar {
+    -fx-background-color: #060608;
+    -fx-border-color: transparent transparent transparent #1C1C28;
+    -fx-border-width: 0 0 0 1.5;
+}
+
+/* front-form-label-small */
+.front-form-label-small {
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #E8320A;
+    -fx-letter-spacing: 2px;
+    -fx-font-family: "Courier New", monospace;
+}
+
+/* sidebar-section-title */
+.sidebar-section-title {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #C8CDD8;
+    -fx-letter-spacing: 2px;
+    -fx-font-family: "Courier New", monospace;
+}
+
+/* detail-value-text */
+.detail-value-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #F0F2F8;
+    -fx-background-color: #111118;
+    -fx-background-radius: 8;
+    -fx-border-color: #252530;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-padding: 8 12 8 12;
+    -fx-font-family: "Courier New", monospace;
+}
+.detail-value-text:focused { -fx-border-color: #E8320A; -fx-background-color: #13131B; }
+
+/* stat-value-mid, detail-value-link */
+.stat-value-mid   { -fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #F0F2F8; }
+.detail-value-link{ -fx-font-size: 13px; -fx-text-fill: #E8320A; -fx-font-weight: bold; }
+
+/* Utility button variants */
+.btn-secondary {
+    -fx-background-color: rgba(255,255,255,0.04);
+    -fx-text-fill: #8890A8;
+    -fx-border-color: #252530;
+    -fx-border-width: 1;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
+    -fx-font-family: "Courier New", monospace;
+}
+.btn-secondary:hover {
+    -fx-background-color: rgba(232,50,10,0.08);
+    -fx-border-color: #E8320A;
+    -fx-text-fill: #E8320A;
+    -fx-scale-x: 1.02; -fx-scale-y: 1.02;
+}
+.btn-secondary-small {
+    -fx-background-color: rgba(255,255,255,0.03);
+    -fx-text-fill: #5A5F78;
+    -fx-border-color: #252530;
+    -fx-border-width: 1;
+    -fx-border-radius: 7;
+    -fx-background-radius: 7;
+    -fx-padding: 5 12 5 12;
+    -fx-font-size: 11px;
+    -fx-cursor: hand;
+    -fx-font-family: "Courier New", monospace;
+}
+.btn-secondary-small:hover {
+    -fx-background-color: rgba(232,50,10,0.07);
+    -fx-border-color: #E8320A;
+    -fx-text-fill: #E8320A;
+}
+.btn-outline-danger {
+    -fx-background-color: transparent;
+    -fx-text-fill: #FCA5A5;
+    -fx-border-color: rgba(239,68,68,0.40);
+    -fx-border-width: 1;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-padding: 8 16 8 16;
+    -fx-cursor: hand;
+    -fx-font-family: "Courier New", monospace;
+}
+.btn-outline-danger:hover {
+    -fx-background-color: rgba(239,68,68,0.08);
+    -fx-border-color: #EF4444;
+    -fx-scale-x: 1.02; -fx-scale-y: 1.02;
+}
+
+/* Separator */
+.separator .line { -fx-border-color: #252530; }
+
+/* stat-card-mini (metal) */
+.stat-card-mini {
+    -fx-background-color: rgba(13,13,20,0.8);
+    -fx-border-color: rgba(255,255,255,0.06);
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 12, 0, 0, 3);
+}
+.stat-card-mini:hover {
+    -fx-border-color: rgba(232,50,10,0.30);
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.10), 16, 0, 0, 4);
+}
+.stat-card-label { -fx-font-size: 9.5px; -fx-font-weight: bold; -fx-text-fill: #5A5F78; -fx-letter-spacing: 0.8; -fx-font-family: "Courier New", monospace; }
+.stat-card-value { -fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F0F2F8; }
+
+/* Table container */
+.table-container {
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(255,255,255,0.04);
+    -fx-border-width: 1;
+}
+.modern-table .table-row-cell:hover {
+    -fx-background-color: rgba(232,50,10,0.06);
+    -fx-scale-x: 1.001;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   HERO ENHANCEMENTS — bigger logo, tighter main title, improved layout
+   ═══════════════════════════════════════════════════════════════════════ */
+.hero-big-logo {
+    -fx-font-size: 72px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #F0F2F8;
+    -fx-letter-spacing: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.85), 48, 0.4, 0, 0);
+}
+.hero-main-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New", monospace;
+    -fx-text-fill: #C8CDD8;
+    -fx-letter-spacing: 6px;
+    -fx-effect: dropshadow(gaussian, rgba(232,50,10,0.30), 12, 0, 0, 0);
+}
+.hero-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #5A5F78;
+    -fx-letter-spacing: 1.5px;
+}
+
+/* Landing steps — more polished corners */
+.landing-step {
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+}
+
+/* Nav brand text bigger */
+.nav-brand-text {
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+    -fx-letter-spacing: 3px;
+}
+.nav-bolt { -fx-font-size: 22px; }
+
+/* Tighter overall hero text block */
+.hero-text-block { -fx-padding: 0 50 56 50; }
+
+/* Overlay body — transparent in metal (dark backdrop handles it) */
+.overlay-body { -fx-background-color: transparent; }
+
+/* Scroll pane inside overlay — match panel background */
+.overlay-panel .front-scroll > .viewport { -fx-background-color: transparent; }
+.overlay-panel .front-scroll .scroll-bar .thumb { -fx-background-color: #3A3D52; }
+.overlay-panel .front-scroll .scroll-bar .thumb:hover { -fx-background-color: #E8320A; }

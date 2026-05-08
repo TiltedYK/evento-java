@@ -1,19 +1,17 @@
 package controller;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.util.converter.DefaultStringConverter;
 import model.User;
 import service.UserService;
+import util.Router;
 
 import java.util.List;
 
@@ -23,7 +21,6 @@ public class UserListController {
     @FXML private ComboBox<String> roleFilter;
     @FXML private ComboBox<String> stateFilter;
     @FXML private TableView<User> table;
-    @FXML private TableColumn<User, Number> colId;
     @FXML private TableColumn<User, String> colNom;
     @FXML private TableColumn<User, String> colPrenom;
     @FXML private TableColumn<User, String> colEmail;
@@ -35,6 +32,8 @@ public class UserListController {
     private final UserService service = new UserService();
     private final ObservableList<User> data = FXCollections.observableArrayList();
 
+    public static User pendingEdit;
+
     @FXML
     public void initialize() {
         roleFilter.getItems().addAll("all", "ROLE_USER", "ROLE_ADMIN", "ROLE_ARTIST");
@@ -42,7 +41,8 @@ public class UserListController {
         stateFilter.getItems().addAll("all", "active", "banned", "deleted");
         stateFilter.setValue("all");
 
-        colId.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getId()));
+        table.setEditable(true);
+
         colNom.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNom()));
         colPrenom.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getPrenom()));
         colEmail.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEmail()));
@@ -50,8 +50,60 @@ public class UserListController {
         colRole.setCellValueFactory(c -> new SimpleStringProperty(shortRole(c.getValue().getRoles())));
         colState.setCellValueFactory(c -> new SimpleStringProperty(userState(c.getValue())));
 
-        setupStatePillColumn();
-        setupActionsColumn();
+        colNom.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colNom.setOnEditCommit(e -> {
+            User u = e.getRowValue(); u.setNom(e.getNewValue());
+            try { service.modifier(u); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        colPrenom.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colPrenom.setOnEditCommit(e -> {
+            User u = e.getRowValue(); u.setPrenom(e.getNewValue());
+            try { service.modifier(u); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        colEmail.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colEmail.setOnEditCommit(e -> {
+            User u = e.getRowValue(); u.setEmail(e.getNewValue());
+            try { service.modifier(u); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        colTel.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colTel.setOnEditCommit(e -> {
+            User u = e.getRowValue(); u.setNumTelephone(e.getNewValue());
+            try { service.modifier(u); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        ObservableList<String> roleChoices = FXCollections.observableArrayList("User", "Admin", "Artist");
+        colRole.setCellFactory(ComboBoxTableCell.forTableColumn(roleChoices));
+        colRole.setOnEditCommit(e -> {
+            User u = e.getRowValue();
+            String v = e.getNewValue();
+            if (v == null) return;
+            String json = switch (v) {
+                case "Admin" -> "[\"ROLE_ADMIN\"]";
+                case "Artist" -> "[\"ROLE_ARTIST\"]";
+                default -> "[\"ROLE_USER\"]";
+            };
+            u.setRoles(json);
+            try { service.modifier(u); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        ObservableList<String> stateChoices = FXCollections.observableArrayList("active", "banned", "deleted");
+        colState.setCellFactory(ComboBoxTableCell.forTableColumn(stateChoices));
+        colState.setOnEditCommit(e -> {
+            User u = e.getRowValue();
+            String v = e.getNewValue();
+            if (v == null) return;
+            switch (v) {
+                case "banned" -> { u.setBanned(1); u.setDeleted(0); }
+                case "deleted" -> { u.setDeleted(1); }
+                default -> { u.setBanned(0); u.setDeleted(0); }
+            }
+            try { service.modifier(u); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        setupActions();
 
         searchField.textProperty().addListener((o, a, b) -> applyFilters());
         roleFilter.valueProperty().addListener((o, a, b) -> applyFilters());
@@ -74,44 +126,18 @@ public class UserListController {
         return "active";
     }
 
-    private void setupStatePillColumn() {
-        colState.setCellFactory(col -> new TableCell<>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) { setGraphic(null); setText(null); }
-                else {
-                    Label pill = new Label(item);
-                    pill.getStyleClass().add("status-pill");
-                    switch (item) {
-                        case "active"  -> pill.getStyleClass().add("status-confirmed");
-                        case "banned"  -> pill.getStyleClass().add("status-cancelled");
-                        case "deleted" -> pill.getStyleClass().add("status-pending");
-                        default        -> pill.getStyleClass().add("status-draft");
-                    }
-                    setGraphic(pill);
-                    setText(null);
-                }
-            }
-        });
-    }
-
-    private void setupActionsColumn() {
+    private void setupActions() {
         colActions.setCellFactory(col -> new TableCell<>() {
-            private final Button btnEdit = new Button("Edit");
-            private final Button btnBan = new Button("Ban");
+            private final Button btnBan    = new Button("Ban");
+            private final Button btnArtist = new Button("★ Artist");
             private final Button btnDelete = new Button("Delete");
-            private final HBox box = new HBox(6, btnEdit, btnBan, btnDelete);
+            private final HBox box = new HBox(6, btnBan, btnArtist, btnDelete);
             {
-                btnEdit.getStyleClass().addAll("button", "btn-primary");
-                btnBan.getStyleClass().addAll("button", "btn-ghost");
-                btnDelete.getStyleClass().addAll("button", "btn-danger");
-                btnEdit.setStyle("-fx-font-size: 11px; -fx-padding: 5 10;");
-                btnBan.setStyle("-fx-font-size: 11px; -fx-padding: 5 10;");
-                btnDelete.setStyle("-fx-font-size: 11px; -fx-padding: 5 10;");
-
-                btnEdit.setOnAction(e -> openForm(getTableView().getItems().get(getIndex())));
+                btnBan.getStyleClass().addAll("button", "btn-ghost", "btn-action");
+                btnArtist.getStyleClass().addAll("button", "btn-warning", "btn-action");
+                btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
                 btnBan.setOnAction(e -> onToggleBan(getTableView().getItems().get(getIndex())));
+                btnArtist.setOnAction(e -> onAcceptArtist(getTableView().getItems().get(getIndex())));
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
             }
             @Override
@@ -120,16 +146,23 @@ public class UserListController {
                 if (empty) { setGraphic(null); return; }
                 User u = getTableView().getItems().get(getIndex());
                 btnBan.setText(u.getBanned() == 1 ? "Unban" : "Ban");
+                boolean alreadyArtist = u.getRoles() != null && u.getRoles().contains("ARTIST");
+                btnArtist.setVisible(!alreadyArtist);
+                btnArtist.setManaged(!alreadyArtist);
                 setGraphic(box);
             }
         });
     }
 
+    private void onAcceptArtist(User u) {
+        u.setRoles("[\"ROLE_ARTIST\"]");
+        try { service.modifier(u); refresh(); }
+        catch (Exception e) { error("Update failed: " + e.getMessage()); }
+    }
+
     private void refresh() {
-        try {
-            data.setAll(service.recuperer());
-            applyFilters();
-        } catch (Exception e) { showError("Failed to load users", e.getMessage()); }
+        try { data.setAll(service.recuperer()); applyFilters(); }
+        catch (Exception e) { error("Failed to load users: " + e.getMessage()); }
     }
 
     private void applyFilters() {
@@ -138,7 +171,6 @@ public class UserListController {
             String q = searchField.getText() == null ? "" : searchField.getText().trim().toLowerCase();
             String role = roleFilter.getValue();
             String state = stateFilter.getValue();
-
             List<User> filtered = all.stream()
                     .filter(u -> q.isEmpty()
                             || (u.getNom() != null && u.getNom().toLowerCase().contains(q))
@@ -150,27 +182,28 @@ public class UserListController {
                     .filter(u -> state == null || state.equals("all") || userState(u).equals(state))
                     .toList();
             data.setAll(filtered);
-        } catch (Exception e) { showError("Filter failed", e.getMessage()); }
+        } catch (Exception e) { error("Filter failed: " + e.getMessage()); }
     }
 
     @FXML public void onReset() {
-        searchField.clear();
-        roleFilter.setValue("all");
-        stateFilter.setValue("all");
+        searchField.clear(); roleFilter.setValue("all"); stateFilter.setValue("all");
     }
 
-    @FXML public void onAdd() { openForm(null); }
+    @FXML public void onAdd() {
+        pendingEdit = null;
+        Router.navigate("/fxml/UserForm.fxml");
+    }
 
     private void onDelete(User u) {
         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
         a.setTitle("Confirm deletion");
-        a.setHeaderText("Delete user #" + u.getId() + "?");
-        a.setContentText("User: " + u.getPrenom() + " " + u.getNom() + "\nThis action cannot be undone.");
+        a.setHeaderText("Delete user \"" + u.getPrenom() + " " + u.getNom() + "\"?");
+        a.setContentText("This action cannot be undone.");
         styleAlert(a);
         a.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
                 try { service.supprimer(u.getId()); refresh(); }
-                catch (Exception e) { showError("Delete failed", e.getMessage()); }
+                catch (Exception e) { error("Delete failed: " + e.getMessage()); }
             }
         });
     }
@@ -180,37 +213,13 @@ public class UserListController {
             u.setBanned(u.getBanned() == 1 ? 0 : 1);
             service.modifier(u);
             refresh();
-        } catch (Exception e) { showError("Update failed", e.getMessage()); }
+        } catch (Exception e) { error("Update failed: " + e.getMessage()); }
     }
 
-    private void openForm(User u) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UserForm.fxml"));
-            Parent root = loader.load();
-            UserFormController ctrl = loader.getController();
-            ctrl.setUser(u);
-
-            Stage st = new Stage();
-            st.initModality(Modality.APPLICATION_MODAL);
-            st.setTitle(u == null ? "New User" : "Edit User");
-            Scene sc = new Scene(root);
-            sc.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-            st.setScene(sc);
-            st.showAndWait();
-            refresh();
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Could not open form", e.getMessage());
-        }
-    }
-
-    private void showError(String header, String msg) {
+    private void error(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Error");
-        a.setHeaderText(header);
-        a.setContentText(msg);
-        styleAlert(a);
-        a.showAndWait();
+        a.setTitle("Error"); a.setHeaderText(null); a.setContentText(msg);
+        styleAlert(a); a.showAndWait();
     }
 
     private void styleAlert(Alert a) {

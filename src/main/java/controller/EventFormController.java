@@ -1,11 +1,15 @@
 package controller;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
+import javafx.stage.FileChooser;
 import model.Event;
 import service.EventService;
+import service.WeatherService;
+import util.Router;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -13,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 
 public class EventFormController {
 
-    @FXML private Label formTitle;
+    @FXML private Label     formTitle;
     @FXML private TextField titreField;
     @FXML private DatePicker datePicker;
     @FXML private TextField timeField;
@@ -22,10 +26,13 @@ public class EventFormController {
     @FXML private TextField venueField;
     @FXML private TextField genreField;
     @FXML private TextField locationField;
-    @FXML private TextArea descriptionArea;
-    @FXML private Button saveButton;
+    @FXML private TextArea  descriptionArea;
+    @FXML private Button    saveButton;
+    @FXML private TextField imageField;
+    @FXML private Label     weatherLabel;
 
-    private final EventService service = new EventService();
+    private final EventService   service = new EventService();
+    private final WeatherService weather = new WeatherService();
     private Event editing;
 
     @FXML
@@ -35,29 +42,56 @@ public class EventFormController {
         statutCombo.setValue("draft");
         datePicker.setValue(LocalDate.now());
         timeField.setText("20:00");
+
+        this.editing = EventListController.pendingEdit;
+        EventListController.pendingEdit = null;
+
+        if (editing == null) {
+            formTitle.setText("New Event");
+            saveButton.setText("Create Event");
+        } else {
+            formTitle.setText("Edit Event #" + editing.getId());
+            saveButton.setText("Save Changes");
+            titreField.setText(editing.getTitre());
+            if (editing.getDateHeure() != null) {
+                datePicker.setValue(editing.getDateHeure().toLocalDate());
+                timeField.setText(editing.getDateHeure().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+            }
+            capaciteSpinner.getValueFactory().setValue(editing.getCapacite());
+            if (editing.getStatut() != null) statutCombo.setValue(editing.getStatut());
+            venueField.setText(editing.getVenue() != null ? editing.getVenue() : "");
+            genreField.setText(editing.getGenre() != null ? editing.getGenre() : "");
+            locationField.setText(editing.getLocation() != null ? editing.getLocation() : "");
+            descriptionArea.setText(editing.getDescription() != null ? editing.getDescription() : "");
+            if (editing.getImageFilename() != null) imageField.setText(editing.getImageFilename());
+        }
+
+        // Weather fetch when venue/location focus is lost
+        venueField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (!isNowFocused && !venueField.getText().isBlank()) fetchWeather(venueField.getText());
+        });
+        locationField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+            if (!isNowFocused && !locationField.getText().isBlank()) fetchWeather(locationField.getText());
+        });
     }
 
-    public void setEvent(Event ev) {
-        this.editing = ev;
-        if (ev == null) {
-            formTitle.setText("New Event");
-            saveButton.setText("Create event");
-            return;
-        }
-        formTitle.setText("Edit Event #" + ev.getId());
-        saveButton.setText("Save changes");
+    private void fetchWeather(String city) {
+        weatherLabel.setText("🌐 Fetching weather for " + city + "…");
+        new Thread(() -> {
+            String result = weather.getWeather(city);
+            Platform.runLater(() -> weatherLabel.setText("🌤 " + city + ": " + result));
+        }, "weather-fetch").start();
+    }
 
-        titreField.setText(ev.getTitre());
-        if (ev.getDateHeure() != null) {
-            datePicker.setValue(ev.getDateHeure().toLocalDate());
-            timeField.setText(ev.getDateHeure().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")));
-        }
-        capaciteSpinner.getValueFactory().setValue(ev.getCapacite());
-        if (ev.getStatut() != null) statutCombo.setValue(ev.getStatut());
-        venueField.setText(ev.getVenue());
-        genreField.setText(ev.getGenre());
-        locationField.setText(ev.getLocation());
-        descriptionArea.setText(ev.getDescription());
+    @FXML
+    public void onBrowseImage() {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Select Event Cover Image");
+        fc.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp")
+        );
+        File file = fc.showOpenDialog(imageField.getScene().getWindow());
+        if (file != null) imageField.setText(file.getName());
     }
 
     @FXML
@@ -65,54 +99,45 @@ public class EventFormController {
         String titre = safe(titreField.getText());
         String venue = safe(venueField.getText());
 
-        if (titre.isEmpty()) { showError("Title is required."); return; }
-        if (venue.isEmpty()) { showError("Venue is required."); return; }
-        if (datePicker.getValue() == null) { showError("Please pick a date."); return; }
+        if (titre.isEmpty()) { error("Title is required."); return; }
+        if (venue.isEmpty()) { error("Venue is required.");  return; }
+        if (datePicker.getValue() == null) { error("Please pick a date."); return; }
 
         LocalTime time;
         try {
             time = LocalTime.parse(safe(timeField.getText()), DateTimeFormatter.ofPattern("HH:mm"));
         } catch (Exception e) {
-            showError("Invalid time. Use HH:mm (e.g. 20:30).");
+            error("Invalid time format — use HH:mm (e.g. 20:30).");
             return;
         }
-        LocalDateTime dt = LocalDateTime.of(datePicker.getValue(), time);
 
         Event target = editing != null ? editing : new Event();
         target.setTitre(titre);
-        target.setDateHeure(dt);
+        target.setDateHeure(LocalDateTime.of(datePicker.getValue(), time));
         target.setCapacite(capaciteSpinner.getValue());
         target.setStatut(statutCombo.getValue());
         target.setVenue(venue);
         target.setGenre(safe(genreField.getText()));
         target.setLocation(safe(locationField.getText()));
         target.setDescription(safe(descriptionArea.getText()));
+        target.setImageFilename(safe(imageField.getText()));
 
         try {
             if (editing == null) service.ajouter(target);
-            else service.modifier(target);
-            close();
+            else                 service.modifier(target);
+            onCancel();
         } catch (Exception e) {
-            showError("Save failed: " + e.getMessage());
+            error("Save failed: " + e.getMessage());
         }
     }
 
-    @FXML
-    public void onCancel() {
-        close();
-    }
-
-    private void close() {
-        ((Stage) titreField.getScene().getWindow()).close();
-    }
+    @FXML public void onCancel() { Router.navigate("/fxml/EventList.fxml"); }
 
     private String safe(String s) { return s == null ? "" : s.trim(); }
 
-    private void showError(String msg) {
+    private void error(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Validation");
-        a.setHeaderText(null);
-        a.setContentText(msg);
+        a.setTitle("Validation"); a.setHeaderText(null); a.setContentText(msg);
         a.getDialogPane().getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
         a.showAndWait();
     }

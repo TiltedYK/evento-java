@@ -15,6 +15,10 @@ public class Product {
     private boolean isAvailable;
     private LocalDateTime createdAt;
     private String barcode;
+    /** Merch sizing, e.g. {@code S}, {@code M}, {@code One size}. Optional. */
+    private String size;
+    /** Currency code the price is entered in, e.g. "TND", "EUR", "USD". Defaults to "TND". */
+    private String currency = "TND";
 
     public Product() {
         this.isAvailable = true;
@@ -64,6 +68,12 @@ public class Product {
 
     public String getBarcode() { return barcode; }
     public void setBarcode(String barcode) { this.barcode = barcode; }
+
+    public String getSize() { return size; }
+    public void setSize(String size) { this.size = size; }
+
+    public String getCurrency() { return currency != null ? currency : "TND"; }
+    public void setCurrency(String currency) { this.currency = currency; }
 
     @Override
     public String toString() {

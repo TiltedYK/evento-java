@@ -1,21 +1,16 @@
 package controller;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.converter.DefaultStringConverter;
 import model.Post;
 import service.PostService;
+import util.Router;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -24,10 +19,8 @@ public class PostListController {
     @FXML private TextField searchField;
     @FXML private ComboBox<String> stateFilter;
     @FXML private TableView<Post> table;
-    @FXML private TableColumn<Post, Number> colId;
     @FXML private TableColumn<Post, String> colTitle;
     @FXML private TableColumn<Post, String> colSlug;
-    @FXML private TableColumn<Post, Number> colAuthor;
     @FXML private TableColumn<Post, String> colCreated;
     @FXML private TableColumn<Post, String> colState;
     @FXML private TableColumn<Post, Void> colActions;
@@ -36,22 +29,36 @@ public class PostListController {
     private final ObservableList<Post> data = FXCollections.observableArrayList();
     private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    public static Post pendingEdit;
+
     @FXML
     public void initialize() {
         stateFilter.getItems().addAll("all", "active", "deleted");
         stateFilter.setValue("all");
 
-        colId.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getId()));
+        table.setEditable(true);
+
         colTitle.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getTitle()));
         colSlug.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getSlug()));
-        colAuthor.setCellValueFactory(c -> new SimpleIntegerProperty(c.getValue().getAuthorId()));
         colCreated.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().getCreatedAt() != null ? c.getValue().getCreatedAt().format(FMT) : ""));
         colState.setCellValueFactory(c -> new SimpleStringProperty(
                 c.getValue().getDeletedAt() != null ? "deleted" : "active"));
 
-        setupStatePillColumn();
-        setupActionsColumn();
+        colTitle.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colTitle.setOnEditCommit(e -> {
+            Post p = e.getRowValue(); p.setTitle(e.getNewValue());
+            try { service.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        colSlug.setCellFactory(TextFieldTableCell.forTableColumn(new DefaultStringConverter()));
+        colSlug.setOnEditCommit(e -> {
+            Post p = e.getRowValue(); p.setSlug(e.getNewValue());
+            try { service.modifier(p); } catch (Exception ex) { error("Save failed: " + ex.getMessage()); }
+        });
+
+        setupStatePill();
+        setupActions();
 
         searchField.textProperty().addListener((o, a, b) -> applyFilters());
         stateFilter.valueProperty().addListener((o, a, b) -> applyFilters());
@@ -60,7 +67,7 @@ public class PostListController {
         refresh();
     }
 
-    private void setupStatePillColumn() {
+    private void setupStatePill() {
         colState.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -70,43 +77,30 @@ public class PostListController {
                     Label pill = new Label(item);
                     pill.getStyleClass().add("status-pill");
                     pill.getStyleClass().add(item.equals("active") ? "status-confirmed" : "status-cancelled");
-                    setGraphic(pill);
-                    setText(null);
+                    setGraphic(pill); setText(null);
                 }
             }
         });
     }
 
-    private void setupActionsColumn() {
+    private void setupActions() {
         colActions.setCellFactory(col -> new TableCell<>() {
-            private final Button btnView = new Button("View");
-            private final Button btnEdit = new Button("Edit");
             private final Button btnDelete = new Button("Delete");
-            private final HBox box = new HBox(6, btnView, btnEdit, btnDelete);
             {
-                btnView.getStyleClass().addAll("button", "btn-ghost");
-                btnEdit.getStyleClass().addAll("button", "btn-primary");
-                btnDelete.getStyleClass().addAll("button", "btn-danger");
-                btnView.setStyle("-fx-font-size: 11px; -fx-padding: 5 10;");
-                btnEdit.setStyle("-fx-font-size: 11px; -fx-padding: 5 10;");
-                btnDelete.setStyle("-fx-font-size: 11px; -fx-padding: 5 10;");
-                btnView.setOnAction(e -> onView(getTableView().getItems().get(getIndex())));
-                btnEdit.setOnAction(e -> openForm(getTableView().getItems().get(getIndex())));
+                btnDelete.getStyleClass().addAll("button", "btn-danger", "btn-action");
                 btnDelete.setOnAction(e -> onDelete(getTableView().getItems().get(getIndex())));
             }
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : box);
+                setGraphic(empty ? null : btnDelete);
             }
         });
     }
 
     private void refresh() {
-        try {
-            data.setAll(service.recuperer());
-            applyFilters();
-        } catch (Exception e) { showError("Failed to load posts", e.getMessage()); }
+        try { data.setAll(service.recuperer()); applyFilters(); }
+        catch (Exception e) { error("Failed to load posts: " + e.getMessage()); }
     }
 
     private void applyFilters() {
@@ -114,7 +108,6 @@ public class PostListController {
             List<Post> all = service.recuperer();
             String q = searchField.getText() == null ? "" : searchField.getText().trim().toLowerCase();
             String st = stateFilter.getValue();
-
             List<Post> filtered = all.stream()
                     .filter(p -> q.isEmpty()
                             || (p.getTitle() != null && p.getTitle().toLowerCase().contains(q))
@@ -124,70 +117,33 @@ public class PostListController {
                             || (st.equals("deleted") && p.getDeletedAt() != null))
                     .toList();
             data.setAll(filtered);
-        } catch (Exception e) { showError("Filter failed", e.getMessage()); }
+        } catch (Exception e) { error("Filter failed: " + e.getMessage()); }
     }
 
-    @FXML public void onReset() {
-        searchField.clear();
-        stateFilter.setValue("all");
-    }
-
-    @FXML public void onAdd() { openForm(null); }
-
-    private void onView(Post p) {
-        Alert a = new Alert(Alert.AlertType.INFORMATION);
-        a.setTitle("Post preview");
-        a.setHeaderText(p.getTitle());
-        String body = (p.getContent() == null ? "" : p.getContent());
-        if (body.length() > 1500) body = body.substring(0, 1500) + "\n\n… (truncated)";
-        a.setContentText(body);
-        a.getDialogPane().setPrefWidth(560);
-        styleAlert(a);
-        a.showAndWait();
+    @FXML public void onReset() { searchField.clear(); stateFilter.setValue("all"); }
+    @FXML public void onAdd() {
+        pendingEdit = null;
+        Router.navigate("/fxml/PostForm.fxml");
     }
 
     private void onDelete(Post p) {
         Alert a = new Alert(Alert.AlertType.CONFIRMATION);
         a.setTitle("Confirm deletion");
-        a.setHeaderText("Delete post #" + p.getId() + "?");
-        a.setContentText("\"" + p.getTitle() + "\"\nThis will also hide related comments.");
+        a.setHeaderText("Delete post \"" + p.getTitle() + "\"?");
+        a.setContentText("This will also hide related comments.");
         styleAlert(a);
         a.showAndWait().ifPresent(r -> {
             if (r == ButtonType.OK) {
                 try { service.supprimer(p.getId()); refresh(); }
-                catch (Exception e) { showError("Delete failed", e.getMessage()); }
+                catch (Exception e) { error("Delete failed: " + e.getMessage()); }
             }
         });
     }
 
-    private void openForm(Post p) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/PostForm.fxml"));
-            Parent root = loader.load();
-            PostFormController ctrl = loader.getController();
-            ctrl.setPost(p);
-
-            Stage st = new Stage();
-            st.initModality(Modality.APPLICATION_MODAL);
-            st.setTitle(p == null ? "New Post" : "Edit Post");
-            Scene sc = new Scene(root);
-            sc.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-            st.setScene(sc);
-            st.showAndWait();
-            refresh();
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("Could not open form", e.getMessage());
-        }
-    }
-
-    private void showError(String header, String msg) {
+    private void error(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Error");
-        a.setHeaderText(header);
-        a.setContentText(msg);
-        styleAlert(a);
-        a.showAndWait();
+        a.setTitle("Error"); a.setHeaderText(null); a.setContentText(msg);
+        styleAlert(a); a.showAndWait();
     }
 
     private void styleAlert(Alert a) {

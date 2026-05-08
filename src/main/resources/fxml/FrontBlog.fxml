@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controller.FrontBlogController"
+      styleClass="front-page" spacing="0">
+
+    <!-- LEFT: Feed (main) -->
+    <VBox HBox.hgrow="ALWAYS" spacing="0">
+
+        <VBox styleClass="front-page-header" spacing="6">
+            <Label text="📰  FEED" styleClass="front-page-title"/>
+            <Label text="Music news, stories and voices from the underground." styleClass="front-page-subtitle"/>
+        </VBox>
+
+        <HBox styleClass="front-filters-bar" spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="searchField" promptText="🔍  Search posts…"
+                       styleClass="front-search-field" prefWidth="200" onKeyReleased="#filterFeed"/>
+            <ComboBox fx:id="filterCombo" styleClass="front-combo" prefWidth="160" onAction="#filterFeed"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="countLabel" text="" styleClass="front-count-label"/>
+        </HBox>
+
+        <!-- Post creation box — sits above the feed -->
+        <VBox fx:id="createPostBox" styleClass="post-create-box" spacing="10"
+              style="-fx-margin:0 28 0 28;"/>
+
+        <ScrollPane styleClass="front-scroll" fitToWidth="true" VBox.vgrow="ALWAYS">
+            <VBox fx:id="feedList" spacing="0" styleClass="feed-container">
+                <padding><Insets top="16" right="0" bottom="32" left="0"/></padding>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+
+    <!-- RIGHT: Trending sidebar -->
+    <VBox styleClass="blog-sidebar" prefWidth="260" minWidth="260" spacing="0">
+        <VBox styleClass="blog-sidebar-section" spacing="10">
+            <padding><Insets top="20" right="16" bottom="10" left="16"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="🔴  LIVE — MUSIC NEWS" styleClass="sidebar-section-title"/>
+                    <Label fx:id="newsStatusLabel" text="Fetching latest music news…" styleClass="sidebar-status-label" wrapText="true"/>
+                </VBox>
+                <Button fx:id="openNewsBrowserBtn" text="EXPLORE" styleClass="feed-read-more-btn"
+                        onAction="#openMusicNewsBrowser"/>
+            </HBox>
+        </VBox>
+        <Region prefHeight="1" style="-fx-background-color:#E5E7EB;"/>
+        <ScrollPane styleClass="front-scroll" fitToWidth="true" VBox.vgrow="ALWAYS">
+            <VBox fx:id="newsSidebar" spacing="8" styleClass="news-sidebar-list">
+                <padding><Insets top="12" right="12" bottom="12" left="12"/></padding>
+            </VBox>
+        </ScrollPane>
+        <Region prefHeight="1" style="-fx-background-color:#E5E7EB;"/>
+        <VBox styleClass="blog-sidebar-section" spacing="6">
+            <padding><Insets top="14" right="16" bottom="16" left="16"/></padding>
+            <Label text="✏️  DAILY INSPIRATION" styleClass="sidebar-section-title"/>
+            <Label fx:id="quoteText"   text="Loading…" styleClass="sidebar-quote" wrapText="true"/>
+            <Label fx:id="quoteAuthor" text=""          styleClass="sidebar-quote-author"/>
+        </VBox>
+        <Region prefHeight="1" style="-fx-background-color:#E5E7EB;"/>
+        <!-- Music Trivia of the Day (Open Trivia DB) — second creative API in posts -->
+        <VBox fx:id="triviaBox" styleClass="blog-sidebar-section" spacing="8" managed="false" visible="false">
+            <padding><Insets top="14" right="16" bottom="16" left="16"/></padding>
+            <Label text="🎵  MUSIC TRIVIA OF THE DAY" styleClass="sidebar-section-title"/>
+            <Label fx:id="triviaQuestion" text="Loading question…" styleClass="sidebar-quote" wrapText="true"/>
+            <VBox fx:id="triviaAnswers" spacing="6"/>
+            <Label fx:id="triviaResult" text="" styleClass="sidebar-quote-author" wrapText="true"/>
+        </VBox>
+    </VBox>
+
+</HBox>

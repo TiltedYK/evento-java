@@ -20,6 +20,7 @@ public class Collaboration {
     private Integer width;
     private Integer height;
     private Double price;
+    private String referralCode;
 
     public Collaboration() {
         this.type = "image";
@@ -88,6 +89,9 @@ public class Collaboration {
     public Double getPrice() { return price; }
     public void setPrice(Double price) { this.price = price; }
 
+    public String getReferralCode() { return referralCode; }
+    public void setReferralCode(String referralCode) { this.referralCode = referralCode; }
+
     @Override
     public String toString() {
         return "Collaboration{" +
@@ -100,6 +104,7 @@ public class Collaboration {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", viewCount=" + viewCount +
+                ", referralCode='" + referralCode + '\'' +
                 '}';
     }
 }

@@ -2,9 +2,9 @@ package controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import model.Post;
 import service.PostService;
+import util.Router;
 
 import java.time.LocalDateTime;
 
@@ -23,28 +23,25 @@ public class PostFormController {
 
     @FXML
     public void initialize() {
-        // Live slug generation from title
-        titleField.textProperty().addListener((obs, oldV, newV) -> {
-            if (newV == null) { slugField.setText(""); return; }
-            slugField.setText(generateSlug(newV));
+        titleField.textProperty().addListener((obs, o, n) -> {
+            slugField.setText(n == null ? "" : generateSlug(n));
         });
-    }
 
-    public void setPost(Post p) {
-        this.editing = p;
-        if (p == null) {
+        this.editing = PostListController.pendingEdit;
+        PostListController.pendingEdit = null;
+
+        if (editing == null) {
             formTitle.setText("New Post");
             saveButton.setText("Publish post");
-            return;
+        } else {
+            formTitle.setText("Edit Post #" + editing.getId());
+            saveButton.setText("Save changes");
+            titleField.setText(editing.getTitle());
+            authorIdField.setText(String.valueOf(editing.getAuthorId()));
+            slugField.setText(editing.getSlug());
+            imageField.setText(editing.getImage());
+            contentArea.setText(editing.getContent());
         }
-        formTitle.setText("Edit Post #" + p.getId());
-        saveButton.setText("Save changes");
-
-        titleField.setText(p.getTitle());
-        authorIdField.setText(String.valueOf(p.getAuthorId()));
-        slugField.setText(p.getSlug());
-        imageField.setText(p.getImage());
-        contentArea.setText(p.getContent());
     }
 
     @FXML
@@ -52,17 +49,16 @@ public class PostFormController {
         String title = safe(titleField.getText());
         String content = safe(contentArea.getText());
 
-        if (title.isEmpty())   { showError("Title is required."); return; }
-        if (title.length() < 3){ showError("Title must be at least 3 characters."); return; }
-        if (content.isEmpty()) { showError("Content is required."); return; }
+        if (title.isEmpty())    { error("Title is required."); return; }
+        if (title.length() < 3) { error("Title must be at least 3 characters."); return; }
+        if (content.isEmpty())  { error("Content is required."); return; }
 
         int authorId;
         try {
             authorId = Integer.parseInt(authorIdField.getText().trim());
             if (authorId <= 0) throw new NumberFormatException();
         } catch (Exception e) {
-            showError("Author ID must be a positive number.");
-            return;
+            error("Author ID must be a positive number."); return;
         }
 
         Post target = editing != null ? editing : new Post();
@@ -71,40 +67,28 @@ public class PostFormController {
         target.setSlug(generateSlug(title));
         target.setContent(content);
         target.setImage(safe(imageField.getText()));
-
-        if (editing == null) {
-            target.setCreatedAt(LocalDateTime.now());
-        } else {
-            target.setUpdatedAt(LocalDateTime.now());
-        }
+        if (editing == null) target.setCreatedAt(LocalDateTime.now());
+        else target.setUpdatedAt(LocalDateTime.now());
 
         try {
             if (editing == null) service.ajouter(target);
             else service.modifier(target);
-            close();
-        } catch (Exception e) {
-            showError("Save failed: " + e.getMessage());
-        }
+            onCancel();
+        } catch (Exception e) { error("Save failed: " + e.getMessage()); }
     }
 
-    @FXML public void onCancel() { close(); }
-
-    private void close() { ((Stage) titleField.getScene().getWindow()).close(); }
+    @FXML public void onCancel() { Router.navigate("/fxml/PostList.fxml"); }
 
     private String safe(String s) { return s == null ? "" : s.trim(); }
 
     private String generateSlug(String text) {
         if (text == null) return "";
-        return text.toLowerCase()
-                .replaceAll("[^a-z0-9]+", "-")
-                .replaceAll("^-|-$", "");
+        return text.toLowerCase().replaceAll("[^a-z0-9]+", "-").replaceAll("^-|-$", "");
     }
 
-    private void showError(String msg) {
+    private void error(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Validation");
-        a.setHeaderText(null);
-        a.setContentText(msg);
+        a.setTitle("Validation"); a.setHeaderText(null); a.setContentText(msg);
         a.getDialogPane().getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
         a.showAndWait();
     }

@@ -2,9 +2,9 @@ package controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import model.Reservation;
 import service.ReservationService;
+import util.Router;
 
 import java.time.LocalDateTime;
 
@@ -25,22 +25,22 @@ public class ReservationFormController {
         placesSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 1, 1));
         statutCombo.getItems().addAll("pending", "confirmed", "cancelled");
         statutCombo.setValue("pending");
-    }
 
-    public void setReservation(Reservation r) {
-        this.editing = r;
-        if (r == null) {
+        this.editing = ReservationListController.pendingEdit;
+        ReservationListController.pendingEdit = null;
+
+        if (editing == null) {
             formTitle.setText("New Reservation");
             saveButton.setText("Create reservation");
-            return;
-        }
-        formTitle.setText("Edit Reservation #" + r.getId());
-        saveButton.setText("Save changes");
+        } else {
+            formTitle.setText("Edit Reservation #" + editing.getId());
+            saveButton.setText("Save changes");
 
-        eventIdField.setText(String.valueOf(r.getEventId()));
-        userIdField.setText(String.valueOf(r.getUserId()));
-        placesSpinner.getValueFactory().setValue(r.getNombrePlaces());
-        if (r.getStatut() != null) statutCombo.setValue(r.getStatut());
+            eventIdField.setText(String.valueOf(editing.getEventId()));
+            userIdField.setText(String.valueOf(editing.getUserId()));
+            placesSpinner.getValueFactory().setValue(editing.getNombrePlaces());
+            if (editing.getStatut() != null) statutCombo.setValue(editing.getStatut());
+        }
     }
 
     @FXML
@@ -50,13 +50,10 @@ public class ReservationFormController {
             eventId = Integer.parseInt(eventIdField.getText().trim());
             userId = Integer.parseInt(userIdField.getText().trim());
         } catch (Exception e) {
-            showError("Event ID and User ID must be valid numbers.");
+            error("Event ID and User ID must be valid numbers.");
             return;
         }
-        if (eventId <= 0 || userId <= 0) {
-            showError("Event ID and User ID must be positive.");
-            return;
-        }
+        if (eventId <= 0 || userId <= 0) { error("Event ID and User ID must be positive."); return; }
 
         Reservation target = editing != null ? editing : new Reservation();
         target.setEventId(eventId);
@@ -68,23 +65,15 @@ public class ReservationFormController {
         try {
             if (editing == null) service.ajouter(target);
             else service.modifier(target);
-            close();
-        } catch (Exception e) {
-            showError("Save failed: " + e.getMessage());
-        }
+            onCancel();
+        } catch (Exception e) { error("Save failed: " + e.getMessage()); }
     }
 
-    @FXML public void onCancel() { close(); }
+    @FXML public void onCancel() { Router.navigate("/fxml/ReservationList.fxml"); }
 
-    private void close() {
-        ((Stage) eventIdField.getScene().getWindow()).close();
-    }
-
-    private void showError(String msg) {
+    private void error(String msg) {
         Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("Validation");
-        a.setHeaderText(null);
-        a.setContentText(msg);
+        a.setTitle("Validation"); a.setHeaderText(null); a.setContentText(msg);
         a.getDialogPane().getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
         a.showAndWait();
     }
